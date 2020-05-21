@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 class DashboardController {
     @GetMapping("b")
     fun displayDashboard(model: Model): String {
-        return "dashboard/main"
+        return "log/log"
     }
 }

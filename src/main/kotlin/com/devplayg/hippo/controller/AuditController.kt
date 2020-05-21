@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("login")
-class LoginController {
+@RequestMapping("audit")
+class AuditController {
     @GetMapping("/")
-    fun blog(model: Model): String {
-        model.addAttribute("greeting", "Hello Kotlin with Thymeleaf")
-        return "login/login"
+    fun displayAudit(model: Model): String {
+        return "audit/audit"
     }
 }
