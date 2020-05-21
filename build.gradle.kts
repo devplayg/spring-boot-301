@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.3.0.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.72"
     kotlin("jvm") version "1.3.72"
     kotlin("plugin.spring") version "1.3.72"
 }
@@ -13,6 +14,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -26,6 +28,15 @@ dependencies {
 
     // Thymeleaf layout
     implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
+
+    // MySQL
+    runtimeOnly("mysql:mysql-connector-java")
+
+    implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
