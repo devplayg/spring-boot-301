@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 class LoginController {
     @GetMapping("/")
     fun blog(model: Model): String {
+        model.addAttribute("greeting", "Hello Kotlin with Thymeleaf")
         return "login/login"
     }
 }
