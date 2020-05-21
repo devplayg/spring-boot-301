@@ -1,0 +1,82 @@
+body {
+    background: url(/img/bg.png) #fff;
+
+}
+
+.modal-wide {
+    width: 90%;
+}
+
+.datetime {
+    max-width: 180px;
+}
+.swal2-popup {
+    font-size: 1.6rem !important;
+}
+
+.flag-border {
+    border: 1px solid #acacac;
+}
+
+/**
+ * Border
+ */
+
+.bred {
+    border: 1px dotted red;
+}
+
+/**
+ * Colors
+ */
+
+/*.bg-color-grayLight {*/
+/*    background-color: #eeeeee !important;*/
+/*}*/
+
+/*.txt-color-grayLight {*/
+/*    color: #acacac !important;*/
+/*}*/
+/*.txt-color-light {*/
+/*    color: #dddddd !important;*/
+/*}*/
+
+
+/**
+ * Bootstrap table
+ */
+
+/*.bootstrap-table .fixed-table-toolbar .bs-bars,*/
+/*.bootstrap-table .fixed-table-toolbar .search,*/
+/*.bootstrap-table .fixed-table-toolbar .columns {*/
+/*    margin-top: 0px;*/
+/*}*/
+
+/*.table thead tr,*/
+/*.fc-border-separate thead tr {*/
+/*    background-image: none;*/
+/*    background-color: transparent;*/
+/*}*/
+
+/*.swal2-container {*/
+/*    zoom: 1.5;*/
+/*}*/
+
+
+/*.bg-color-black {*/
+/*    background-color: #000 !important;*/
+/*}*/
+
+/*.txt-color-red-origin {*/
+/*    color: red;*/
+/*}*/
+
+/*.text-break {*/
+/*    word-break: break-word !important;*/
+/*    overflow-wrap: break-word !important;*/
+/*}*/
+
+/*.live-time-on-image {*/
+/*    background-color: black;*/
+/*    opacity: .5;*/
+/*}*/
