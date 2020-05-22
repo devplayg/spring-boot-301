@@ -1,5 +1,6 @@
 package com.devplayg.hippo.dao
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -8,10 +9,13 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
 
-object Members : IntIdTable("mbr_members") {
+object Members : IntIdTable("mbr_members", "member_id") {
+
+
     val name = varchar("name", 50).index()
     val age = integer("age")
 }
+
 class Member(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Member>(Members)
 

@@ -18,10 +18,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
+    // Spring Boot
+//    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -32,10 +34,18 @@ dependencies {
     // MySQL
     runtimeOnly("mysql:mysql-connector-java")
 
+    // exposed ORM
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
+
+    // QueryDSL
+    api("com.querydsl:querydsl-jpa:4.2.2")
+    implementation("com.querydsl:querydsl-apt:4.2.2:jpa") // ":jpa 꼭 붙여줘야 한다!!"
+//    implementation("gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.10")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
+
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
