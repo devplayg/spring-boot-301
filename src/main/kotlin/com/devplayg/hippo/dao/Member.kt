@@ -19,12 +19,11 @@ class Member(id: EntityID<Int>) : IntEntity(id) {
     var name by Members.name
     var age by Members.age
 
-    fun toDto() =
-            MemberDto(
-                    id = this.id.value,
-                    age = this.age,
-                    name = this.name
-            )
+    fun toDto() = MemberDto(
+            id = this.id.value,
+            age = this.age,
+            name = this.name
+    )
 }
 
 //fun Member.mapToMemberDto() = Members.toDto(this)

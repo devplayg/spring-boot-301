@@ -1,7 +1,7 @@
 package com.devplayg.hippo.service
 
 import com.devplayg.hippo.dao.Member
-import com.devplayg.hippo.repository.member.MemberRepo
+import com.devplayg.hippo.repository.MemberRepo
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 

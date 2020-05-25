@@ -1,4 +1,4 @@
-package com.devplayg.hippo.repository.member
+package com.devplayg.hippo.repository
 
 import com.devplayg.hippo.dao.Member
 import com.devplayg.hippo.dao.Members
@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository
 @Repository
 class MemberRepo {
     fun findSomething() = transaction {
-        Member.find { Members.id.greater(9) }.toList().map{
+        Member.find { Members.id.greater(9) }.toList().map {
             it.toDto()
+
         }
     }
 }

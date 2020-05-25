@@ -17,25 +17,6 @@ class AuditController(
     }
 
     @GetMapping
-    fun all() = auditService.all()
-
-//    @GetMapping("/$API_AUTHORS")
-//    fun authorsFindAll(): List<AuthorDto> = authorRepo
-//            .findAll()
-//            .map { it.toAuthorDto() }
-
-
-//    fun getAllAudits(): String {
-//        transaction {
-//            val members = auditService.all()
-//        } to getAllAudits()
-//        var members : ArrayList<Member> = arrayListOf()
-//        for (m in Members.selectAll()) {
-//            members.add(m.to(Member))
-//        }
-
-//        return members
-//    }
-
+    fun all() = auditService.findAll()
 }
 

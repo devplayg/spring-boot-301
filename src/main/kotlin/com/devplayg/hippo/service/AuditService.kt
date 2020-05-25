@@ -1,19 +1,16 @@
 package com.devplayg.hippo.service
 
-import com.devplayg.hippo.dao.Audits
-import com.devplayg.hippo.dao.toAudit
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.selectAll
+import com.devplayg.hippo.dao.Audit
+import com.devplayg.hippo.repository.AuditRepo
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class AuditService {
-
-    fun all() = transaction {
-        Audits.selectAll().map { it.toAudit() }
+class AuditService(
+        private val auditRepo: AuditRepo
+) {
+    fun findAll() = transaction {
+        auditRepo.findAll()
     }
-
-    private fun ResultRow.toAudit() = Audits.toAudit(this)
 }
 

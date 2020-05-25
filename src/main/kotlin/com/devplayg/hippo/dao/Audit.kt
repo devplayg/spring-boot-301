@@ -1,34 +1,47 @@
 package com.devplayg.hippo.dao
 
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.LongEntity
+import org.jetbrains.exposed.dao.LongEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.jodatime.datetime
 
-
-object Audits : Table("adt_audit") {
-    val id = long("audit_id").autoIncrement()
+// Table
+object Audits : LongIdTable("adt_audit", "audit_id") {
+    val category = integer("category").index()
     val ip = long("ip")
     val message = varchar("message", 256).nullable()
     val created = datetime("created")
 
-    override val primaryKey = PrimaryKey(id, name= "PK_adt_audit_auditId")
+    override val primaryKey = PrimaryKey(id, name = "PK_adt_audit_auditId")
 }
 
-data class Audit(
+// Entity
+class Audit(id: EntityID<Long>) : LongEntity(id) {
+    companion object : LongEntityClass<Audit>(Audits)
+
+    var category by Audits.category
+    var ip by Audits.ip
+    var message by Audits.message
+    var created by Audits.created
+    fun toDto() = AuditDto(
+            id = this.id.value,
+            ip = this.ip,
+            message = this.message,
+            created = this.created.toString()
+    )
+}
+
+data class AuditDto(
         val id: Long,
         val ip: Long,
         val message: String?,
         val created: String
 )
 
-
-fun Audits.toAudit(row: ResultRow) =
-        Audit(
-                id = row[id],
-                ip = row[ip],
-                message = row[message],
-                created = row[created].toString()
-        )
 
 //class Audit(id: Audits.) : LongEntity(id) {
 ////    companion object : LongEntityClass<Audit>(Audits)
