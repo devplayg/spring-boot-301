@@ -39,6 +39,10 @@ dependencies {
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
+//    implementation("org.jetbrains.exposed", "spring-transaction", "0.24.1")
+
+    // Hikari
+    implementation("com.zaxxer", "HikariCP", "3.4.2")
 
     // QueryDSL
     api("com.querydsl:querydsl-jpa:4.2.2")

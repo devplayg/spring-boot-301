@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/members")
 class MemberController(
-        val memberService: MemberService
+        private val memberService: MemberService
 ) {
     @GetMapping
-    fun all() = memberService.all()
+    fun list() = memberService.findAll()
+
+    @GetMapping("some")
+    fun listSomething() = memberService.findSomething()
 }

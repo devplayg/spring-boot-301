@@ -22,7 +22,7 @@ data class Audit(
 )
 
 
-fun Audits.rowToAudit(row: ResultRow): Audit =
+fun Audits.toAudit(row: ResultRow) =
         Audit(
                 id = row[id],
                 ip = row[ip],
