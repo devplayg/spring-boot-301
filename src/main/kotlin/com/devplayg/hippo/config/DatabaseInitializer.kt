@@ -1,8 +1,8 @@
 package com.devplayg.hippo.config
 
-import com.devplayg.hippo.dao.Audits
-import com.devplayg.hippo.dao.Member
-import com.devplayg.hippo.dao.Members
+import com.devplayg.hippo.entity.Audits
+import com.devplayg.hippo.entity.Member
+import com.devplayg.hippo.entity.Members
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers

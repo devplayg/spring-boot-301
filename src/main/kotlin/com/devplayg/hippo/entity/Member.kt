@@ -1,4 +1,4 @@
-package com.devplayg.hippo.dao
+package com.devplayg.hippo.entity
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -26,18 +26,9 @@ class Member(id: EntityID<Int>) : IntEntity(id) {
     )
 }
 
-//fun Member.mapToMemberDto() = Members.toDto(this)
-
-
+// DTO
 data class MemberDto(
         val id: Int,
         val name: String,
         val age: Int
 )
-
-//fun Members.toDto(r: Member) =
-//        MemberDto(
-//                id = r.id.value,
-//                age = r.age,
-//                name = r.name
-//        )
