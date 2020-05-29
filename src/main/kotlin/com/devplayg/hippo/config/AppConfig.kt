@@ -8,5 +8,6 @@ import org.springframework.context.annotation.Configuration
 class AppConfig(
         var name: String = "",
         var version: String = "",
-        var whatElse: String = ""
+        var whatElse: String = "",
+        var pathPatternsNotToBeIntercepted: ArrayList<String> = ArrayList()
 )
