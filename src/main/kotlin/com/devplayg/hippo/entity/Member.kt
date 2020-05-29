@@ -22,7 +22,7 @@ class Member(id: EntityID<Int>) : IntEntity(id) {
     fun toDto() = MemberDto(
             id = this.id.value,
             age = this.age,
-            name = this.name
+             name = this.name
     )
 }
 

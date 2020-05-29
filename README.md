@@ -16,9 +16,18 @@ Spring Boot with Kotlin
 
 ### References
 
-    - https://github.com/bastman/spring-kotlin-exposed
-- https://github.com/TouK/kotlin-exposed-realworld
+Framework
+
+- [Kotlin SpringMVC HandlerInterceptor – Spring Boot](https://grokonez.com/spring-framework/spring-boot/kotlin-spring-boot/kotlin-springmvc-handlerinterceptor-spring-boot#1_Create_Kotlin_SpringBoot_project)
+
+Exposed
+
+- [Exposed](https://github.com/JetBrains/Exposed)
 - https://touk.pl/blog/2019/02/12/how-we-use-kotlin-with-exposed-at-touk/
 - https://stackoverflow.com/questions/50339016/kotlin-exposed-dsl-query-mapping
-- https://github.com/JetBrains/Exposed
 - https://blog.jdriven.com/2019/07/kotlin-exposed-a-lightweight-sql-library/
+
+Exposed examples
+
+- https://github.com/bastman/spring-kotlin-exposed
+- https://github.com/TouK/kotlin-exposed-realworld

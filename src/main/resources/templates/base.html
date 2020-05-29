@@ -12,6 +12,9 @@
 </head>
 <body>
 <div id="content" class="content-fluid">
+    <div class="ml10" th:text="${@environment.getProperty('app.name')}"></div>
+    <small class="ml10" th:text="${@environment.getProperty('app.version')}"></div>
+
     <div layout:fragment="content"></div>
 </div>
 

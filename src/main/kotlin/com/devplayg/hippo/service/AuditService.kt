@@ -1,6 +1,8 @@
 package com.devplayg.hippo.service
 
+import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.repository.AuditRepo
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -11,5 +13,9 @@ class AuditService(
     fun findAll() = transaction {
         auditRepo.findAll()
     }
+//    fun find() = transaction {
+//        Audits.select {
+//        }.offset(10, 10)
+//    }
 }
 

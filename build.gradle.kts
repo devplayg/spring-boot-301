@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
     // Spring Boot
-//    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    //implementation("org.springframework.boot:spring-boot-starter-data-redis")
     //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -42,8 +42,10 @@ dependencies {
     // Hikari
     implementation("com.zaxxer", "HikariCP", "3.4.2")
 
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
+    // Logging
+    implementation("io.github.microutils","kotlin-logging", "1.7.9")
 
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
