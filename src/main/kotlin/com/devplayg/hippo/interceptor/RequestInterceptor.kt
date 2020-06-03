@@ -12,8 +12,10 @@ class RequestInterceptor : HandlerInterceptor {
     companion object : KLogging()
 
     override fun preHandle(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any): Boolean {
-        logger.debug("# REQ) PreHandle: [{} - {}] {}{}", req.method, req.remoteAddr, req.requestURI, req.queryString);
+//        logger.debug("# REQ) PreHandle: [{} - {}] {}{}", req.method, req.remoteAddr, req.requestURI, req.queryString);
 //        if (logger.isDebugEnabled) {
+
+            logger.debug("RequestInterceptor::preHandle() ==========================");
             req.parameterMap.forEach { (key, v) ->
                 logger.debug("- {} = {}", key, req.parameterMap[key]);
             }
@@ -22,10 +24,10 @@ class RequestInterceptor : HandlerInterceptor {
     }
 
     override fun postHandle(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any, model: ModelAndView?) {
-        logger.debug("# REQ) PostHandle")
+//        logger.debug("# REQ) PostHandle")
     }
 
     override fun afterCompletion(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any, e: Exception?) {
-        logger.info("# REQ) AfterCompletion")
+//        logger.info("# REQ) AfterCompletion")
     }
 }

@@ -7,16 +7,46 @@ import org.springframework.format.annotation.DateTimeFormat
 open class SearchFilter {
     companion object : KLogging()
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    var startDate: DateTime = DateTime.now()
+//    constructor(startDate: DateTime, endDate: DateTime, pagingMode: Int) {
+//    }
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    var endDate: String = ""
+    var startDate: DateTime? = null
+
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    var endDate: DateTime? = null
+
 
     var pagingMode: Int = 0
 
+    var dateSearchPeriodDays: Int = 0
+
+    //    constructor() {
     init {
-        //logger.info("asdfasdf")
+
+        logger.debug("SearchFilter::init() ========================")
+        logger.debug("- startDate: {}", startDate)
+        logger.debug("- endDate: {}", endDate)
+        logger.debug("- pagingMode: {}", pagingMode)
+        logger.debug("- dateSearchPeriodDays: {}", dateSearchPeriodDays)
+//        if(!::endDate.isInitialized){
+//            endDate = DateTime.now()
+//        }
+//    constructor() {
+//        if (this::startDate.isInitialized) {
+//
+//        }
+//    }
+//        endDate = DateTime.now()
+//        logger.debug("endDate: {}", endDate)
+//        logger.info("asdfasdf")
+//        if (endD ate == null) {
+//
+//        }
     }
+
+//    fun tune() {
+//    }
 
 }

@@ -3,7 +3,6 @@ package com.devplayg.hippo.controller
 import com.devplayg.hippo.config.AppConfig
 import com.devplayg.hippo.entity.filter.AuditFilter
 import com.devplayg.hippo.service.AuditService
-import groovy.util.logging.Slf4j
 import mu.KLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,16 +25,18 @@ class AuditController(
         return "audit/audit"
     }
 
+
+    /*
+        http://127.0.0.1/audit
+        http://127.0.0.1/audit?startDate=2020-05-29%2015%3A39&endDate=2020-05-29%2015%3A39
+    */
     @GetMapping
     fun find(@ModelAttribute filter: AuditFilter): ResponseEntity<*> {
-        logger.info("# REQ) Request: {}, {}", appConfig.name, appConfig.whatElse)
-//        logger.info("# REQ). Request:")
-
-
-
-//        logger.debug("startDate: {}", filter.startDate)
-//        logger.debug("endDate: {}", filter.endDate)
-//        logger.debug("pagingMode: {}", filter.pagingMode)
+        logger.debug("AuditController::find() ========================")
+        logger.debug("- startDate: {}", filter.startDate)
+        logger.debug("- endDate: {}", filter.endDate)
+        logger.debug("- pagingMode: {}", filter.pagingMode)
+        logger.debug("- dateSearchPeriodDays: {}", filter.dateSearchPeriodDays)
 
         return ResponseEntity(auditService.findAll(), HttpStatus.OK)
     }
@@ -46,7 +47,6 @@ class AuditController(
     @GetMapping("2")
     fun all2(): ResponseEntity<*> {
         return ResponseEntity(auditService.findAll(), HttpStatus.OK)
-        //return ResponseEntity.ok(auditService.findAll())
     }
 }
 
