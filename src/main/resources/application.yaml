@@ -1,4 +1,7 @@
 spring:
+    jackson:
+        serialization:
+            indent_output: true
     profiles:
         active: prod
 #    jpa:

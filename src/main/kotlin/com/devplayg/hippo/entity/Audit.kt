@@ -4,7 +4,9 @@ import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.jodatime.datetime
+import org.joda.time.DateTime
 
 // Table
 object Audits : LongIdTable("adt_audit", "audit_id") {
@@ -26,6 +28,7 @@ class Audit(id: EntityID<Long>) : LongEntity(id) {
     var created by Audits.created
     fun toDto() = AuditDto(
             id = this.id.value,
+            category = this.category,
             ip = this.ip,
             message = this.message,
             created = this.created.toString()
@@ -36,6 +39,15 @@ class Audit(id: EntityID<Long>) : LongEntity(id) {
 data class AuditDto(
         val id: Long,
         val ip: Long,
+        val category: Int,
         val message: String?,
         val created: String
+)
+
+fun mapToAuditDto(it: ResultRow) = AuditDto(
+        id = it[Audits.id].value,
+        ip = it[Audits.ip],
+        category = it[Audits.category],
+        message = it[Audits.message],
+        created = it[Audits.created].toString()
 )

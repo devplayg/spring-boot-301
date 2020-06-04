@@ -1,42 +1,72 @@
 package com.devplayg.hippo.entity.filter
 
 import mu.KLogging
+import org.jetbrains.exposed.sql.Expression
+import org.jetbrains.exposed.sql.SortOrder
 import org.joda.time.DateTime
 import org.springframework.format.annotation.DateTimeFormat
 
 open class SearchFilter {
     companion object : KLogging()
 
-//    constructor(startDate: DateTime, endDate: DateTime, pagingMode: Int) {
-//    }
+    constructor(lastNDays: Int) {
+        val now: DateTime = DateTime.now()
+
+        if (!::startDate.isInitialized) {
+            startDate = now.withTimeAtStartOfDay().plusDays(lastNDays * -1)
+        }
+        if (!::endDate.isInitialized) {
+            endDate = now.withTimeAtStartOfDay().plusSeconds(86400 - 1)
+        }
+    }
+
+    constructor(lastNDays: Int, sortOrder: Pair<Expression<*>, SortOrder>) : this(lastNDays) {
+        this.sortOrder = sortOrder
+    }
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    var startDate: DateTime? = null
-
+    lateinit var startDate: DateTime
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    var endDate: DateTime? = null
+    lateinit var endDate: DateTime
 
 
     var pagingMode: Int = 0
 
-    var dateSearchPeriodDays: Int = 0
+    var page: Int = 1
+    var size: Int = 15
+    var sort: String = ""
+    var order: String = ""
+
+
+    //    var so : Pair<Expression<*>, SortOrder>? = null
+    lateinit var sortOrder: Pair<Expression<*>, SortOrder>
+
+
+//    var dateSearchPeriodDays: Int = 0
+//    startDate: 2020-05-28 00:00
+//    endDate: 2020-06-04 23:59
+//    pageSize: 20
+//    pagingMode: 2
+//    page: 0
+//    size: 400
+//    sort: id,asc
+
 
     //    constructor() {
     init {
+//        if (::startDate.isInitialized) {
+//            logger.debug("- startDate: {}", startDate)
+//        }
 
         logger.debug("SearchFilter::init() ========================")
-        logger.debug("- startDate: {}", startDate)
-        logger.debug("- endDate: {}", endDate)
+//        logger.debug("- startDate: {}", startDate)
+//        logger.debug("- endDate: {}", endDate)
         logger.debug("- pagingMode: {}", pagingMode)
-        logger.debug("- dateSearchPeriodDays: {}", dateSearchPeriodDays)
 //        if(!::endDate.isInitialized){
 //            endDate = DateTime.now()
 //        }
 //    constructor() {
-//        if (this::startDate.isInitialized) {
-//
-//        }
 //    }
 //        endDate = DateTime.now()
 //        logger.debug("endDate: {}", endDate)

@@ -1,6 +1,10 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.interceptor.RequestInterceptor
+import com.zaxxer.hikari.HikariDataSource
+import org.jetbrains.exposed.spring.SpringTransactionManager
+import org.jetbrains.exposed.sql.transactions.DEFAULT_ISOLATION_LEVEL
+import org.jetbrains.exposed.sql.transactions.DEFAULT_REPETITION_ATTEMPTS
 import org.joda.time.DateTime
 import org.joda.time.LocalDateTime
 import org.springframework.context.MessageSource
@@ -50,6 +54,12 @@ class WebConfig(
         messageSource.setCacheSeconds(10)
         return messageSource
     }
+
+//    @Bean
+//    fun transactionManager(dataSource: HikariDataSource): SpringTransactionManager {
+//        return SpringTransactionManager(
+//                dataSource, DEFAULT_REPETITION_ATTEMPTS)
+//    }
 
     /**
      * Timezone
