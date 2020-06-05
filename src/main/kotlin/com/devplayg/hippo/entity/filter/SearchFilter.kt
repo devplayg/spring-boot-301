@@ -7,8 +7,9 @@ import org.joda.time.DateTime
 import org.springframework.format.annotation.DateTimeFormat
 
 open class SearchFilter {
-    companion object : KLogging()
 
+    // Set the date range to the last 3 days
+    // dateRangeToLastNdDays
     constructor(lastNDays: Int) {
         val now: DateTime = DateTime.now()
 
@@ -23,6 +24,9 @@ open class SearchFilter {
     constructor(lastNDays: Int, sortOrder: Pair<Expression<*>, SortOrder>) : this(lastNDays) {
         this.sortOrder = sortOrder
     }
+
+    // Logging
+    companion object : KLogging()
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     lateinit var startDate: DateTime
