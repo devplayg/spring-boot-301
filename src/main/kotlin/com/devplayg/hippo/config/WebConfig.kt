@@ -1,12 +1,8 @@
 package com.devplayg.hippo.config
 
+//import org.jetbrains.exposed.spring.SpringTransactionManager
+import com.devplayg.hippo.framework.InMemoryMemberManager
 import com.devplayg.hippo.interceptor.RequestInterceptor
-import com.zaxxer.hikari.HikariDataSource
-import org.jetbrains.exposed.spring.SpringTransactionManager
-import org.jetbrains.exposed.sql.transactions.DEFAULT_ISOLATION_LEVEL
-import org.jetbrains.exposed.sql.transactions.DEFAULT_REPETITION_ATTEMPTS
-import org.joda.time.DateTime
-import org.joda.time.LocalDateTime
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -14,17 +10,14 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
-import java.time.ZoneId
-import java.util.*
-import java.util.stream.Collectors
 
 
 @Configuration
+// @EnableWebSecurity
 class WebConfig(
         val requestInterceptor: RequestInterceptor,
         val appConfig: AppConfig
 ) : WebMvcConfigurer {
-
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         // Normal interceptor
@@ -86,5 +79,11 @@ class WebConfig(
 //                .getOffset()
 //                .getId()
 //                .replace("Z", "+00:00")
+//    }
+
+
+//    @Bean
+//    fun inMemoryMemberManager(): InMemoryMemberManager {
+//        return InMemoryMemberManager()
 //    }
 }

@@ -11,9 +11,10 @@ import org.joda.time.DateTime
 // Table
 object Audits : LongIdTable("adt_audit", "audit_id") {
     val category = integer("category").index()
+    val memberId = long("member_id")
     val ip = long("ip")
     val message = varchar("message", 256).nullable()
-    val created = datetime("created")
+    val created = datetime("created").default(DateTime.now())
 
     override val primaryKey = PrimaryKey(id, name = "PK_adt_audit_auditId")
 }
@@ -21,7 +22,7 @@ object Audits : LongIdTable("adt_audit", "audit_id") {
 // Entity
 class Audit(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Audit>(Audits)
-
+    var memberId by Audits.memberId
     var category by Audits.category
     var ip by Audits.ip
     var message by Audits.message

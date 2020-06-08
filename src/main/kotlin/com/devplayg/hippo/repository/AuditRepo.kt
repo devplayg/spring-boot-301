@@ -3,8 +3,9 @@ package com.devplayg.hippo.repository
 import com.devplayg.hippo.entity.Audit
 import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.entity.filter.AuditFilter
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.jodatime.date
+import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.andWhere
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
@@ -38,7 +39,7 @@ class AuditRepo {
 
         // -----------------------------------------------------------------------------
         var cond = Audits.selectAll()
-                            .andWhere { Audits.created.between(filter.startDate, filter.endDate) }
+                .andWhere { Audits.created.between(filter.startDate, filter.endDate) }
 
         if (filter.categoryList != null) {
             cond.andWhere { Audits.category inList filter.categoryList!! }

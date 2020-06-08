@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     // Spring Boot
-    //implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    //implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -37,7 +37,6 @@ dependencies {
     implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
-    implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
     implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
 
     // Hikari

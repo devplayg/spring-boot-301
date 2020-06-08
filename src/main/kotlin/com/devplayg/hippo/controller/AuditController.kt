@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("/audit")
+@RequestMapping("/audits")
 class AuditController(
         val auditService: AuditService,
         val appConfig : AppConfig
