@@ -11,10 +11,12 @@ import org.joda.time.Seconds
 //    : SearchFilter(startDate, endDate, pagingMode) {
 //}
 
-class AuditFilter() : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, SortOrder.DESC)) {
+class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, SortOrder.DESC)) {
     companion object : KLogging()
 
     var categoryList: List<Int>? = null
+    var ip: String = ""
+    var message: String = ""
 
     init {
         logger.debug("AuditFilter::init() ========================")
@@ -37,5 +39,9 @@ class AuditFilter() : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, S
 //        if (endDate== null) {
 //            endDate = d.withTimeAtStartOfDay().plusSeconds(86400-1)
 //        }
+    }
+
+    override fun tune() {
+        super.tune()
     }
 }

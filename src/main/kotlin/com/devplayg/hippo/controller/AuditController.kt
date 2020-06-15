@@ -16,22 +16,31 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/audits")
 class AuditController(
         val auditService: AuditService,
-        val appConfig : AppConfig
+        val appConfig: AppConfig
 ) {
     companion object : KLogging()
 
     @GetMapping("/")
-    fun displayAudit(model: Model): String {
+    fun displayAudit(@ModelAttribute filter: AuditFilter, model: Model): String {
+        model.addAttribute("filter", filter)
+        filter.tune()
+        logger.debug("AuditController::displayAudit() ========================")
+        logger.debug("- startDate: {}", filter.startDate)
+        logger.debug("- endDate: {}", filter.endDate)
+        logger.debug("- pagingMode: {}", filter.pagingMode)
+        logger.debug("- categoryList: {}", filter.categoryList)
+        logger.debug("- sort: {}", filter.sort)
+        logger.debug("- order: {}", filter.order)
+        logger.debug("- sortOrder: {}", filter.sortOrder)
         return "audit/audit"
     }
-
 
     /*
         http://127.0.0.1/audit
         http://127.0.0.1/audit?startDate=2020-04-01%2000%3A00&endDate=2020-05-29%2023%3A59
     */
     @GetMapping
-    fun find(@ModelAttribute filter: AuditFilter ): ResponseEntity<*> {
+    fun find(@ModelAttribute filter: AuditFilter): ResponseEntity<*> {
         logger.debug("AuditController::find() ========================")
         logger.debug("- startDate: {}", filter.startDate)
         logger.debug("- endDate: {}", filter.endDate)

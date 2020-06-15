@@ -1,8 +1,142 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
-    Audit
+    <div class="card m-auto border">
+        <div class="card-header py-2">
+            <div class="card-title">
+                Quote
+            </div>
+        </div>
+        <div class="card-body">
+            <div th:id="toolbar-audit">
+                <form th:id="form-audit" role="form" method="post" th:action="@{/audits/}" th:object="${filter}">
+
+                    <!-- Exposed filter -->
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group date datetime">
+                                <input class="form-control mask-yyyymmddhhii" type="text" name="startDate"
+                                       th:value="*{startDate}" autocomplete="off"/>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date datetime">
+                                <input class="form-control mask-yyyymmddhhii" type="text" name="endDate"
+                                       th:value="*{endDate}" autocomplete="off"/>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="btn-group" th:if="*{pagingMode == 2}">
+                                <button type="button" class="btn btn-default bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
+                                <button type="button" class="btn btn-default btn-move-page btn-page-text" data-direction="0" disabled>1</button>
+                                <button type="button" class="btn btn-default bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
+                            </div>
+                            <button type="submit" class="btn btn-primary" th:text="search"></button>
+                            <a class="btn btn-default" href="" th:text="cancel"></a>
+                            <a href="#" data-toggle="modal" th:data-target="|#modal-audit-filter|">
+                                <span class="filter"></span>
+                                <span th:text="filter"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <p> startDate:
+                        <span th:text="*{startDate}"></span>
+                    </p>
+                    <p> endDate:
+                        <span th:text="*{endDate}"></span>
+                    </p>
+                    <p>
+                        =========================================
+                    </p>
+                    <p> sort:
+                        <span th:text="*{sort}"></span>
+                    </p>
+                    <p> order:
+                        <span th:text="*{order}"></span>
+                    </p>
+                    <p>
+                        =========================================
+                    </p>
+                    <p> sortOrder / first:
+                        <span th:text="*{sortOrder.first}"></span>
+                    </p>
+                    <p> sortOrder / second:
+                        <span th:text="*{sortOrder.second}"></span>
+                    </p>
+                    <p> pagingMode:
+                        <span th:text="*{pagingMode}"></span>
+                    </p>
+
+                    <div class="modal fade" th:id="modal-audit-filter" tabindex="-1" role="dialog">
+                        <div class="modal-dialog modal-sm" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title">
+                                        <i class="fa fa-filter"></i> <span th:text="#{filter}"></span>
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>IP</label>
+                                        <input type="text" class="form-control mask-ipv4-cidr" name="ip" th:value="*{ip}"/>
+                                        <p class="note">IP or IP/CIDR</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label th:text="message"></label>
+                                        <input type="text" class="form-control" name="message" th:value="*{message}"/>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" th:text="Search"></button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" th:text="Cancel"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <table id="table-audit"
+                   th:object="${filter}"
+                   th:data-toolbar="|#toolbar-audit|"
+                   th:data-sort-name="${filter.sort}"
+                   th:data-sort-order="${filter.order}"
+                   th:data-page-size="${filter.size}">
+                <thead>
+                <tr>
+                    <th data-field="id" data-sortable="true" data-visible="true">ID</th>
+                    <th data-field="created" data-formatter="rfc3999PrettyFormatter" data-sortable="true" data-width="225" th:text="created"></th>
+                    <th data-field="member" data-formatter="" data-sortable="true" th:text="user"></th>
+                    <th data-field="category" data-sortable="true" th:text="category"></th>
+                    <th data-field="ip" data-formatter="intIpFormatter" data-sortable="true" th:text="IP"></th>
+                    <th data-field="message" data-sortable="true" data-formatter= "auditMessageFormatter" th:text="message"></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
 
 <th:block layout:fragment="script">
+<script th:src="@{/modules/audit/formatter.js}"></script>
+<script th:src="@{/js/pager.js}"></script>
+<script>
+    new Pager({
+        id: "audit",
+        api: "audits",
+        showLoading: true,
+        rules: {
+            ip: {
+                required: false,
+                ipv4_cidr: true,
+            },
+        },
+    }).run();
+</script>
 </th:block>

@@ -1,6 +1,9 @@
 package com.devplayg.hippo.entity.filter
 
+import com.devplayg.hippo.entity.Audits
 import mu.KLogging
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.SortOrder
 import org.joda.time.DateTime
@@ -35,7 +38,7 @@ open class SearchFilter {
     lateinit var endDate: DateTime
 
 
-    var pagingMode: Int = 0
+    var pagingMode: Int = 2
 
     var page: Int = 1
     var size: Int = 15
@@ -67,20 +70,17 @@ open class SearchFilter {
 //        logger.debug("- startDate: {}", startDate)
 //        logger.debug("- endDate: {}", endDate)
         logger.debug("- pagingMode: {}", pagingMode)
+        logger.debug("- sort: {}", sort)
+        logger.debug("- order: {}", order)
 //        if(!::endDate.isInitialized){
 //            endDate = DateTime.now()
 //        }
-//    constructor() {
-//    }
-//        endDate = DateTime.now()
-//        logger.debug("endDate: {}", endDate)
-//        logger.info("asdfasdf")
-//        if (endD ate == null) {
-//
-//        }
     }
 
-//    fun tune() {
-//    }
+    open fun tune() {
+        if (this.order.isEmpty()) {
+            this.order = this.sortOrder.second.name
+        }
+    }
 
 }

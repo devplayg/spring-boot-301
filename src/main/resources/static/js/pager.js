@@ -76,7 +76,8 @@ let Pager = function (pager) {
 
     // Set sorting options (fast-paging-only)
     this.setSort = function (name, order) {
-        this.paging.sort = name + "," + order;
+        this.paging.sort = name;
+        this.paging.order = order;
 
         // for Ajax request of bootstrap-table
         this.table.bootstrapTable("refreshOptions", {
@@ -122,6 +123,7 @@ let Pager = function (pager) {
                 page: Math.ceil(this.paging.no / this.paging.blockSize) - 1,
                 size: this.paging.size * this.paging.blockSize,
                 sort: this.paging.sort,
+                order: this.paging.order,
             };
             // console.debug(pagingParam);
 
@@ -135,9 +137,11 @@ let Pager = function (pager) {
             if (this.showLoading) {
                 c.table.bootstrapTable("showLoading");
             }
+            console.log(url);
             $.ajax({
                 url: url,
             }).done(function (data) {
+                console.log(data);
                 c.log = data;
 
                 // Set row number
@@ -295,7 +299,8 @@ let Pager = function (pager) {
             blockSize: pager.blockSize || 20, // fetch N pages of data at a time
             dataLength: 0,
             size: parseInt(this.table.bootstrapTable("getOptions").pageSize, 10), // Page size
-            sort: this.table.bootstrapTable("getOptions").sortName + "," + this.table.bootstrapTable("getOptions").sortOrder,
+            sort: this.table.bootstrapTable("getOptions").sortName,
+            order: this.table.bootstrapTable("getOptions").sortOrder,
         };
         // console.debug("paging is initialized");
     }
@@ -355,7 +360,8 @@ let Pager = function (pager) {
                 Object.assign(filter, {
                     size: param.pageSize,
                     page: param.pageNumber - 1,
-                    sort: param.sortName + "," + param.sortOrder,
+                    sort: param.sortName,
+                    order: param.sortOrder,
                 });
                 return $.param(filter, true);
             },

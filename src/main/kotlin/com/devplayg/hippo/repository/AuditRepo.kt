@@ -3,6 +3,7 @@ package com.devplayg.hippo.repository
 import com.devplayg.hippo.entity.Audit
 import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.entity.filter.AuditFilter
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.selectAll
@@ -45,25 +46,23 @@ class AuditRepo {
             cond.andWhere { Audits.category inList filter.categoryList!! }
         }
 
-        if (filter.sort.length > 0) {
-            Audits.columns.forEach {
-                if (it.name.equals(filter.sort)) {
-                    if (filter.order.toLowerCase().equals("asc")) {
-                        filter.sortOrder = Pair(it, SortOrder.ASC)
-                        return@forEach
-                    }
-                    filter.sortOrder = Pair(it, SortOrder.DESC)
-                    return@forEach
+        var col: Column<*> = Audits.id
+        if (filter.sort.isNotEmpty()) {
+            for (it in Audits.columns) {
+                if (filter.sort == it.name) {
+                    col = it
+                    break
                 }
             }
+        }
+        if (filter.order.toLowerCase() == "asc") {
+            filter.sortOrder = Pair(col, SortOrder.ASC)
+        } else {
+            filter.sortOrder = Pair(col, SortOrder.DESC)
         }
 
         cond
                 .limit(filter.size, offset.toLong())
                 .orderBy(filter.sortOrder)
-
-//        cond.find {  }
-
-//        cond.limit(filter.size, offset.toLong()) }.map { resultRow ->  }
     }
 }
