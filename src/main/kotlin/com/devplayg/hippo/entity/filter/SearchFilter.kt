@@ -41,24 +41,13 @@ open class SearchFilter {
     var pagingMode: Int = 2
 
     var page: Int = 1
-    var size: Int = 15
+    var size: Int = 10
     var sort: String = ""
     var order: String = ""
 
 
     //    var so : Pair<Expression<*>, SortOrder>? = null
     lateinit var sortOrder: Pair<Expression<*>, SortOrder>
-
-
-//    var dateSearchPeriodDays: Int = 0
-//    startDate: 2020-05-28 00:00
-//    endDate: 2020-06-04 23:59
-//    pageSize: 20
-//    pagingMode: 2
-//    page: 0
-//    size: 400
-//    sort: id,asc
-
 
     //    constructor() {
     init {
@@ -82,5 +71,8 @@ open class SearchFilter {
             this.order = this.sortOrder.second.name
         }
     }
+
+//    fun offset() = (((this.page - 1) % this.size) * this.size).toLong()
+    fun offset() = ((this.page -1) * this.size).toLong()
 
 }

@@ -28,10 +28,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="btn-group" th:if="*{pagingMode == 2}">
-                                <button type="button" class="btn btn-default bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
-                                <button type="button" class="btn btn-default btn-move-page btn-page-text" data-direction="0" disabled>1</button>
-                                <button type="button" class="btn btn-default bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
+                            <div class="btn-group" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
+                                <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
+                                <button type="button" class="btn btn-primary btn-move-page btn-page-text" data-direction="0" disabled>1</button>
+                                <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
                             </div>
                             <button type="submit" class="btn btn-primary" th:text="search"></button>
                             <a class="btn btn-default" href="" th:text="cancel"></a>
@@ -74,12 +74,12 @@
                         <div class="modal-dialog modal-sm" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
+                                    <h4 class="modal-title">
+                                        <i class="fa fa-filter"></i> <span th:text="filter"></span>
+                                    </h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <h4 class="modal-title">
-                                        <i class="fa fa-filter"></i> <span th:text="#{filter}"></span>
-                                    </h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
@@ -91,6 +91,17 @@
                                         <label th:text="message"></label>
                                         <input type="text" class="form-control" name="message" th:value="*{message}"/>
                                     </div>
+                                    <div class="form-group">
+                                        <div class="radio" th:each="paging, stat : ${T(com.devplayg.hippo.define.PagingMode).values()}">
+                                            <label>
+                                                <input type="radio" class="radiobox style-0"
+                                                       th:name="pagingMode"
+                                                       th:value="${paging.value}"
+                                                       th:checked="*{pagingMode} == ${paging.value}"/>
+                                                <span th:text="#{${paging.description}}"></span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary" th:text="Search"></button>
@@ -101,6 +112,8 @@
                     </div>
                 </form>
             </div>
+
+
 
             <table id="table-audit"
                    th:object="${filter}"

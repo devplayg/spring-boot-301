@@ -55,6 +55,7 @@ private fun hikariConfig() =
             username = "root"
             password = "Uniiot12!@"
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+
             validate()
         }
 

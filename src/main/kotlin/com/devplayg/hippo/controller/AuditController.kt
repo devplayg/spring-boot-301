@@ -1,9 +1,11 @@
 package com.devplayg.hippo.controller
 
 import com.devplayg.hippo.config.AppConfig
+import com.devplayg.hippo.define.PagingMode
 import com.devplayg.hippo.entity.filter.AuditFilter
 import com.devplayg.hippo.service.AuditService
 import mu.KLogging
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -11,6 +13,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 
 @Controller
 @RequestMapping("/audits")
@@ -20,7 +23,7 @@ class AuditController(
 ) {
     companion object : KLogging()
 
-    @GetMapping("/")
+    @RequestMapping(value = ["/"], method = [RequestMethod.GET, RequestMethod.POST])
     fun displayAudit(@ModelAttribute filter: AuditFilter, model: Model): String {
         model.addAttribute("filter", filter)
         filter.tune()
@@ -50,15 +53,21 @@ class AuditController(
         logger.debug("- order: {}", filter.order)
         logger.debug("- sortOrder: {}", filter.sortOrder)
 
+
+//        if (filter.pagingMode == PagingMode.FastPaging.value) {
+//            return ResponseEntity(auditService.find(filter), HttpStatus.OK)
+//        }
+        // Page<Audit> page = auditService.findAll(AuditPredicate.find(filter), pageable);
         return ResponseEntity(auditService.find(filter), HttpStatus.OK)
+
     }
 
-    @GetMapping("/all")
-    fun all() = auditService.findAll()
-
-    @GetMapping("2")
-    fun all2(): ResponseEntity<*> {
-        return ResponseEntity(auditService.findAll(), HttpStatus.OK)
-    }
+//    @GetMapping("/all")
+//    fun all() = auditService.findAll()
+//
+//    @GetMapping("2")
+//    fun all2(): ResponseEntity<*> {
+//        return ResponseEntity(auditService.findAll(), HttpStatus.OK)
+//    }
 }
 

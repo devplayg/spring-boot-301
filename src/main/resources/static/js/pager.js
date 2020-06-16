@@ -106,7 +106,7 @@ let Pager = function (pager) {
         if (refresh === undefined) {
             refresh = false;
         }
-        // console.debug("move page: direction=" + direction + ", refresh=" + refresh);
+        console.debug("move page: direction=" + direction + ", refresh=" + refresh);
 
         // Calculate page
         this.paging.no += direction; // Page to search
@@ -114,18 +114,18 @@ let Pager = function (pager) {
             this.paging.no = 1;
         }
         this.paging.blockIndex = Math.floor((this.paging.no - 1) / this.paging.blockSize);
-        // console.debug(this.paging);
+        console.debug(this.paging);
 
         // Fetch and display data
         if ((this.paging.blockIndex !== this.paging.blockIndex_before) || refresh) {
-            // console.debug(" - need to fetch data");
+            console.debug(" - need to fetch data");
             let pagingParam = {
-                page: Math.ceil(this.paging.no / this.paging.blockSize) - 1,
+                page: Math.ceil(this.paging.no / this.paging.blockSize),
                 size: this.paging.size * this.paging.blockSize,
                 sort: this.paging.sort,
                 order: this.paging.order,
             };
-            // console.debug(pagingParam);
+            console.debug(pagingParam);
 
             let url = "/" + this.api + "?" + $.param(this.filter, true) + "&" + $.param(pagingParam, true);
             if (this.extraParam !== null) {
@@ -359,18 +359,18 @@ let Pager = function (pager) {
                 let filter =  $.extend({}, c.filter);
                 Object.assign(filter, {
                     size: param.pageSize,
-                    page: param.pageNumber - 1,
+                    page: param.pageNumber,
                     sort: param.sortName,
                     order: param.sortOrder,
                 });
                 return $.param(filter, true);
             },
-            responseHandler: function (data) {
-                return {
-                    total: data.totalElements,
-                    rows: data.content
-                };
-            }
+            // responseHandler: function (data) {
+            //     return {
+            //         total: data.totalElements,
+            //         rows: data.content
+            //     };
+            // }
         }).on("column-switch.bs.table", function () {
             captureTableColumnsState($(this));
 
@@ -384,7 +384,7 @@ let Pager = function (pager) {
     };
 
     this.updatePagingNavButtons = function() {
-        let offset = ((this.paging.no - 1) % this.paging.blockSize) * this.paging.size;
+        let offset = ((this.paging.no - 1 ) % this.paging.blockSize) * this.paging.size;
         this.navigationButtonGroup.prev.prop("disabled", this.paging.no === 1)
         this.navigationButtonGroup.next.prop("disabled", (this.paging.dataLength - offset) < this.paging.size);
     };
