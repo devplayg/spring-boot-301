@@ -10,11 +10,5 @@ data class AppProperties(
         val whatElse: String = "",
         val pathPatternsNotToBeIntercepted: ArrayList<String> = ArrayList()
 ) {
-
-
-//    @Bean
-//    fun initInMemoryMember(): InMemoryMemberManager {
-//        return InMemoryMemberManager()
-//    }
 }
 

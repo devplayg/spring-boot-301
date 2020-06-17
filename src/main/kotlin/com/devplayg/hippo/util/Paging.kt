@@ -23,7 +23,6 @@ class PageData {
 
 fun getSortOrder(table: LongIdTable, filter: SearchFilter): Pair<Expression<*>, SortOrder> {
     val col: Column<*> = getMatchedColumn(table, filter.sort)
-    // Order
     if (filter.order.toLowerCase() == "asc") {
         return Pair(col, SortOrder.ASC)
     }

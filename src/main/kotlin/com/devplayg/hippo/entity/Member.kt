@@ -42,7 +42,6 @@ class Member(id: EntityID<Int>) : IntEntity(id) {
 // DTO
 @RedisHash("member")
 data class MemberDto(
-
         @Id
         var memberId: Long,
         var username: String,
@@ -53,7 +52,7 @@ data class MemberDto(
 
 )
 
-fun mapToMemberDto(it: ResultRow) = MemberDto(
+fun toMemberDto(it: ResultRow) = MemberDto(
         memberId = it[Members.memberId].toLong(),
         username = it[Members.username],
         name = it[Members.name],

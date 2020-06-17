@@ -1,6 +1,6 @@
 package com.devplayg.hippo.controller
 
-import com.devplayg.hippo.config.AppProperties
+import com.devplayg.hippo.define.MemberRole
 import com.devplayg.hippo.define.PagingMode
 import com.devplayg.hippo.entity.filter.AuditFilter
 import com.devplayg.hippo.service.AuditService
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 @Controller
 @RequestMapping("/audits")
 class AuditController(
-       private val auditService: AuditService
+        private val auditService: AuditService
 ) {
     companion object : KLogging()
 
@@ -25,6 +25,8 @@ class AuditController(
     fun displayAudit(@ModelAttribute filter: AuditFilter, model: Model): String {
         model.addAttribute("filter", filter)
         filter.debug(this.javaClass.name + "::displayAudit()")
+
+        logger.debug("{}, {}, {}", MemberRole.Admin.value, MemberRole.Admin.description, MemberRole.Admin.name)
         return "audit/audit"
     }
 

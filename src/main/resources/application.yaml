@@ -11,6 +11,7 @@ spring:
     redis:
         host: 127.0.0.1
         port: 6379
+
 #    jpa:
 #        show-sql: false
 #        hibernate:
@@ -33,6 +34,18 @@ server:
 app:
     name: DevKotlin
     version: 0.1
+    path-patterns-not-to-be-intercepted:
+        - /api/**
+        - /public/**
+        - /login/**
+        - /favicon.ico
+        - /assets/**
+        - /modules/**
+        - /plugins/**
+        - /css/**
+        - /font/**
+        - /img/**
+        - /js/**
 ---
 
 spring:

@@ -1,17 +1,13 @@
 package com.devplayg.hippo.config
 
-import com.devplayg.hippo.entity.Audit
-import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.entity.Members
-import com.devplayg.hippo.entity.mapToMemberDto
-import com.devplayg.hippo.repository.MemberRepo
-import com.devplayg.hippo.repository.RedisRepo
+import com.devplayg.hippo.entity.toMemberDto
+import com.devplayg.hippo.repository.MemberCacheRepo
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.boot.ApplicationRunner
@@ -21,27 +17,21 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class HippoConfig {
     @Bean
-    fun initDatabase(redisRepo: RedisRepo) = ApplicationRunner {
+    fun initDatabase(memberCacheRepo: MemberCacheRepo) = ApplicationRunner {
         Database.connect(HikariDataSource(hikariConfig()))
         transaction {
-            SchemaUtils.create(Members, Audits)
-
-            Audit.new {
-                memberId = 0
-                category = 3333
-                message = "started"
-                ip = 132331
-            }
+//            SchemaUtils.create(Members, Audits)
+//            Audit.new {
+//                memberId = 0
+//                category = 3333
+//                message = "started"
+//                ip = 132331
+//            }
             Members.selectAll().forEach {
-                redisRepo.save(mapToMemberDto(it))
+                memberCacheRepo.save(toMemberDto(it))
             }
         }
     }
-
-//    @Bean
-//    fun databaseInitializer(redisRepo: RedisRepo) = ApplicationRunner {
-//    }
-
 }
 
 

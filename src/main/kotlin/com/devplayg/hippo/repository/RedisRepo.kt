@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 
-@Repository
-interface RedisRepo : CrudRepository<MemberDto, String>
+//@Repository
+//interface RedisRepo : CrudRepository<MemberDto, String>

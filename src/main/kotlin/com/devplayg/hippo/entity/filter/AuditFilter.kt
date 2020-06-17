@@ -19,14 +19,15 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
     var message: String = ""
 
     init {
-        logger.debug("AuditFilter::init() ========================")
+//        logger.debug("AuditFilter::init() ========================")
 
-        logger.debug("- startDate: {}", startDate)
-        logger.debug("- endDate: {}", endDate)
-        logger.debug("- pagingMode: {}", pagingMode)
-        logger.debug("- categoryList: {}", categoryList)
-        logger.debug("- sort: {}", sort)
-        logger.debug("- order: {}", order)
+//        logger.debug("- startDate: {}", startDate)
+//        logger.debug("- endDate: {}", endDate)
+//        logger.debug("- pagingMode: {}", pagingMode)
+//        logger.debug("- categoryList: {}", categoryList)
+//        logger.debug("- sort: {}", sort)
+//        logger.debug("- order: {}", order)
+        this.debug(this.javaClass.name + "::" + "init()")
 
         // Sort order
 //        sortOrder = Pair(Audits.id, SortOrder.DESC)

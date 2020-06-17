@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 @Controller
 @RequestMapping("login")
 class LoginController {
-    @GetMapping("/")
+    @GetMapping(value = ["", "/"])
     fun blog(model: Model): String {
-        model.addAttribute("greeting", "Hello Kotlin with Thymeleaf")
+//        model.addAttribute("greeting", "Hello Kotlin with Thymeleaf")
         return "login/login"
     }
 }
