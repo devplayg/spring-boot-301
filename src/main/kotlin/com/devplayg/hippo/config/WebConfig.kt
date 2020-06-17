@@ -1,7 +1,6 @@
 package com.devplayg.hippo.config
 
 //import org.jetbrains.exposed.spring.SpringTransactionManager
-import com.devplayg.hippo.framework.InMemoryMemberManager
 import com.devplayg.hippo.interceptor.RequestInterceptor
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
@@ -16,7 +15,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
 // @EnableWebSecurity
 class WebConfig(
         val requestInterceptor: RequestInterceptor,
-        val appConfig: AppConfig
+        val appConfig: AppProperties
 ) : WebMvcConfigurer {
 
     override fun addInterceptors(registry: InterceptorRegistry) {

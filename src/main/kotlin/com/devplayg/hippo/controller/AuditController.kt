@@ -1,11 +1,10 @@
 package com.devplayg.hippo.controller
 
-import com.devplayg.hippo.config.AppConfig
+import com.devplayg.hippo.config.AppProperties
 import com.devplayg.hippo.define.PagingMode
 import com.devplayg.hippo.entity.filter.AuditFilter
 import com.devplayg.hippo.service.AuditService
 import mu.KLogging
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -18,23 +17,14 @@ import org.springframework.web.bind.annotation.RequestMethod
 @Controller
 @RequestMapping("/audits")
 class AuditController(
-        val auditService: AuditService,
-        val appConfig: AppConfig
+       private val auditService: AuditService
 ) {
     companion object : KLogging()
 
     @RequestMapping(value = ["/"], method = [RequestMethod.GET, RequestMethod.POST])
     fun displayAudit(@ModelAttribute filter: AuditFilter, model: Model): String {
         model.addAttribute("filter", filter)
-        filter.tune()
-        logger.debug("AuditController::displayAudit() ========================")
-        logger.debug("- startDate: {}", filter.startDate)
-        logger.debug("- endDate: {}", filter.endDate)
-        logger.debug("- pagingMode: {}", filter.pagingMode)
-        logger.debug("- categoryList: {}", filter.categoryList)
-        logger.debug("- sort: {}", filter.sort)
-        logger.debug("- order: {}", filter.order)
-        logger.debug("- sortOrder: {}", filter.sortOrder)
+        filter.debug(this.javaClass.name + "::displayAudit()")
         return "audit/audit"
     }
 
@@ -44,30 +34,11 @@ class AuditController(
     */
     @GetMapping
     fun find(@ModelAttribute filter: AuditFilter): ResponseEntity<*> {
-        logger.debug("AuditController::find() ========================")
-        logger.debug("- startDate: {}", filter.startDate)
-        logger.debug("- endDate: {}", filter.endDate)
-        logger.debug("- pagingMode: {}", filter.pagingMode)
-        logger.debug("- categoryList: {}", filter.categoryList)
-        logger.debug("- sort: {}", filter.sort)
-        logger.debug("- order: {}", filter.order)
-        logger.debug("- sortOrder: {}", filter.sortOrder)
-
-
-//        if (filter.pagingMode == PagingMode.FastPaging.value) {
-//            return ResponseEntity(auditService.find(filter), HttpStatus.OK)
-//        }
-        // Page<Audit> page = auditService.findAll(AuditPredicate.find(filter), pageable);
-        return ResponseEntity(auditService.find(filter), HttpStatus.OK)
-
+        filter.debug(this.javaClass.name + "::find()")
+        if (filter.pagingMode == PagingMode.FastPaging.value) {
+            return ResponseEntity(auditService.getAudits(filter), HttpStatus.OK)
+        }
+        return ResponseEntity(auditService.getAuditsWithTotal(filter), HttpStatus.OK)
     }
-
-//    @GetMapping("/all")
-//    fun all() = auditService.findAll()
-//
-//    @GetMapping("2")
-//    fun all2(): ResponseEntity<*> {
-//        return ResponseEntity(auditService.findAll(), HttpStatus.OK)
-//    }
 }
 

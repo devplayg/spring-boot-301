@@ -41,7 +41,17 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
 //        }
     }
 
-    override fun tune() {
-        super.tune()
+//    override fun tune() {
+//        super.tune()
+//    }
+    fun debug(info: String="") {
+        logger.debug("{} ===========================", info)
+        logger.debug("- startDate: {}", startDate)
+        logger.debug("- endDate: {}", endDate)
+        logger.debug("- pagingMode: {}", pagingMode)
+        logger.debug("- categoryList: {}", categoryList)
+        logger.debug("- sort: {}", sort)
+        logger.debug("- order: {}", order)
+        logger.debug("- sortOrder: {}", sortOrder)
     }
 }

@@ -1,29 +1,33 @@
 package com.devplayg.hippo.repository
 
-import com.devplayg.hippo.define.PagingMode
-import com.devplayg.hippo.entity.AuditDto
 import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.entity.filter.AuditFilter
-import com.devplayg.hippo.entity.mapToAuditDto
-import com.devplayg.hippo.util.PageData
 import com.devplayg.hippo.util.getSortOrder
 import org.jetbrains.exposed.sql.Query
 import org.jetbrains.exposed.sql.andWhere
 import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
 @Repository
 class AuditRepo {
     fun predicate(filter: AuditFilter): Query {
-        var cond = Audits.selectAll()
+        val cond = Audits.selectAll()
                 .andWhere { Audits.created.between(filter.startDate, filter.endDate) }
 
         if (filter.categoryList != null) {
             cond.andWhere { Audits.category inList filter.categoryList!! }
         }
+
+        if (filter.message.isNotEmpty()) {
+            cond.andWhere { Audits.message.like("%"+filter.message+"%") }
+        }
         return cond
     }
+
+    fun find(filter: AuditFilter) = predicate(filter)
+            .limit(filter.size, filter.offset())
+            .orderBy(getSortOrder(Audits, filter))
+
 //
 //    fun find2(filter: AuditFilter): Any {
 //        if (filter.pagingMode == PagingMode.FastPaging.value) {
@@ -45,10 +49,6 @@ class AuditRepo {
 ////        }
 //        return PageData(list, total)
 //    }
-
-    fun find(filter: AuditFilter) = predicate(filter)
-            .limit(filter.size, filter.offset())
-            .orderBy(getSortOrder(Audits, filter))
 
 
 //        val offset: Int = ((filter.page - 1) % filter.size) * filter.size

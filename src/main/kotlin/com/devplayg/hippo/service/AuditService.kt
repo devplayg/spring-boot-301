@@ -1,20 +1,9 @@
 package com.devplayg.hippo.service
 
-import com.devplayg.hippo.define.PagingMode
-import com.devplayg.hippo.entity.Audit
-import com.devplayg.hippo.entity.AuditDto
-import com.devplayg.hippo.entity.Audits
 import com.devplayg.hippo.entity.filter.AuditFilter
-import com.devplayg.hippo.entity.filter.SearchFilter
-import com.devplayg.hippo.entity.mapToAuditDto
+import com.devplayg.hippo.entity.toAuditDto
 import com.devplayg.hippo.repository.AuditRepo
 import com.devplayg.hippo.util.PageData
-import org.jetbrains.exposed.dao.id.IdTable
-import org.jetbrains.exposed.dao.id.LongIdTable
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Expression
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -22,37 +11,26 @@ import org.springframework.stereotype.Service
 class AuditService(
         private val auditRepo: AuditRepo
 ) {
-    companion object {
-        fun write(ip: Long, category: Int, message: String) = transaction {
-            Audit.new {
-                this.message = message
-                this.ip = ip
-                this.category = category
-            }
+    fun getAudits(filter: AuditFilter) = transaction {
+        auditRepo.find(filter).map {
+            toAuditDto(it)
         }
     }
 
-    fun find(filter: AuditFilter): Any {
-        if (filter.pagingMode == PagingMode.FastPaging.value) {
-            return transaction {
-                auditRepo.find(filter).map {
-                    mapToAuditDto(it)
-                }
-            }
-        }
-
-        var list: List<AuditDto> = arrayListOf()
-        var total: Long = 0
-        transaction {
-            list = auditRepo.find(filter).map {
-                mapToAuditDto(it)
-            }
-            total = auditRepo.predicate(filter).count()
-        }
-        return PageData(list, total)
+    fun getAuditsWithTotal(filter: AuditFilter) = transaction {
+        PageData(getAudits(filter), auditRepo.predicate(filter).count())
     }
 }
 
+//    companion object {
+//        fun write(ip: Long, category: Int, message: String) = transaction {
+//            Audit.new {
+//                this.message = message
+//                this.ip = ip
+//                this.category = category
+//            }
+//        }
+//    }
 
 //    fun find2(filter: AuditFilter) = transaction{
 //        val list :List<AuditDto> = auditRepo.find(filter).map {

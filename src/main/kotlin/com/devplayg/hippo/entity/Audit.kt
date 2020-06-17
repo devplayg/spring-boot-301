@@ -45,7 +45,7 @@ data class AuditDto(
         val created: String
 )
 
-fun mapToAuditDto(it: ResultRow) = AuditDto(
+fun toAuditDto(it: ResultRow) = AuditDto(
         id = it[Audits.id].value,
         ip = it[Audits.ip],
         category = it[Audits.category],

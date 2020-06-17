@@ -26,6 +26,7 @@ open class SearchFilter {
 
     constructor(lastNDays: Int, sortOrder: Pair<Expression<*>, SortOrder>) : this(lastNDays) {
         this.sortOrder = sortOrder
+        this.order = this.sortOrder.second.name
     }
 
     // Logging
@@ -37,9 +38,8 @@ open class SearchFilter {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     lateinit var endDate: DateTime
 
-
+    // Paging
     var pagingMode: Int = 2
-
     var page: Int = 1
     var size: Int = 10
     var sort: String = ""
@@ -55,6 +55,7 @@ open class SearchFilter {
 //            logger.debug("- startDate: {}", startDate)
 //        }
 
+
         logger.debug("SearchFilter::init() ========================")
 //        logger.debug("- startDate: {}", startDate)
 //        logger.debug("- endDate: {}", endDate)
@@ -66,13 +67,12 @@ open class SearchFilter {
 //        }
     }
 
-    open fun tune() {
-        if (this.order.isEmpty()) {
-            this.order = this.sortOrder.second.name
-        }
-    }
+//    open fun tune() {
+//        if (this.order.isEmpty()) {
+//            this.order = this.sortOrder.second.name
+//        }
+//    }
 
-//    fun offset() = (((this.page - 1) % this.size) * this.size).toLong()
     fun offset() = ((this.page -1) * this.size).toLong()
 
 }
