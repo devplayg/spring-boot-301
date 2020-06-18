@@ -1,18 +1,15 @@
 package com.devplayg.hippo.service
 
-import com.devplayg.hippo.entity.MemberDto
 import com.devplayg.hippo.framework.CustomUserDetails
 import com.devplayg.hippo.repository.MemberCacheRepo
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class MemberService(
-        private val memberCacheRepo: MemberCacheRepo,
-        private val passwordEncoder: PasswordEncoder
+        private val memberCacheRepo: MemberCacheRepo
 ) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {

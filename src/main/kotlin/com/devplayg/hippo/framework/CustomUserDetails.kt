@@ -10,7 +10,7 @@ import java.util.stream.Collectors
 class CustomUserDetails private constructor(private val userName: String, private val password: String, private val roles: MutableSet<MemberRole>) : UserDetails {
     companion object {
         fun from(member: MemberDto): CustomUserDetails {
-            return with(member) { CustomUserDetails(userName = username, password = password, roles = mutableSetOf(MemberRole.Admin)) }
+            return with(member) { CustomUserDetails(userName = username, password = "{bcrypt}$password", roles = mutableSetOf(MemberRole.Admin)) }
         }
     }
 

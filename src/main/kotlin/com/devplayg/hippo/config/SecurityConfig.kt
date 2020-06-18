@@ -1,15 +1,15 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.define.MemberRole
+import com.devplayg.hippo.service.MemberService
 import mu.KLogging
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.userdetails.UserDetailsPasswordService
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.csrf.CsrfFilter
@@ -19,6 +19,7 @@ import org.springframework.web.filter.CharacterEncodingFilter
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
+        private val memberService: MemberService
 //        private val appProperties: AppProperties
 ) : WebSecurityConfigurerAdapter() {
     companion object : KLogging()
@@ -96,6 +97,12 @@ class SecurityConfig(
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
     }
 
+    @Throws(java.lang.Exception::class)
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(memberService).passwordEncoder(passwordEncoder())
+    }
+
+
 //    @Throws(java.lang.Exception::class)
 //    override fun configure(auth: AuthenticationManagerBuilder) {
 //        UserDetailsPasswordService
@@ -104,10 +111,10 @@ class SecurityConfig(
 //        }).passwordEncoder(this.noOpPasswordEncoder())
 //    }
 
-    @Throws(java.lang.Exception::class)
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(inMemoryMemberManager())
-    }
+//    @Throws(java.lang.Exception::class)
+//    override fun configure(auth: AuthenticationManagerBuilder) {
+//        auth.userDetailsService()
+//    }
 
 //    @Throws(java.lang.Exception::class)
 //    override fun configure(auth: AuthenticationManagerBuilder) {
