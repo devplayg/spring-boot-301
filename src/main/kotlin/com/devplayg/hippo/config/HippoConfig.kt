@@ -1,6 +1,7 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.entity.Members
+import com.devplayg.hippo.entity.toJson
 import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.repository.MemberCacheRepo
 import com.zaxxer.hikari.HikariConfig
@@ -27,7 +28,10 @@ class HippoConfig {
 //                message = "started"
 //                ip = 132331
 //            }
-            Members.selectAll().forEach {
+//            Member.all().map {
+//                memberCacheRepo.save(it)
+//            }
+            Members.selectAll().map{
                 memberCacheRepo.save(toMemberDto(it))
             }
         }

@@ -1,6 +1,5 @@
 package com.devplayg.hippo.framework
 
-import com.devplayg.hippo.entity.Member
 import mu.KLogging
 import org.springframework.context.annotation.Configuration
 

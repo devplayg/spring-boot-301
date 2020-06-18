@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.userdetails.UserDetailsPasswordService
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.csrf.CsrfFilter
@@ -86,12 +88,25 @@ class SecurityConfig(
 //    @Bean
 //    fun inMemoryMemberManager() = MemberManager()
 
-//    fun init() {
+    //    fun init() {
 //        logger.info { "#########################################" }
 //    }
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    }
+
+//    @Throws(java.lang.Exception::class)
+//    override fun configure(auth: AuthenticationManagerBuilder) {
+//        UserDetailsPasswordService
+//        auth.userDetailsService(UserDetailsService { username -> // return SecurityConfig.this.readerRepository.findOne(username);
+//            this@SecurityConfig.readerRepository.getOne(username)
+//        }).passwordEncoder(this.noOpPasswordEncoder())
+//    }
+
+    @Throws(java.lang.Exception::class)
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService(inMemoryMemberManager())
     }
 
 //    @Throws(java.lang.Exception::class)
