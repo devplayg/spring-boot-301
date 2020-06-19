@@ -79,22 +79,22 @@ let defaultDatetimeOption = {
     autoclose: true
 };
 
-// /**
-//  * jquery-validation default settings
-//  */
-//
-// jQuery.validator.setDefaults({
-//     // debug: true,
-//     errorClass: "help-block",
-//     highlight: function (element) {
-//         $(element).closest(".form-group").addClass("has-error");
-//     },
-//     unhighlight: function (element) {
-//         $(element).closest(".form-group").removeClass("has-error");
-//     },
-// });
-//
-//
+/**
+ * jquery-validation default settings
+ */
+
+jQuery.validator.setDefaults({
+    // debug: true,
+    errorClass: "help-block",
+    highlight: function (element) {
+        $(element).closest(".form-group").addClass("has-error");
+    },
+    unhighlight: function (element) {
+        $(element).closest(".form-group").removeClass("has-error");
+    },
+});
+
+
 // /**
 //  * Bootstrap-Table default settings
 //  */

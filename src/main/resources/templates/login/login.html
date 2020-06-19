@@ -9,16 +9,36 @@
             <input type="password" class="form-control" name="app_password" th:placeholder="password" autocomplete="off">
         </div>
 
-        <button id="btn-login" type="submit" class="btn btn-info btn-block" th:text="login" style="margin-bottom: 15px;"></button>
 
         <div class="text-center mt10">
             <a href="?lang=ko-KR"><img src="/img/flags/ko-KR.svg" class="flag" rel="tooltip" data-placement="top" data-original-title="Republic of Korea"></a>
             <a href="?lang=en-US"><img src="/img/flags/en-US.svg" class="flag" rel="tooltip" data-placement="top" data-original-title="United States of America"></a>
             <a href="?lang=vi-VN hide"><img src="/img/flags/vi-VN.svg" class="flag" rel="tooltip" data-placement="top" data-original-title="Vietnam"></a>
         </div>
+
+        <button id="btn-login" type="submit" class="btn btn-info btn-block" th:text="login" style="margin-bottom: 15px;"></button>
     </form>
 </div>
 
 <th:block layout:fragment="script">
+<script>
+    $(function() {
+        $("#form-login").validate({
+            rules: {
+                app_username: {
+                    required: true,
+                },
+                app_password: {
+                    required: true,
+                }
+            },
+            submitHandler: function (form, e) {
+                e.preventDefault();
+                form.submit();
+            },
+        });
 
+        $("#form-login input[name=app_username]").focus().select();
+    });
+</script>
 </th:block>

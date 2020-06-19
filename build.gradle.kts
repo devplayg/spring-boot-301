@@ -42,7 +42,7 @@ dependencies {
     implementation("com.zaxxer", "HikariCP", "3.4.2")
 
     // Logging
-    implementation("io.github.microutils","kotlin-logging", "1.7.9")
+    implementation("io.github.microutils", "kotlin-logging", "1.7.9")
 
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
 

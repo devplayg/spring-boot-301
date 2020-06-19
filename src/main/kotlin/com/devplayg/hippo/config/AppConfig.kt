@@ -5,10 +5,8 @@ import org.springframework.boot.context.properties.ConstructorBinding
 
 @ConstructorBinding
 @ConfigurationProperties("app")
-data class AppProperties(
+data class AppConfig(
         val version: String = "",
-        val whatElse: String = "",
+        val homeUri: String = "",
         val pathPatternsNotToBeIntercepted: ArrayList<String> = ArrayList()
-) {
-}
-
+)

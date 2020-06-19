@@ -11,13 +11,17 @@ spring:
     redis:
         host: 127.0.0.1
         port: 6379
-
+#    datasource:
+#        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+#        username: unisem
+#        password: Uniiot12!@
 #    jpa:
 #        show-sql: false
 #        hibernate:
 #            ddl-auto: validate
 #        open-in-view: false
 #    datasourmd
+#
 # DB 설정
 #        driver-class-name: com.mysql.cj.jdbc.Driver
 #        tomcat:
@@ -34,18 +38,11 @@ server:
 app:
     name: DevKotlin
     version: 0.1
-    path-patterns-not-to-be-intercepted:
-        - /api/**
-        - /public/**
-        - /login/**
-        - /favicon.ico
-        - /assets/**
-        - /modules/**
-        - /plugins/**
-        - /css/**
-        - /font/**
-        - /img/**
-        - /js/**
+    homeUri: /audits/
+#    datasource:
+#        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+#        username:
+#        password:
 ---
 
 spring:
@@ -53,8 +50,8 @@ spring:
         active: dev
 #    datasource:
 #        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-#        username: unisem
-#        password: Uniiot12!@
+#        username:
+#        password:
     devtools:
         livereload:
             enabled: true

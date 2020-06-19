@@ -1,9 +1,10 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.define.MemberRole
+import com.devplayg.hippo.framework.CustomAuthenticationFailureHandler
+import com.devplayg.hippo.framework.CustomAuthenticationSuccessHandler
 import com.devplayg.hippo.service.MemberService
 import mu.KLogging
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -19,8 +20,8 @@ import org.springframework.web.filter.CharacterEncodingFilter
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-        private val memberService: MemberService
-//        private val appProperties: AppProperties
+        private val memberService: MemberService,
+        private val appConfig: AppConfig
 ) : WebSecurityConfigurerAdapter() {
     companion object : KLogging()
 
@@ -30,33 +31,46 @@ class SecurityConfig(
         httpSecurity
                 .authorizeRequests() // API for Administrators
 
-                .antMatchers("/audit/**", "/members/**", "/workschedule/**")
+                .antMatchers("/audit/**", "/members/**")
                 .hasAnyRole(MemberRole.Admin.name, MemberRole.Sheriff.name)
 
-                .antMatchers("/cameras/{\\d+}/policy", "/factoryevent/{\\d+}/toggleEventType")
-                .hasAnyRole(MemberRole.Admin.name) // Request create the period report
+//                .antMatchers("/cameras/{\\d+}/policy", "/factoryevent/{\\d+}/toggleEventType")
+//                .hasAnyRole(MemberRole.Admin.name) // Request create the period report
 
 //                .antMatchers(HttpMethod.POST, "/periodreport")
 //                .hasAnyRole(MemberRole.Admin.name) // White APIs
 
-                .antMatchers("/api/**", "/public/**")
+                .antMatchers(
+                        "/api/**", "/public/**",
+                        "/login/**",
+                        "/favicon.ico",
+                        "/assets/**",
+                        "/modules/**",
+                        "/plugins/**",
+                        "/css/**",
+                        "/font/**",
+                        "/img/**",
+                        "/js/**"
+                )
                 .permitAll() // Others need to be authenticated
 
                 .anyRequest()
                 .authenticated()
-                .and() // Login
+                .and()
 
+                // Login
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/app-login")
                 .usernameParameter("app_username")
+                .passwordParameter("app_password")
+                .successHandler(CustomAuthenticationSuccessHandler(appConfig)) // failure
+                .failureHandler(CustomAuthenticationFailureHandler()) // success
 
-                .passwordParameter("app_password") // Logged in successfully
-//                .successHandler(authenticationSuccessHandler()) // Login failed
-//                .failureHandler(authenticationFailureHandler())
                 .permitAll()
                 .and() // Logout
 
+                // Logout
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login")
@@ -69,29 +83,6 @@ class SecurityConfig(
                 .csrf().disable()
     }
 
-//    @Bean
-//    fun inMemoryMemberManager(): InMemoryMemberManager? {
-//        val members: MutableList<*> = memberRepository.findAll()
-//        val member = Member()
-//        member.setId(InMemoryMemberManager.adminId)
-//        member.setUsername(InMemoryMemberManager.adminUsername)
-//        member.setEnabled(false)
-//        member.setName(appConfig.getAdminInfo().getName())
-//        member.setRoles(RoleType.Role.ADMIN.getValue())
-//        member.setTimezone(TimeZone.getDefault().toZoneId().id)
-//        member.setEmail(appConfig.getAdminInfo().getEmail())
-//        member.setPassword("")
-//        members.add(member)
-//        return InMemoryMemberManager()
-//    }
-
-
-//    @Bean
-//    fun inMemoryMemberManager() = MemberManager()
-
-    //    fun init() {
-//        logger.info { "#########################################" }
-//    }
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
@@ -101,24 +92,4 @@ class SecurityConfig(
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(memberService).passwordEncoder(passwordEncoder())
     }
-
-
-//    @Throws(java.lang.Exception::class)
-//    override fun configure(auth: AuthenticationManagerBuilder) {
-//        UserDetailsPasswordService
-//        auth.userDetailsService(UserDetailsService { username -> // return SecurityConfig.this.readerRepository.findOne(username);
-//            this@SecurityConfig.readerRepository.getOne(username)
-//        }).passwordEncoder(this.noOpPasswordEncoder())
-//    }
-
-//    @Throws(java.lang.Exception::class)
-//    override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.userDetailsService()
-//    }
-
-//    @Throws(java.lang.Exception::class)
-//    override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.userDetailsService(inMemoryMemberManager())
-//    }
-
 }

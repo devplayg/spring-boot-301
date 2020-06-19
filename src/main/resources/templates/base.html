@@ -20,7 +20,7 @@
 <div id="content" class="content-fluid">
     <div class="ml10" th:text="${@environment.getProperty('app.name')}"></div>
     <small class="ml10" th:text="${@environment.getProperty('app.version')}"></div>
-
+    <a th:href="@{/logout}">SignOut</a>
     <div layout:fragment="content"></div>
 </div>
 

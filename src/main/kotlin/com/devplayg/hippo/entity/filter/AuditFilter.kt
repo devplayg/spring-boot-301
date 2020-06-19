@@ -20,7 +20,6 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
 
     init {
 //        logger.debug("AuditFilter::init() ========================")
-
 //        logger.debug("- startDate: {}", startDate)
 //        logger.debug("- endDate: {}", endDate)
 //        logger.debug("- pagingMode: {}", pagingMode)
