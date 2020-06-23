@@ -9,10 +9,11 @@ Spring Boot with Kotlin
 - ORM: Exposed 0.24.1 
 
 
-- [ ] Organize structure
-- [ ] Pagination
-- [ ] DSL
-
+- [ ] Timezone: UserTz(Any) <=> ServerTz(Any) <=> DBTZ(UTC)
+- [ ] Member: CRUD
+- [X] Organize structure
+- [X] Pagination
+- [X] DSL
 
 ### References
 
