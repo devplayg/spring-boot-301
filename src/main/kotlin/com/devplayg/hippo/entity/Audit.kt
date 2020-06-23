@@ -1,11 +1,14 @@
 package com.devplayg.hippo.entity
 
+import com.devplayg.hippo.define.AuditCategory
+import com.devplayg.hippo.util.AuditMessage
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.jodatime.datetime
+import org.jetbrains.kotlin.com.google.gson.Gson
 import org.joda.time.DateTime
 
 // Table
@@ -22,6 +25,7 @@ object Audits : LongIdTable("adt_audit", "audit_id") {
 // Entity
 class Audit(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Audit>(Audits)
+
     var memberId by Audits.memberId
     var category by Audits.category
     var ip by Audits.ip
@@ -52,3 +56,4 @@ fun toAuditDto(it: ResultRow) = AuditDto(
         message = it[Audits.message],
         created = it[Audits.created].toString()
 )
+

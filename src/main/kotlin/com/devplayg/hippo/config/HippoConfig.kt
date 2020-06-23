@@ -1,46 +1,51 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.define.AuditCategory
-import com.devplayg.hippo.entity.Audit
 import com.devplayg.hippo.entity.Members
 import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.repository.MemberCacheRepo
-import com.devplayg.hippo.util.AuditMessage
+import com.devplayg.hippo.util.auditLog
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import mu.KLogging
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.kotlin.com.google.gson.Gson
 import org.springframework.boot.ApplicationRunner
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class HippoConfig {
+@EnableConfigurationProperties
+class HippoConfig(
+        private val appConfig: AppConfig
+){
+    companion object : KLogging()
+
     @Bean
     fun initDatabase(memberCacheRepo: MemberCacheRepo) = ApplicationRunner {
-//        Database.connect(HikariDataSource(hikariConfig()))
         Database.connect(HikariDataSource(HikariConfig().apply {
-            jdbcUrl = "jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC"
+            jdbcUrl = appConfig.dataSource.url
             maximumPoolSize = 10
             minimumIdle = 10
             isAutoCommit = false
-            username = "root"
-            password = "devplayg12!@"
+            username = appConfig.dataSource.username
+            password = appConfig.dataSource.password
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
 
             validate()
         }))
         transaction {
 //            SchemaUtils.create(Members, Audits)
-            Audit.new {
-                memberId = 0
-                category = AuditCategory.APPLICATION_STARTED.value
-                message = Gson().toJson(AuditMessage(AuditCategory.APPLICATION_STARTED.description))
-                ip = 0
-            }
+//            Audit.new {
+//                memberId = 0
+//                category = AuditCategory.APPLICATION_STARTED.value
+//                message = Gson().toJson(AuditMessage(AuditCategory.APPLICATION_STARTED.description))
+//                ip = 0
+//            }
+            auditLog(0, AuditCategory.APPLICATION_STARTED.value, "test")
             Members.selectAll().map {
                 memberCacheRepo.save(toMemberDto(it))
             }
