@@ -20,6 +20,7 @@ repositories {
 dependencies {
     // Spring Boot
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -39,10 +40,10 @@ dependencies {
     implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
 
     // Hikari
-    implementation("com.zaxxer", "HikariCP", "3.4.2")
+    implementation("com.zaxxer", "HikariCP", "3.4.5")
 
     // Logging
-    implementation("io.github.microutils", "kotlin-logging", "1.7.9")
+    implementation("io.github.microutils", "kotlin-logging", "1.7.10")
 
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.61")
 

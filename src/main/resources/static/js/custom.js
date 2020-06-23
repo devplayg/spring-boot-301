@@ -171,7 +171,7 @@ function intToip(ipInt) {
  */
 
 function convertToUserTime(dt) {
-    return moment.tz(dt, systemTz).tz(userTz);
+    return moment.tz(dt, systemTz).tz(member.tz);
 }
 
 

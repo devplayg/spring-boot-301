@@ -137,7 +137,7 @@ let Pager = function (pager) {
             if (this.showLoading) {
                 c.table.bootstrapTable("showLoading");
             }
-            console.log(url);
+
             $.ajax({
                 url: url,
             }).done(function (data) {
@@ -154,8 +154,8 @@ let Pager = function (pager) {
                 c.updatePagingNavButtons();
                 c.navigationButtonGroup.page.text(c.paging.no);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.error(jqXHR);
-                Swal.fire("Error", jqXHR.message, "warning");
+                //console.error(jqXHR);
+                // Swal.fire("Error", jqXHR.message, "warning");
             }).always(function() {
                 // Hide loading
                 if (c.showLoading) {
@@ -281,9 +281,10 @@ let Pager = function (pager) {
     this.updateFilter = function() {
         this.filter = objectifyForm(this.form);
         this.filter.pagingMode = this.filter.pagingMode || PagingMode.FastPaging;
+        this.filter.startDate += ":00" + member.tzOffset;
+        this.filter.endDate += ":59" + member.tzOffset;
         // console.debug("filter is updated: pagingMode="+ this.filter.pagingMode);
-        // console.debug(this.filter);
-
+        // console.log(this.filter);
         if (this.isFilteredInModal()) {
             $(".filter", this.form).html('<i class="fa fa-filter txt-color-red"></i>');
         }

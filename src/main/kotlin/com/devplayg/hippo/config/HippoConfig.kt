@@ -12,16 +12,15 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.boot.ApplicationRunner
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-@EnableConfigurationProperties
+//@EnableConfigurationProperties
 class HippoConfig(
         private val appConfig: AppConfig
-){
+) {
     companion object : KLogging()
 
     @Bean
@@ -38,13 +37,6 @@ class HippoConfig(
             validate()
         }))
         transaction {
-//            SchemaUtils.create(Members, Audits)
-//            Audit.new {
-//                memberId = 0
-//                category = AuditCategory.APPLICATION_STARTED.value
-//                message = Gson().toJson(AuditMessage(AuditCategory.APPLICATION_STARTED.description))
-//                ip = 0
-//            }
             auditLog(0, AuditCategory.APPLICATION_STARTED.value, "test")
             Members.selectAll().map {
                 memberCacheRepo.save(toMemberDto(it))

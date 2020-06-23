@@ -21,14 +21,6 @@
     <div>
         <span class="ml10" th:text="${@environment.getProperty('app.name')}"></span>
         <span class="ml10" th:text="${@environment.getProperty('app.version')}"></span>
-        | <a th:href="@{/audits/}">Log</a>
-        | <a th:href="@{/audits/}">Audit</a>
-        | <a th:href="@{/logout}">SignOut</a>
-    </div>
-    <div>
-          <span th:text="${memberName}"></span>
-        / <span th:text="${memberUsername}"></span>
-        / <span th:text="${memberTimezone}"></span>
     </div>
     <div layout:fragment="content"></div>
 </div>
@@ -57,15 +49,15 @@
 <script>
     let userRoles = {"ADMIN": "member.level.administrator","SHERIFF": "member.level.sheriff","USER": "member.level.user",},
         PagingMode = Object.freeze({"GeneralPaging": 1,"FastPaging": 2,});
-    const systemTz = "[[ ${systemTz} ]]";
-    const member =  {
-        username: "[[ ${memberUsername} ]]",
-        name: "[[ ${memberName}  ]]",
-        tz: "[[ ${memberTimezone} ]]",
-        tzOffset:  moment().tz("[[ ${memberTimezone} ]]").format("Z")
-    };
-
-    console.log(member);
+    const systemTz = "[[ ${systemTz} ]]",
+          userTz = "[[ ${userTz} ]]",
+          userTzOffset = moment().tz(userTz).format("Z");
+    // let userTz2 = "Asia/Seoul";
+    // let a = moment.tz(userTz).format();
+    // console.log("##########################")
+    // console.log("userTz: "+userTz);
+    // console.log(moment().tz(userTz2).format("ZZ"));
+    // console.log(moment().tz(userTz2).format("Z"));
 </script>
 <script th:src="@{/js/custom.js}"></script>
 <script th:src="@{/js/formatter.js}"></script>

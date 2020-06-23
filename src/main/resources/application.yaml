@@ -11,17 +11,20 @@ spring:
     redis:
         host: 127.0.0.1
         port: 6379
+    datasource: # DB 설정
+        tomcat:
+            max-active: 50
+            max-idle: 20
+            min-idle: 15
 server:
     port: 8080
-    servlet:
-        session:
-            timeout: 10s
+
 app:
     name: DevKotlin
     version: 0.1
     homeUri: /audits/
     datasource:
-        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
         username: root
         password: devplayg12!@
 ---

@@ -3,6 +3,8 @@ package com.devplayg.hippo.util
 import com.devplayg.hippo.entity.Audit
 import org.jetbrains.kotlin.com.google.gson.Gson
 
+data class AuditMessage(val message: String)
+
 fun auditLog(memberId: Long, category: Int, message: Any) {
     var msg: String
     if (message is String) {

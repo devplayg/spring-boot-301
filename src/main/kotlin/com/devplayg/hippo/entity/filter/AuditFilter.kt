@@ -31,7 +31,7 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
         // Sort order
 //        sortOrder = Pair(Audits.id, SortOrder.DESC)
 
-        val memberTz: DateTimeZone = DateTimeZone.forID("America/Los_Angeles")
+        //val memberTz: DateTimeZone = DateTimeZone.forID("America/Los_Angeles")
 //        val d : DateTime = DateTime.now()
 //        if (startDate== null) {
 //            startDate = d.withTimeAtStartOfDay()

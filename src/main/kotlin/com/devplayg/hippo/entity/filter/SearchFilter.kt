@@ -1,9 +1,6 @@
 package com.devplayg.hippo.entity.filter
 
-import com.devplayg.hippo.entity.Audits
 import mu.KLogging
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.SortOrder
 import org.joda.time.DateTime
@@ -32,10 +29,10 @@ open class SearchFilter {
     // Logging
     companion object : KLogging()
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ssZ")
     lateinit var startDate: DateTime
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ssZ")
     lateinit var endDate: DateTime
 
     // Paging
