@@ -1,6 +1,6 @@
 package com.devplayg.hippo.service
 
-import com.devplayg.hippo.entity.filter.AuditFilter
+import com.devplayg.hippo.filter.AuditFilter
 import com.devplayg.hippo.entity.toAuditDto
 import com.devplayg.hippo.repository.AuditRepo
 import com.devplayg.hippo.util.PageData

@@ -1,17 +1,10 @@
-package com.devplayg.hippo.entity.filter
+package com.devplayg.hippo.filter
 
 import com.devplayg.hippo.entity.Audits
 import mu.KLogging
 import org.jetbrains.exposed.sql.SortOrder
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
-import org.joda.time.Seconds
 
-//class AuditFilter(startDate: String, endDate: String, pagingMode: Int)
-//    : SearchFilter(startDate, endDate, pagingMode) {
-//}
-
-class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, SortOrder.DESC)) {
+class AuditFilter : DateRangeFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, SortOrder.DESC)) {
     companion object : KLogging()
 
     var categoryList: List<Int>? = null
@@ -19,13 +12,6 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
     var message: String = ""
 
     init {
-//        logger.debug("AuditFilter::init() ========================")
-//        logger.debug("- startDate: {}", startDate)
-//        logger.debug("- endDate: {}", endDate)
-//        logger.debug("- pagingMode: {}", pagingMode)
-//        logger.debug("- categoryList: {}", categoryList)
-//        logger.debug("- sort: {}", sort)
-//        logger.debug("- order: {}", order)
         this.debug(this.javaClass.name + "::" + "init()")
 
         // Sort order
@@ -45,13 +31,13 @@ class AuditFilter : SearchFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, Sor
 //        super.tune()
 //    }
     fun debug(info: String="") {
-        logger.debug("{} ===========================", info)
+        logger.debug("=========================== {}", info)
         logger.debug("- startDate: {}", startDate)
         logger.debug("- endDate: {}", endDate)
         logger.debug("- pagingMode: {}", pagingMode)
-        logger.debug("- categoryList: {}", categoryList)
-        logger.debug("- sort: {}", sort)
-        logger.debug("- order: {}", order)
+        logger.debug("- size: {}", size)
+//        logger.debug("- order: {}", order)
         logger.debug("- sortOrder: {}", sortOrder)
+        logger.debug("- categoryList: {}", categoryList)
     }
 }

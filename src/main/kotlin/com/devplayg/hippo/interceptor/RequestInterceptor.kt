@@ -43,10 +43,10 @@ class RequestInterceptor : HandlerInterceptor {
         }
 
         if (handler is HandlerMethod) {
-//            val controllerName = handler.beanType.simpleName.replace("Controller", "").toLowerCase()
+            val controllerName = handler.beanType.simpleName.replace("Controller", "").toLowerCase()
             //String methodName = handlerMethod.getMethod().getName();
             mv.addObject("systemTz", TimeZone.getDefault().toZoneId().id)
-//            mv.addObject("ctrl", controllerName)
+            mv.addObject("ctrl", controllerName)
             mv.addObject("remoteAddr", req.remoteAddr)
 
             // Get member'ㄴ timezone and set it to view object

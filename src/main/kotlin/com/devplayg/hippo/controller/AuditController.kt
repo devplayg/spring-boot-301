@@ -2,7 +2,7 @@ package com.devplayg.hippo.controller
 
 import com.devplayg.hippo.define.MemberRole
 import com.devplayg.hippo.define.PagingMode
-import com.devplayg.hippo.entity.filter.AuditFilter
+import com.devplayg.hippo.filter.AuditFilter
 import com.devplayg.hippo.service.AuditService
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -22,7 +22,7 @@ class AuditController(
     companion object : KLogging()
 
     @RequestMapping(value = ["/"], method = [RequestMethod.GET, RequestMethod.POST])
-    fun displayAudit(@ModelAttribute filter: AuditFilter, model: Model): String {
+    fun display(@ModelAttribute filter: AuditFilter, model: Model): String {
         model.addAttribute("filter", filter)
         filter.debug(this.javaClass.name + "::displayAudit()")
 

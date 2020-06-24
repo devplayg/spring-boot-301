@@ -1,6 +1,6 @@
 package com.devplayg.hippo.util
 
-import com.devplayg.hippo.entity.filter.SearchFilter
+import com.devplayg.hippo.filter.DateRangeFilter
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Expression
@@ -21,7 +21,7 @@ class PageData {
     }
 }
 
-fun getSortOrder(table: LongIdTable, filter: SearchFilter): Pair<Expression<*>, SortOrder> {
+fun getSortOrder(table: LongIdTable, filter: DateRangeFilter): Pair<Expression<*>, SortOrder> {
     val col: Column<*> = getMatchedColumn(table, filter.sort)
     if (filter.order.toLowerCase() == "asc") {
         return Pair(col, SortOrder.ASC)
