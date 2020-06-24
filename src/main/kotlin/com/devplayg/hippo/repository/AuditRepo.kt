@@ -16,7 +16,6 @@ class AuditRepo {
     fun predicate(filter: AuditFilter): Query {
         val cond = Audits.selectAll()
                 .andWhere { Audits.created.between(filter.startDate.toDBTZ(), filter.endDate.toDBTZ()) }
-//                .andWhere { Audits.created.between(filter.startDate, filter.endDate) }
 
         if (filter.categoryList != null) {
             cond.andWhere { Audits.category inList filter.categoryList!! }

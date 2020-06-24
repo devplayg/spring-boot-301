@@ -4,12 +4,13 @@ Spring Boot with Kotlin
 
 - Spring Boot 2.3.0
 
-- Kotlin 1.3.72
+- [Kotlin 1.3.72](https://kotlinlang.org/)
 
-- ORM: Exposed 0.24.1 
+- ORM: [Exposed 0.24.1](https://github.com/JetBrains/Exposed) 
 
-- [ ] Timezone: UserTz(Any) <=> ServerTz(Any) <=> DBTZ(UTC)
 - [ ] Member: CRUD
+- [ ] i18n
+- [X] Timezone: UserTz(Any) <=> ServerTz(Any) <=> DBTZ(UTC)
 - [X] Organize structure
 - [X] Pagination
 - [X] DSL
