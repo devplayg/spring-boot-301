@@ -9,10 +9,12 @@ Spring Boot with Kotlin
 - ORM: [Exposed 0.24.1](https://github.com/JetBrains/Exposed) 
 
 - [ ] ACL
+- [ ] Log search
 - [ ] Member: CRUD
 - [ ] i18n
 - [X] Timezone: UserTz(Any) <=> ServerTz(Any) <=> DBTZ(UTC)
-- [X] Organize structure
+- [X] Organizing MVC structure
+- [X] designed Filter class
 - [X] Pagination
 - [X] DSL
 ### References
