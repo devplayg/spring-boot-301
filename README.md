@@ -8,7 +8,6 @@ Spring Boot with Kotlin
 
 - ORM: Exposed 0.24.1 
 
-
 - [ ] Timezone: UserTz(Any) <=> ServerTz(Any) <=> DBTZ(UTC)
 - [ ] Member: CRUD
 - [X] Organize structure
