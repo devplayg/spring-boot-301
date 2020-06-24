@@ -6,11 +6,10 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 
 
-fun getCurrentMember(): CustomUserDetails? {
+fun currentMember(): CustomUserDetails? {
     val auth: Authentication = SecurityContextHolder.getContext().authentication
     if (auth is AnonymousAuthenticationToken) {
         return null
     }
-    val member: CustomUserDetails = auth.principal as CustomUserDetails
-    return member
+    return auth.principal as CustomUserDetails
 }

@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 import org.springframework.format.annotation.DateTimeFormat
 
 open class DateRangeFilter(
-        var lastNDays: Int,
+        lastNDays: Int,
         sortOrder: Pair<Expression<*>, SortOrder>
 ) : Filter(PagingMode.FastPaging.value, 1, 10, sortOrder) {
 

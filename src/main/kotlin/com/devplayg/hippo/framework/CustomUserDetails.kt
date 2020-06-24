@@ -12,7 +12,8 @@ class CustomUserDetails(
         private val password: String,
         private val roles: MutableSet<MemberRole>,
         val timezone: String,
-        val name: String
+        val name: String,
+        val id: Long
 ) : UserDetails {
     companion object {
         fun from(member: MemberDto): CustomUserDetails {
@@ -22,7 +23,9 @@ class CustomUserDetails(
                         password = "{bcrypt}$password",
                         roles = mutableSetOf(MemberRole.Admin),
                         timezone = timezone,
-                        name = name
+                        name = name,
+                        id = memberId
+
                 )
             }
         }

@@ -36,8 +36,10 @@ class HippoConfig(
 
             validate()
         }))
+
+        auditLog(0, AuditCategory.APPLICATION_STARTED.value)
+
         transaction {
-            auditLog(0, AuditCategory.APPLICATION_STARTED.value, "test")
             Members.selectAll().map {
                 memberCacheRepo.save(toMemberDto(it))
             }
