@@ -17,6 +17,7 @@ Spring Boot with Kotlin
 - [X] designed Filter class
 - [X] Pagination
 - [X] DSL
+
 ### References
 
 Framework
@@ -35,4 +36,3 @@ Exposed examples
 - https://blog.jdriven.com/2019/07/kotlin-exposed-a-lightweight-sql-library/
 - https://github.com/bastman/spring-kotlin-exposed
 - https://github.com/TouK/kotlin-exposed-realworld
-

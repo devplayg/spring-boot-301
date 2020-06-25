@@ -50,14 +50,8 @@
     let userRoles = {"ADMIN": "member.level.administrator","SHERIFF": "member.level.sheriff","USER": "member.level.user",},
         PagingMode = Object.freeze({"GeneralPaging": 1,"FastPaging": 2,});
     const systemTz = "[[ ${systemTz} ]]",
-          userTz = "[[ ${userTz} ]]",
+          userTz = "[[ ${userTz} ]]" || systemTz,
           userTzOffset = moment().tz(userTz).format("Z");
-    // let userTz2 = "Asia/Seoul";
-    // let a = moment.tz(userTz).format();
-    // console.log("##########################")
-    // console.log("userTz: "+userTz);
-    // console.log(moment().tz(userTz2).format("ZZ"));
-    // console.log(moment().tz(userTz2).format("Z"));
 </script>
 <script th:src="@{/js/custom.js}"></script>
 <script th:src="@{/js/formatter.js}"></script>

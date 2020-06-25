@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.SortOrder
 class AuditFilter : DateRangeFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, SortOrder.DESC)) {
     companion object : KLogging()
 
-    var categoryList: List<Int>? = null
+    var categoryList: List<Int>? = arrayListOf()
     var ip: String = ""
     var message: String = ""
 

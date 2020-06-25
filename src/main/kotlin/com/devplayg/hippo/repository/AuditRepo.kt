@@ -15,7 +15,7 @@ class AuditRepo {
         val cond = Audits.selectAll()
                 .andWhere { Audits.created.between(filter.startDate.toDBTZ(), filter.endDate.toDBTZ()) }
 
-        if (filter.categoryList != null) {
+        if (filter.categoryList != null && filter.categoryList!!.isNotEmpty()) {
             cond.andWhere { Audits.category inList filter.categoryList!! }
         }
 

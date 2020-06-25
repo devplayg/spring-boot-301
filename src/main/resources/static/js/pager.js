@@ -248,7 +248,6 @@ let Pager = function (pager) {
 
                 // Update filter
                 c.updateFilter();
-
                 if (c.pagingMode !== c.filter.pagingMode) {
                     form.submit();
                     return true;
@@ -257,10 +256,10 @@ let Pager = function (pager) {
                 // console.debug("--------submitted--------");
 
                 // if modal is opened, close it
-                if (c.modal.hasClass("in")) {
+                if (c.modal.hasClass("qin")) {
                     c.modal.modal("toggle");
+                    console.log(3333);
                 }
-
                 if (c.filter.pagingMode === PagingMode.FastPaging) {
                     c.table.bootstrapTable("refreshOptions", {
                         pageSize: c.filter.pageSize,
@@ -372,8 +371,8 @@ let Pager = function (pager) {
             //         rows: data.content
             //     };
             // }
-        }).on("column-switch.bs.table", function () {
-            captureTableColumnsState($(this));
+        // }).on("column-switch.bs.table", function () {
+        //     captureTableColumnsState($(this));
 
         }).on("load-success.bs.table", function () {
             $("[rel=tooltip]").tooltip();
