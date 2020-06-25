@@ -1,0 +1,3 @@
+[submodule "src/main/resources/static/assets"]
+	path = src/main/resources/static/assets
+	url = git@github.com:devplayg/theme.git
