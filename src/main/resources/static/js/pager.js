@@ -173,6 +173,8 @@ let Pager = function (pager) {
 
     // Render data to table (fast-paging-only)
     this.renderDataToTable = function(logs) {
+        if (logs === null) return;
+
         let begin = ((this.paging.no - 1) % this.paging.blockSize) * this.paging.size,
             end = begin + this.paging.size;
         this.table.bootstrapTable("load", logs.slice(begin, end));
@@ -200,7 +202,16 @@ let Pager = function (pager) {
         }
 
         // Set datetime input
-        $(".datetime", this.form).datetimepicker(defaultDatetimeOption);
+        // $("#datetimepicker1", this.form).datetimepicker(defaultDatetimeOption);
+        $(".datetime-range").daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            // startDate: moment().startOf('hour'),
+            // endDate: moment().startOf('hour').add(32, 'hour'),
+            locale: {
+                format: DateRangeFormat
+            }
+        });
 
         // Set URL to request
         this.api = this.id;
@@ -278,12 +289,18 @@ let Pager = function (pager) {
 
     // Update filter
     this.updateFilter = function() {
+        // console.log(this.filter);
         this.filter = objectifyForm(this.form);
         this.filter.pagingMode = this.filter.pagingMode || PagingMode.FastPaging;
-        this.filter.startDate += ":00" + member.tzOffset;
-        this.filter.endDate += ":59" + member.tzOffset;
+        if (this.filter.startDate !== undefined) {
+            this.filter.startDate += ":00" + member.tzOffset;
+        }
+        if (this.filter.endDate !== undefined) {
+            this.filter.endDate += ":00" + member.tzOffset;
+        }
+        // this.filter.startDate += ":00" + member.tzOffset;
+        // this.filter.endDate += ":59" + member.tzOffset;
         // console.debug("filter is updated: pagingMode="+ this.filter.pagingMode);
-        // console.log(this.filter);
         if (this.isFilteredInModal()) {
             $(".filter", this.form).html('<i class="fa fa-filter txt-color-red"></i>');
         }

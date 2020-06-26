@@ -20,6 +20,7 @@ object Members : IntIdTable("mbr_member", "member_id") {
     val memberId = long("member_Id")
     val username = varchar("username", 32)
     val name = varchar("name", 64)
+    val email = varchar("email", 128)
     val password = varchar("password", 72)
     val roles = integer("roles")
     val timezone = varchar("timezone", 64)
@@ -61,6 +62,7 @@ data class MemberDto(
         var memberId: Long,
         var username: String,
         var name: String,
+        var email: String,
         var password: String,
         var roles: Int,
         var timezone: String
@@ -79,14 +81,11 @@ fun toMemberDto(it: ResultRow) = MemberDto(
         memberId = it[Members.memberId].toLong(),
         username = it[Members.username],
         name = it[Members.name],
+        email = it[Members.email],
         password = it[Members.password],
         roles = it[Members.roles],
         timezone = it[Members.timezone].toString()
 )
-
-//fun MemberDto(memberId: Long, username: String, name: String, password: String, timezone: String): MemberDto {
-//
-//}
 
 
 //data class AuditDto(

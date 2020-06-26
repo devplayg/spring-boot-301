@@ -3,11 +3,19 @@
  */
 
 $(".mask-yyyymmddhhii").mask("0000-00-00 00:00");
+$(".mask-dateRange").mask("0000-00-00 00:00 - 0000-00-00 00:00");
 $(".mask-ipv4-cidr").mask("099.099.099.099/09");
 $(".mask-09999").mask("09999");
 $(".mask-0999").mask("0999");
 $(".mask-099").mask("099");
 $(".mask-09").mask("09");
+
+/**
+ * Bootstrap-select
+ */
+
+$.fn.selectpicker.Constructor.BootstrapVersion = '4';
+console.log(4);
 
 //
 // /**
@@ -70,13 +78,15 @@ let waitMeOptions = {
  * Bootstrap-datetimepicker default settings
  */
 
+const DateRangeFormat = "YYYY-MM-DD HH:mm";
+
 let defaultDatetimeOption = {
-    format: "yyyy-mm-dd hh:ii",
-    pickerPosition: "bottom-left",
-    todayHighlight: 1,
-    minView: 2,
-    maxView: 4,
-    autoclose: true
+    format: "YYYY-MM-DD hh:mm",
+    // widgetPositioning: "bottom",
+    // todayHighlight: 1,
+    // minView: 2,
+    // maxView: 4,
+    // autoclose: true
 };
 
 /**

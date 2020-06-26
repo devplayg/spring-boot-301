@@ -1,117 +1,162 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
-    <div class="card m-auto border">
-        <div class="card-header py-2">
-            <div class="card-title">
-
-            </div>
-        </div>
-        <div class="card-body">
-            <div th:id="toolbar-audit">
-                <form th:id="form-audit" role="form" method="post" th:action="@{/audits/}" th:object="${filter}">
-
-                    <!-- Exposed filter -->
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <div class="input-group date datetime">
-                                <input class="form-control mask-yyyymmddhhii" type="text" name="startDate"
-                                       th:value="*{#dates.format(startDate, 'yyyy-MM-dd HH:mm')}" autocomplete="off"/>
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="input-group date datetime">
-                                <input class="form-control mask-yyyymmddhhii" type="text" name="endDate"
-                                       th:value="*{#dates.format(endDate, 'yyyy-MM-dd HH:mm')}" autocomplete="off"/>
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <select name="categoryList" class="form-control selectpicker" multiple th:title="category" data-width="auth">
-                                <option th:each="category, stat : ${T(com.devplayg.hippo.define.AuditCategory).values()}"
-                                        th:value="${category.value}"
-                                        th:text="${category.description}"
-                                        th:selected="${#lists.contains(#object.categoryList, category)}"></option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="btn-group" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
-                                <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
-                                <button type="button" class="btn btn-primary btn-move-page btn-page-text" data-direction="0" disabled>1</button>
-                                <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
-                            </div>
-                            <button type="submit" class="btn btn-primary" th:text="search"></button>
-                            <a class="btn btn-default" href="" th:text="cancel"></a>
-                            <a href="#" data-toggle="modal" th:data-target="|#modal-audit-filter|">
-                                <span class="filter"></span>
-                                <span th:text="filter"></span>
-                            </a>
-                        </div>
+    <div class="row">
+        <div class="col">
+            <div class="panel">
+                <div class="panel-hdr">
+                    <h2>
+                        Audit log<span class="fw-300"><i>System audit logs</i></span>
+                    </h2>
+                    <div class="panel-toolbar">
+                        <button class="btn btn-panel" data-action="panel-collapse" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></button>
+                        <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></button>
+                        <button class="btn btn-panel" data-action="panel-close" data-toggle="tooltip" data-offset="0,10" data-original-title="Close"></button>
                     </div>
+                </div>
+                <div class="panel-container show">
+                    <div class="panel-content">
+                        <div class="panel-tag">
+                            It stash and was even had of collection the latest story still every or times derive come way. Travelling business ill. Helplessly starting didn't should he her bad will so through audiences to the supported congress, if card with was way allows century quarter the control village for of payload.
+                        </div>
 
-                    <div class="modal fade" th:id="modal-audit-filter" tabindex="-1" role="dialog">
-                        <div class="modal-dialog modal-sm" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">
-                                        <i class="fa fa-filter"></i> <span th:text="filter"></span>
-                                    </h4>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                        <div th:id="toolbar-audit">
+                            <form th:id="form-audit" class="" role="form" method="post" th:action="@{/audits/}" th:object="${filter}">
+                                <input type="hidden" name="timezone" th:value="${memberTimezone}" />
+
+                                <div class="form-inline">
+                                    <!-- Exposed filter -->
+                                    <div class="input-group mr-sm-2">
+                                        <input type="text" name="dateRange" class="form-control datetime-range mask-dateRange" placeholder="Select date" style="width:250px;"
+                                            th:value="|*{#dates.format(startDate, 'yyyy-MM-dd HH:mm')} - *{#dates.format(endDate, 'yyyy-MM-dd HH:mm')}|">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text fs-xl"><i class="fal fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+
+                                    <select name="categoryList" class="form-control selectpicker mr-sm-2" multiple data-style="btn-default" th:title="Categories" data-selected-text-format="count > 3">
+                                        <option th:each="category, stat : ${T(com.devplayg.hippo.define.AuditCategory).values()}"
+                                                th:value="${category.value}"
+                                                th:text="${category.description}"
+                                                th:selected="${#lists.contains(#object.categoryList, category)}"></option>
+                                    </select>
+
+                                    <div class="btn-group mr-sm-2" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
+                                        <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-prev" data-direction="-1"><i class="fal fa-chevron-left"></i></button>
+                                        <button type="button" class="btn btn-primary btn-move-page btn-page-text" data-direction="0" disabled>1</button>
+                                        <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-next" data-direction="1"><i class="fal fa-chevron-right"></i></button>
+                                    </div>
+
+
+                                    <button type="submit" class="btn btn-primary mr-sm-2">Search</button>
+
+                                    <a class="btn btn-default mr-sm-2" href="" th:text="cancel"></a>
+                                    <a href="#" data-toggle="modal" data-target="#modal-audit-filter">
+                                        <span class="filter"></span>
+                                        <span th:text="filter"></span>
+                                    </a>
                                 </div>
-                                <div class="modal-body">
+
+
+                                <!--
+                                <div>
                                     <div class="form-group">
-                                        <label>IP</label>
-                                        <input type="text" class="form-control mask-ipv4-cidr" name="ip" th:value="*{ip}"/>
-                                        <p class="note">IP or IP/CIDR</p>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control datetime-range" placeholder="Select date" style="width:250px;">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text fs-xl">
+                                                    <i class="fal fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
+
                                     <div class="form-group">
-                                        <label th:text="message"></label>
-                                        <input type="text" class="form-control" name="message" th:value="*{message}"/>
+                                        <div class="btn-group" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
+                                            <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
+                                            <button type="button" class="btn btn-primary btn-move-page btn-page-text" data-direction="0" disabled>1</button>
+                                            <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" th:text="search"></button>
+                                        <a class="btn btn-default" href="" th:text="cancel"></a>
+                                        <a href="#" data-toggle="modal" th:data-target="|#modal-audit-filter|">
+                                            <span class="filter"></span>
+                                            <span th:text="filter"></span>
+                                        </a>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="radio" th:each="paging, stat : ${T(com.devplayg.hippo.define.PagingMode).values()}">
-                                            <label>
-                                                <input type="radio" class="radiobox style-0"
-                                                       th:name="pagingMode"
-                                                       th:value="${paging.value}"
-                                                       th:checked="*{pagingMode} == ${paging.value}"/>
-                                                <span th:text="#{${paging.description}}"></span>
-                                            </label>
+                                </div>
+                                -->
+
+                                <div class="modal fade" th:id="modal-audit-filter" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">
+                                                    <i class="fa fa-filter"></i> <span th:text="filter"></span>
+                                                </h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="">Categories</label>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>IP</label>
+                                                    <input type="text" class="form-control mask-ipv4-cidr" name="ip" th:value="*{ip}"/>
+                                                    <p class="note">IP or IP/CIDR</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label th:text="message"></label>
+                                                    <input type="text" class="form-control" name="message" th:value="*{message}"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="radio" th:each="paging, stat : ${T(com.devplayg.hippo.define.PagingMode).values()}">
+                                                        <label>
+                                                            <input type="radio" class="radiobox style-0"
+                                                                   th:name="pagingMode"
+                                                                   th:value="${paging.value}"
+                                                                   th:checked="*{pagingMode} == ${paging.value}"/>
+                                                            <span th:text="#{${paging.description}}"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary" th:text="Search"></button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal" th:text="Cancel"></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" th:text="Search"></button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal" th:text="Cancel"></button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
-                    </div>
-                </form>
-            </div>
 
-            <table id="table-audit"
-                   th:object="${filter}"
-                   th:data-toolbar="|#toolbar-audit|"
-                   th:data-sort-name="${filter.sort}"
-                   th:data-sort-order="${filter.order}"
-                   th:data-page-size="${filter.size}">
-                <thead>
-                <tr>
-                    <th data-field="id" data-sortable="true" data-visible="true">ID</th>
-                    <th data-field="created" data-formatter="rfc3999PrettyFormatter" data-sortable="true" data-width="225" th:text="created"></th>
-                    <th data-field="member" data-formatter="" data-sortable="true" th:text="user"></th>
-                    <th data-field="category" data-sortable="true" th:text="category"></th>
-                    <th data-field="ip" data-formatter="intIpFormatter" data-sortable="true" th:text="IP"></th>
-                    <th data-field="message" data-sortable="true" data-formatter= "auditMessageFormatter" th:text="message"></th>
-                </tr>
-                </thead>
-            </table>
+                        <table id="table-audit"
+                               th:object="${filter}"
+                               th:data-toolbar="|#toolbar-audit|"
+                               th:data-sort-name="${filter.sort}"
+                               th:data-sort-order="${filter.order}"
+                               th:data-page-size="${filter.size}">
+                            <thead>
+                            <tr>
+                                <th data-field="id" data-sortable="true" data-visible="true">ID</th>
+                                <th data-field="created" data-formatter="rfc3999PrettyFormatter" data-sortable="true" data-width="225" th:text="created"></th>
+                                <th data-field="member" data-formatter="" data-sortable="true" th:text="user"></th>
+                                <th data-field="category" data-sortable="true" th:text="category"></th>
+                                <th data-field="ip" data-formatter="intIpFormatter" data-sortable="true" th:text="IP"></th>
+                                <th data-field="message" data-sortable="true" data-formatter= "auditMessageFormatter" th:text="message"></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
 
 <th:block layout:fragment="script">

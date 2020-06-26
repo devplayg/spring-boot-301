@@ -11,32 +11,13 @@ class AuditFilter : DateRangeFilter(lastNDays = 7, sortOrder =  Pair(Audits.id, 
     var ip: String = ""
     var message: String = ""
 
-    init {
-        this.debug(this.javaClass.name + "::" + "init()")
-
-        // Sort order
-//        sortOrder = Pair(Audits.id, SortOrder.DESC)
-
-        //val memberTz: DateTimeZone = DateTimeZone.forID("America/Los_Angeles")
-//        val d : DateTime = DateTime.now()
-//        if (startDate== null) {
-//            startDate = d.withTimeAtStartOfDay()
-//        }
-//        if (endDate== null) {
-//            endDate = d.withTimeAtStartOfDay().plusSeconds(86400-1)
-//        }
-    }
-
-//    override fun tune() {
-//        super.tune()
-//    }
     fun debug(info: String="") {
         logger.debug("=========================== {}", info)
         logger.debug("- startDate: {}", startDate)
         logger.debug("- endDate: {}", endDate)
+        logger.debug("- dateRange: {} [{}]", dateRange, timezone)
         logger.debug("- pagingMode: {}", pagingMode)
         logger.debug("- size: {}", size)
-//        logger.debug("- order: {}", order)
         logger.debug("- sortOrder: {}", sortOrder)
         logger.debug("- categoryList: {}", categoryList)
     }

@@ -23,6 +23,7 @@ class AuditController(
 
     @RequestMapping(value = ["/"], method = [RequestMethod.GET, RequestMethod.POST])
     fun display(@ModelAttribute filter: AuditFilter, model: Model): String {
+        filter.tune()
         model.addAttribute("filter", filter)
         filter.debug(this.javaClass.name + "::displayAudit()")
 
@@ -36,6 +37,7 @@ class AuditController(
     */
     @GetMapping
     fun find(@ModelAttribute filter: AuditFilter): ResponseEntity<*> {
+        filter.tune()
         filter.debug(this.javaClass.name + "::find()")
         if (filter.pagingMode == PagingMode.FastPaging.value) {
             return ResponseEntity(auditService.getAudits(filter), HttpStatus.OK)

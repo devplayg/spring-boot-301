@@ -27,7 +27,6 @@ class SecurityConfig(
 
     @Throws(Exception::class)
     override fun configure(httpSecurity: HttpSecurity) {
-        val filter = CharacterEncodingFilter()
         httpSecurity
                 .authorizeRequests() // API for Administrators
 
