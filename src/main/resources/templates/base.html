@@ -28,6 +28,8 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{/plugins/bootstrap-select/css/bootstrap-select.min.css}">
     <link rel="stylesheet" media="screen, print" th:href="@{/assets/css/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.css}">
     <link rel="stylesheet" media="screen, print" th:href="@{/css/custom.css}">
+<!--    <link rel="stylesheet" media="screen, print" th:href="@{/assets/css/fa-regular.css}">-->
+<!--    <link rel="stylesheet" media="screen, print" th:href="@{/assets/css/fa-solid.css}">-->
 </head>
 <!-- BEGIN Body -->
 <!-- Possible Classes
@@ -522,7 +524,7 @@
 
 <!-- Plugins -->
 <script th:src="@{/plugins/jquery-validation/jquery.validate.min.js}"></script>
-<script th:src="@{/plugins/bootstrap-select/js/bootstrap-select.min.js}"></script>
+<script th:src="@{/plugins/bootstrap-select/js/bootstrap-select.js}"></script>
 <script th:src="@{/plugins/jquery-mask/jquery.mask.min.js}"></script>
 <script th:src="@{/plugins/moment/moment.min.js}"></script>
 <script th:src="@{/plugins/moment/moment-timezone-with-data.min.js}"></script>
@@ -544,6 +546,8 @@
     moment.tz.setDefault(member.tz);
     let userRoles = {"ADMIN": "member.level.administrator","SHERIFF": "member.level.sheriff","USER": "member.level.user",},
         PagingMode = Object.freeze({"GeneralPaging": 1,"FastPaging": 2,});
+
+    // console.log(PagingMode);
 </script>
 <script layout:fragment="script"></script>
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->

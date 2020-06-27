@@ -260,17 +260,20 @@ let Pager = function (pager) {
                 // Update filter
                 c.updateFilter();
                 if (c.pagingMode !== c.filter.pagingMode) {
+                    // if (c.filter.pagingMode === PagingMode.FastPaging) {
+                    //     c.filter.
+                    // }
                     form.submit();
                     return true;
                 }
-                // console.debug("old paging mode: " + c.pagingMode);
-                // console.debug("--------submitted--------");
+                console.debug("old paging mode: " + c.pagingMode);
+                console.debug("--------submitted--------");
 
                 // if modal is opened, close it
-                if (c.modal.hasClass("qin")) {
+                if (c.modal.hasClass("show")) {
                     c.modal.modal("toggle");
-                    console.log(3333);
                 }
+                console.log(c.filter);
                 if (c.filter.pagingMode === PagingMode.FastPaging) {
                     c.table.bootstrapTable("refreshOptions", {
                         pageSize: c.filter.pageSize,
@@ -289,8 +292,9 @@ let Pager = function (pager) {
 
     // Update filter
     this.updateFilter = function() {
-        // console.log(this.filter);
         this.filter = objectifyForm(this.form);
+        // console.log(this.filter);
+        // console.log(PagingMode );
         this.filter.pagingMode = this.filter.pagingMode || PagingMode.FastPaging;
         if (this.filter.startDate !== undefined) {
             this.filter.startDate += ":00" + member.tzOffset;
@@ -302,7 +306,7 @@ let Pager = function (pager) {
         // this.filter.endDate += ":59" + member.tzOffset;
         // console.debug("filter is updated: pagingMode="+ this.filter.pagingMode);
         if (this.isFilteredInModal()) {
-            $(".filter", this.form).html('<i class="fa fa-filter txt-color-red"></i>');
+            $(".filter", this.form).html('<i class="fal fa-filter text-danger"></i>');
         }
     };
 
@@ -344,10 +348,6 @@ let Pager = function (pager) {
             sidePagination: "client", // Client-side pagination
             pageSize: c.filter.pageSize,
 
-        }).on("column-switch.bs.table", function () {
-            // Store the state of the columns
-            captureTableColumnsState($(this));
-
         }).on("refresh.bs.table", function () {
             // Fetch page
             c.fetchPage(0, true);
@@ -373,13 +373,15 @@ let Pager = function (pager) {
             pagination: true,
             paginationVAlign: c.paginationVAlign,
             queryParams: function (param) {
+                console.log(param);
                 let filter =  $.extend({}, c.filter);
                 Object.assign(filter, {
-                    size: param.pageSize,
+                    size: c.filter.pageSize,
                     page: param.pageNumber,
                     sort: param.sortName,
                     order: param.sortOrder,
                 });
+                console.log(filter);
                 return $.param(filter, true);
             },
             // responseHandler: function (data) {

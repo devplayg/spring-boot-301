@@ -15,8 +15,7 @@ $(".mask-09").mask("09");
  */
 
 $.fn.selectpicker.Constructor.BootstrapVersion = '4';
-console.log(4);
-
+// console.log($.fn.selectpicker.Constructor.BootstrapVersion);
 //
 // /**
 //  * jquery-mask default settings
@@ -105,16 +104,29 @@ jQuery.validator.setDefaults({
 });
 
 
-// /**
-//  * Bootstrap-Table default settings
-//  */
-//
+/**
+ * Bootstrap-Table default settings
+ */
+
 // Default settings
 $.extend($.fn.bootstrapTable.defaults, {
     classes: 'table table-hover',
     showRefresh: true,
     showColumns: true,
     pageSize: 15,
+    paginationPreText: '<i class="fal fa-chevron-left"></i>',
+    paginationNextText: '<i class="fal fa-chevron-right"></i>',
+    icons: {
+        refresh: "fal fa-sync",
+        columns: "fal fa-list",
+        // paginationSwitchDown: 'fa-caret-square-down',
+        // paginationSwitchUp: 'fa-caret-square-up',
+        // toggleOff: 'fa-toggle-off',
+        // toggleOn: 'fa-toggle-on',
+        // fullscreen: 'fa-arrows-alt',
+        // detailOpen: 'fa-plus',
+        // detailClose: 'fa-minus'
+    }
 });
 
 // // Capture table column state
