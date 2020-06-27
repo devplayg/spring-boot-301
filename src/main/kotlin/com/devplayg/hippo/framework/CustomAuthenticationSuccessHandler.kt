@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class CustomAuthenticationSuccessHandler(
-        private val appConfig: AppConfig
+        private val homeUri: String
 ) : AuthenticationSuccessHandler {
     protected var redirectStrategy: RedirectStrategy = DefaultRedirectStrategy()
         set
@@ -34,7 +34,7 @@ class CustomAuthenticationSuccessHandler(
 //            log.warn("Response has already been committed. Unable to redirect to " + appConfig.homeUri)
             return
         }
-        redirectStrategy.sendRedirect(request, response, appConfig.homeUri)
+        redirectStrategy.sendRedirect(request, response, homeUri)
     }
 
     fun clearAuthenticationAttributes(request: HttpServletRequest) {

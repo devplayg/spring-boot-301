@@ -26,12 +26,38 @@ class SecurityConfig(
     companion object : KLogging()
 
     @Throws(Exception::class)
-    override fun configure(httpSecurity: HttpSecurity) {
-        httpSecurity
-                .authorizeRequests() // API for Administrators
+    override fun configure(http: HttpSecurity) {
+        http
+            .csrf().disable()
+            .authorizeRequests() // API for Administrators
+                .antMatchers(*appConfig.pathPatternsNotToBeIntercepted.toTypedArray())
+                    .permitAll() // Others need to be authenticated
 
-                .antMatchers("/audit/**", "/members/**")
-                .hasAnyRole(MemberRole.Admin.name, MemberRole.Sheriff.name)
+                .antMatchers("/audits/**", "/members/**")
+                    .hasAnyRole(MemberRole.Admin.name, MemberRole.Sheriff.name)
+
+                .anyRequest()
+                    .authenticated()
+                    .and()
+
+                // Login
+                .formLogin()
+                    .loginPage("/login")
+                    .loginProcessingUrl("/app-login")
+                    .usernameParameter("app_username")
+                    .passwordParameter("app_password")
+                    .successHandler(CustomAuthenticationSuccessHandler(appConfig.homeUri)) // failure
+                    .failureHandler(CustomAuthenticationFailureHandler()) // success
+                    .permitAll()
+                    .and()
+                .logout()
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login")
+                    .permitAll()
+                    .and()
+                .addFilterAt(CharacterEncodingFilter(), CsrfFilter::class.java)
 
 //                .antMatchers("/cameras/{\\d+}/policy", "/factoryevent/{\\d+}/toggleEventType")
 //                .hasAnyRole(MemberRole.Admin.name) // Request create the period report
@@ -39,47 +65,6 @@ class SecurityConfig(
 //                .antMatchers(HttpMethod.POST, "/periodreport")
 //                .hasAnyRole(MemberRole.Admin.name) // White APIs
 
-                .antMatchers(
-                        "/api/**", "/public/**",
-                        "/login/**",
-                        "/favicon.ico",
-                        "/assets/**",
-                        "/modules/**",
-                        "/plugins/**",
-                        "/css/**",
-                        "/font/**",
-                        "/img/**",
-                        "/js/**"
-                )
-                .permitAll() // Others need to be authenticated
-
-                .anyRequest()
-                .authenticated()
-                .and()
-
-                // Login
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/app-login")
-                .usernameParameter("app_username")
-                .passwordParameter("app_password")
-                .successHandler(CustomAuthenticationSuccessHandler(appConfig)) // failure
-                .failureHandler(CustomAuthenticationFailureHandler()) // success
-
-                .permitAll()
-                .and() // Logout
-
-                // Logout
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
-                .deleteCookies("JSESSIONID")
-                .invalidateHttpSession(true)
-                .permitAll()
-
-                .and()
-                .addFilterAt(CharacterEncodingFilter(), CsrfFilter::class.java)
-                .csrf().disable()
     }
 
     @Bean

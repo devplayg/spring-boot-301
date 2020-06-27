@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -19,9 +20,9 @@ class RequestInterceptor : HandlerInterceptor {
     companion object : KLogging()
 
     override fun preHandle(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any): Boolean {
-        logger.debug("# REQ) PreHandle: [{} - {}] {}{}", req.method, req.remoteAddr, req.requestURI, req.queryString);
+        logger.debug("# ================= PreHandle: [{} - {}] {}{}", req.method, req.remoteAddr, req.requestURI, req.queryString?:"")
 //        if (logger.isDebugEnabled) {
-        logger.debug("RequestInterceptor::preHandle() / [{} - {}] {}{}==========================", req.method, req.remoteAddr, req.requestURI, req.queryString)
+//        logger.debug("#     - [{} - {}] {}{}==========================", req.method, req.remoteAddr, req.requestURI, req.queryString)
         req.parameterMap.forEach { (key, v) ->
             logger.debug("- {} = {}", key, req.parameterMap[key]);
         }
