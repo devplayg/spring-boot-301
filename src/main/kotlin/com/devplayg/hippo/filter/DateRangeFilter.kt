@@ -13,7 +13,7 @@ import java.util.*
 open class DateRangeFilter(
         val lastNDays: Int,
         sortOrder: Pair<Expression<*>, SortOrder>
-) : Filter(PagingMode.FastPaging.value, 1, 10, sortOrder) {
+) : Filter(PagingMode.FastPaging.value, 1, 15, sortOrder) {
 
     // Logging
     companion object : KLogging()

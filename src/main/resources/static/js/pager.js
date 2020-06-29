@@ -141,7 +141,7 @@ let Pager = function (pager) {
             $.ajax({
                 url: url,
             }).done(function (data) {
-                console.log(data);
+                // console.log(data);
                 c.log = data;
 
                 // Set row number
@@ -202,12 +202,9 @@ let Pager = function (pager) {
         }
 
         // Set datetime input
-        // $("#datetimepicker1", this.form).datetimepicker(defaultDatetimeOption);
         $(".datetime-range").daterangepicker({
             timePicker: true,
             timePicker24Hour: true,
-            // startDate: moment().startOf('hour'),
-            // endDate: moment().startOf('hour').add(32, 'hour'),
             locale: {
                 format: DateRangeFormat
             }
@@ -244,7 +241,7 @@ let Pager = function (pager) {
         let rules =  {
             pageSize: {
                 required: true,
-                min: 5,
+                min: 2,
                 max: 200,
             }
         };
@@ -260,9 +257,7 @@ let Pager = function (pager) {
                 // Update filter
                 c.updateFilter();
                 if (c.pagingMode !== c.filter.pagingMode) {
-                    // if (c.filter.pagingMode === PagingMode.FastPaging) {
-                    //     c.filter.
-                    // }
+                    console.log($(form).serializeArray());
                     form.submit();
                     return true;
                 }
@@ -273,7 +268,7 @@ let Pager = function (pager) {
                 if (c.modal.hasClass("show")) {
                     c.modal.modal("toggle");
                 }
-                console.log(c.filter);
+                // console.log(c.filter);
                 if (c.filter.pagingMode === PagingMode.FastPaging) {
                     c.table.bootstrapTable("refreshOptions", {
                         pageSize: c.filter.pageSize,
@@ -293,7 +288,6 @@ let Pager = function (pager) {
     // Update filter
     this.updateFilter = function() {
         this.filter = objectifyForm(this.form);
-        // console.log(this.filter);
         // console.log(PagingMode );
         this.filter.pagingMode = this.filter.pagingMode || PagingMode.FastPaging;
         if (this.filter.startDate !== undefined) {
@@ -308,6 +302,7 @@ let Pager = function (pager) {
         if (this.isFilteredInModal()) {
             $(".filter", this.form).html('<i class="fal fa-filter text-danger"></i>');
         }
+        // console.log(this.filter);
     };
 
 
@@ -373,15 +368,13 @@ let Pager = function (pager) {
             pagination: true,
             paginationVAlign: c.paginationVAlign,
             queryParams: function (param) {
-                console.log(param);
                 let filter =  $.extend({}, c.filter);
                 Object.assign(filter, {
-                    size: c.filter.pageSize,
+                    size: param.pageSize,
                     page: param.pageNumber,
                     sort: param.sortName,
                     order: param.sortOrder,
                 });
-                console.log(filter);
                 return $.param(filter, true);
             },
             // responseHandler: function (data) {
@@ -411,8 +404,6 @@ let Pager = function (pager) {
 
     // Initialize module
     this.init = function () {
-        // console.debug("##### Pager is initializing: " + pager.id + " #####");
-
         // Initialize form and validation
         this.initForm();
         this.initFormValidation();
@@ -433,7 +424,6 @@ let Pager = function (pager) {
     };
 
     this.run = function() {
-        // console.debug("run pager");
         this.updateFilter();
 
         if (this.filter.pagingMode === PagingMode.FastPaging) {

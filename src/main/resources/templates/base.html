@@ -532,22 +532,22 @@
 
 <script th:src="@{/js/custom.js}"></script>
 <script th:src="@{/js/formatter.js}"></script>
-<script>
-    // Open menu
+<script th:inline="javascript">
+    /*<![CDATA[*/
     $('a[href="' + this.location.pathname + '"]').parents('li,ul').addClass('active');
 
-    const systemTz = "[[ ${systemTz} ]]";
-    const member =  {
-        username: "[[ ${memberUsername} ]]",
-        name: "[[ ${memberName}  ]]",
-        tz: "[[ ${memberTimezone} ]]" || "[[ ${memberTimezone} ]]",
-        tzOffset:  moment().tz("[[ ${memberTimezone} ]]").format("Z")
-    };
+    const systemTz = [[ ${systemTz} ]],
+          member =  {
+                username: [[ ${memberUsername} ]],
+                name: [[ ${memberName}  ]],
+                tz: [[ ${memberTimezone} ]] || [[ ${memberTimezone} ]],
+                tzOffset:  moment().tz([[ ${memberTimezone} ]]).format("Z")
+          },
+          ctrl = [[ ${ctrl} ]];
     moment.tz.setDefault(member.tz);
-    let userRoles = {"ADMIN": "member.level.administrator","SHERIFF": "member.level.sheriff","USER": "member.level.user",},
-        PagingMode = Object.freeze({"GeneralPaging": 1,"FastPaging": 2,});
-
-    // console.log(PagingMode);
+    let userRoles = {/*[# th:each="n : ${T(com.devplayg.hippo.define.MemberRole).values()}"]*/"[(${n})]": "[(${n.description})]",/*[/]*/},
+        PagingMode = Object.freeze({/*[# th:each="n : ${T(com.devplayg.hippo.define.PagingMode).values()}"]*/"[(${n})]": [(${n.value})],/*[/]*/});
+    /*]]>*/
 </script>
 <script layout:fragment="script"></script>
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->

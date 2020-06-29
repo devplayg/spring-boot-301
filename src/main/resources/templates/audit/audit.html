@@ -20,8 +20,8 @@
                             It stash and was even had of collection the latest story still every or times derive come way. Travelling business ill. Helplessly starting didn't should he her bad will so through audiences to the supported congress, if card with was way allows century quarter the control village for of payload.
                         </div>
 
-                        <div th:id="toolbar-audit">
-                            <form th:id="form-audit" class="" role="form" method="post" th:action="@{/audits/}" th:object="${filter}">
+                        <div th:id="|toolbar-${ctrl}|">
+                            <form th:id="form-audit" class="" role="form" method="post" th:action="@{|/${ctrl}s/|}" th:object="${filter}">
                                 <input type="hidden" name="timezone" th:value="${memberTimezone}" />
 
                                 <div class="form-inline">
@@ -34,11 +34,11 @@
                                         </div>
                                     </div>
 
-                                    <select name="categoryList" class="form-control selectpicker mr-sm-2" multiple data-style="btn-default" th:title="Categories" data-selected-text-format="count > 3">
+                                    <select name="categoryList" class="form-control selectpicker mr-sm-2" multiple data-style="btn-default" th:title="Categories" data-selected-text-format="count > 2">
                                         <option th:each="category, stat : ${T(com.devplayg.hippo.define.AuditCategory).values()}"
                                                 th:value="${category.value}"
                                                 th:text="${category.description}"
-                                                th:selected="${#lists.contains(#object.categoryList, category)}"></option>
+                                                th:selected="${#lists.contains(#object.categoryList, category.value)}"></option>
                                     </select>
 
                                     <div class="btn-group mr-sm-2" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
@@ -51,43 +51,14 @@
                                     <button type="submit" class="btn btn-primary mr-sm-2">Search</button>
 
                                     <a class="btn btn-default mr-sm-2" href="" th:text="cancel"></a>
-                                    <a href="#" data-toggle="modal" data-target="#modal-audit-filter">
+                                    <a href="#" data-toggle="modal" th:data-target="|#modal-${ctrl}-filter|">
                                         <span class="filter"></span>
                                         <span th:text="filter"></span>
                                     </a>
                                 </div>
 
 
-                                <!--
-                                <div>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control datetime-range" placeholder="Select date" style="width:250px;">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text fs-xl">
-                                                    <i class="fal fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="btn-group" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
-                                            <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-prev" data-direction="-1">&lt;</button>
-                                            <button type="button" class="btn btn-primary btn-move-page btn-page-text" data-direction="0" disabled>1</button>
-                                            <button type="button" class="btn btn-primary bg-color-gray btn-move-page btn-page-next" data-direction="1">&gt;</button>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary" th:text="search"></button>
-                                        <a class="btn btn-default" href="" th:text="cancel"></a>
-                                        <a href="#" data-toggle="modal" th:data-target="|#modal-audit-filter|">
-                                            <span class="filter"></span>
-                                            <span th:text="filter"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                                -->
-
-                                <div class="modal fade" th:id="modal-audit-filter" tabindex="-1" role="dialog">
+                                <div class="modal fade" th:id="|modal-${ctrl}-filter|" tabindex="-1" role="dialog">
                                     <div class="modal-dialog modal-sm" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -123,7 +94,7 @@
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div class="form-group">
+                                                <div class="form-group" th:if="*{pagingMode == T(com.devplayg.hippo.define.PagingMode).FastPaging.value}">
                                                     <div class="row">
                                                         <div class="col-6">
                                                             <label th:text="#{page-size}"></label>
@@ -142,11 +113,12 @@
                             </form>
                         </div>
 
-                        <table id="table-audit"
+                        <table th:id="|table-${ctrl}|"
                                th:object="${filter}"
-                               th:data-toolbar="|#toolbar-audit|"
+                               th:data-toolbar="|#toolbar-${ctrl}|"
                                th:data-sort-name="${filter.sort}"
-                               th:data-sort-order="${filter.order}">
+                               th:data-sort-order="${filter.order}"
+                               th:data-page-size="${filter.pageSize}">
                             <thead>
                             <tr>
                                 <th data-field="id" data-sortable="true" data-visible="true">ID</th>
@@ -167,21 +139,7 @@
 </div>
 
 <th:block layout:fragment="script">
-<script th:src="@{/modules/audit/formatter.js}"></script>
+<script th:src="@{|/modules/${ctrl}/${ctrl}.js|}"></script>
+<script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
 <script th:src="@{/js/pager.js}"></script>
-<script>
-    new Pager({
-        id: "audit",
-        api: "audits",
-        showLoading: true,
-        rules: {
-            ip: {
-                required: false,
-                ipv4_cidr: true,
-            },
-        },
-    }).run();
-
-    $("select[name=categoryList]").selectpicker();
-</script>
 </th:block>
