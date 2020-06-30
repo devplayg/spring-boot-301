@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/members")
 class MemberController(
         val memberService: MemberService
-//        val inMemoryMemberRepo: RedisRepo
-//        val memberRepo: MemberRepo
 ) {
     @GetMapping("/")
     fun display(@ModelAttribute filter: AuditFilter, model: Model): String {
         return "member/member"
+    }
+
+    @GetMapping()
+    fun find() {
+
     }
 }
 

@@ -1,13 +1,13 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
-    ${ctrl}
-    <table id="table-members"
-           th:object="${filter}"
-           th:data-toolbar="|#toolbar-audit|"
+    <table th:object="${filter}"
+           th:id="|table-${ctrl}|"
+           th:data-toolbar="|#toolbar-${ctrl}|"
            th:data-sort-name="${filter.sort}"
            th:data-sort-order="${filter.order}"
-           th:data-page-size="${filter.size}">
+           th:data-page-size="${filter.pageSize}"
+           th:data-cookie-id-table="${ctrl}">
         <thead>
         <tr>
             <th data-field="id" data-sortable="true" data-visible="true">ID</th>
@@ -22,5 +22,6 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script th:src="@{/modules/member/formatter.js}"></script>
+    <script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
+    <script th:src="@{|/modules/${ctrl}/${ctrl}.js|}"></script>
 </th:block>

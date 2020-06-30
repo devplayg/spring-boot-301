@@ -110,7 +110,9 @@ jQuery.validator.setDefaults({
 
 // Default settings
 $.extend($.fn.bootstrapTable.defaults, {
-    classes: 'table table-hover',
+    classes: "table table-hover",
+    cookie: true,
+    cookiesEnabled: ["bs.table.columns"],
     showRefresh: true,
     showColumns: true,
     pageSize: 15,

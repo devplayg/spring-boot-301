@@ -1,7 +1,10 @@
 package com.devplayg.hippo.service
 
+import com.devplayg.hippo.entity.Members
 import com.devplayg.hippo.framework.CustomUserDetails
 import com.devplayg.hippo.repository.MemberCacheRepo
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -15,6 +18,12 @@ class MemberService(
     override fun loadUserByUsername(username: String): UserDetails {
         return memberCacheRepo.findByUsername(username)?.let { CustomUserDetails.from(it) }
                 ?: throw UsernameNotFoundException("$username Can Not Found")
+    }
+
+    fun findAll() = transaction{
+        Members.selectAll().map {
+
+        }
     }
 }
 
