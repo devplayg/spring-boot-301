@@ -1,14 +1,11 @@
 package com.devplayg.hippo.entity
 
-import com.devplayg.hippo.define.AuditCategory
-import com.devplayg.hippo.util.AuditMessage
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.jodatime.datetime
-import org.jetbrains.kotlin.com.google.gson.Gson
 import org.joda.time.DateTime
 
 // Table

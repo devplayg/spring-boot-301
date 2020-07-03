@@ -2,6 +2,8 @@ package com.devplayg.hippo.controller
 
 import com.devplayg.hippo.filter.AuditFilter
 import com.devplayg.hippo.service.MemberService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,13 +16,13 @@ class MemberController(
         val memberService: MemberService
 ) {
     @GetMapping("/")
-    fun display(@ModelAttribute filter: AuditFilter, model: Model): String {
+    fun display(model: Model): String {
         return "member/member"
     }
 
     @GetMapping()
-    fun find() {
-
+    fun find() : ResponseEntity<*> {
+        return ResponseEntity(memberService.findAll(), HttpStatus.OK)
     }
 }
 

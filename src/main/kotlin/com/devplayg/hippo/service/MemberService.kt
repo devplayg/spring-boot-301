@@ -1,6 +1,8 @@
 package com.devplayg.hippo.service
 
 import com.devplayg.hippo.entity.Members
+import com.devplayg.hippo.entity.toMemberDto
+import com.devplayg.hippo.entity.toMemberSecuredDto
 import com.devplayg.hippo.framework.CustomUserDetails
 import com.devplayg.hippo.repository.MemberCacheRepo
 import org.jetbrains.exposed.sql.selectAll
@@ -22,7 +24,7 @@ class MemberService(
 
     fun findAll() = transaction{
         Members.selectAll().map {
-
+            toMemberDto(it)
         }
     }
 }

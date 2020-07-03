@@ -1,24 +1,43 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
-    <table th:object="${filter}"
-           th:id="|table-${ctrl}|"
-           th:data-toolbar="|#toolbar-${ctrl}|"
-           th:data-sort-name="${filter.sort}"
-           th:data-sort-order="${filter.order}"
-           th:data-page-size="${filter.pageSize}"
-           th:data-cookie-id-table="${ctrl}">
-        <thead>
-        <tr>
-            <th data-field="id" data-sortable="true" data-visible="true">ID</th>
-            <th data-field="created" data-formatter="rfc3999PrettyFormatter" data-sortable="true" data-width="225" th:text="created"></th>
-            <th data-field="member" data-formatter="" data-sortable="true" th:text="user"></th>
-            <th data-field="category" data-sortable="true" th:text="category"></th>
-            <th data-field="ip" data-formatter="intIpFormatter" data-sortable="true" th:text="IP"></th>
-            <th data-field="message" data-sortable="true" data-formatter= "auditMessageFormatter" th:text="message"></th>
-        </tr>
-        </thead>
-    </table>
+    <div class="panel">
+        <div class="panel-hdr">
+            <h2>
+                Members<span class="fw-300"><i>Member settings</i></span>
+            </h2>
+        </div>
+        <div class="panel-container show">
+            <div class="panel-content">
+                <div class="panel-tag">
+                    <ul>
+                        <li>Administrator</li>
+                        <li>Sheriff</li>
+                        <li>Normal</li>
+                    </ul>
+                </div>
+
+                <table th:id="|table-${ctrl}|"
+                       data-toggle="table"
+                       th:data-url="|/${ctrl}s|"
+                       th:data-toolbar="|#toolbar-${ctrl}|"
+                       th:data-sort-name="position"
+                       th:data-sort-order="desc"
+                       th:data-cookie-id-table="${ctrl}">
+                    <thead>
+                    <tr>
+                        <th data-field="memberId" data-sortable="true" data-width="225" th:text="ID"></th>
+                        <th data-field="cmd" data-formatter="memberActionFormatter" data-sortable="true" data-visible="true">Username</th>
+                        <th data-field="username" data-sortable="true" data-visible="true">Username</th>
+                        <th data-field="name" data-formatter="" data-sortable="true" th:text="name"></th>
+                        <th data-field="email" data-sortable="true" th:text="email"></th>
+                        <th data-field="timezone" data-sortable="true" th:text="Timezone"></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <th:block layout:fragment="script">

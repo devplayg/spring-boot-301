@@ -1,8 +1,7 @@
 package com.devplayg.hippo.framework
 
 import com.devplayg.hippo.define.MemberRole
-import com.devplayg.hippo.entity.MemberDto
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.devplayg.hippo.entity.MemberDtoSecured
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -18,7 +17,7 @@ class CustomUserDetails(
         val email: String
 ) : UserDetails {
     companion object {
-        fun from(member: MemberDto): CustomUserDetails {
+        fun from(member: MemberDtoSecured): CustomUserDetails {
             return with(member) {
                 CustomUserDetails(
                         userName = username,

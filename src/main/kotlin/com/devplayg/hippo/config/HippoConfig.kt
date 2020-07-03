@@ -2,7 +2,7 @@ package com.devplayg.hippo.config
 
 import com.devplayg.hippo.define.AuditCategory
 import com.devplayg.hippo.entity.Members
-import com.devplayg.hippo.entity.toMemberDto
+import com.devplayg.hippo.entity.toMemberSecuredDto
 import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.util.auditLog
 import com.zaxxer.hikari.HikariConfig
@@ -41,7 +41,7 @@ class HippoConfig(
 
         transaction {
             Members.selectAll().map {
-                memberCacheRepo.save(toMemberDto(it))
+                memberCacheRepo.save(toMemberSecuredDto(it))
             }
         }
     }

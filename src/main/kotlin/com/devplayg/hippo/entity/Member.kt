@@ -56,18 +56,17 @@ object Members : IntIdTable("mbr_member", "member_id") {
 
 
 // DTO
-//@RedisHash("member")
-data class MemberDto(
-        @Id
-        var memberId: Long,
-        var username: String,
-        var name: String,
-        var email: String,
-        var password: String,
-        var roles: Int,
-        var timezone: String
-)
-fun MemberDto.toJson() = Gson().toJson(this)
+//data class MemberDto(
+//        @Id
+//        var memberId: Long,
+//        var username: String,
+//        var name: String,
+//        var email: String,
+//        var password: String,
+//        var roles: Int,
+//        var timezone: String
+//)
+//fun MemberDto.toJson() = Gson().toJson(this)
 
 //fun MemberDto.getAuthorities(): User {
 //    return User(
@@ -77,7 +76,57 @@ fun MemberDto.toJson() = Gson().toJson(this)
 //    )
 //}
 
-fun toMemberDto(it: ResultRow) = MemberDto(
+//fun toMemberDto(it: ResultRow) = MemberDto(
+//        memberId = it[Members.memberId].toLong(),
+//        username = it[Members.username],
+//        name = it[Members.name],
+//        email = it[Members.email],
+//        password = it[Members.password],
+//        roles = it[Members.roles],
+//        timezone = it[Members.timezone].toString()
+//)
+
+//data class MemberDto(
+//        @Id
+//        var memberId: Long,
+//        var username: String,
+//        var name: String,
+//        var email: String,
+//        var password: String,
+//        var roles: Int,
+//        var timezone: String
+//)
+//fun toMemberDtoSecured(it: ResultRow) = MemberDto(
+//        memberId = it[Members.memberId].toLong(),
+//        username = it[Members.username],
+//        name = it[Members.name],
+//        email = it[Members.email],
+//        roles = it[Members.roles],
+//        timezone = it[Members.timezone].toString()
+//)
+
+
+abstract class Member {
+    abstract var memberId: Long
+    abstract var username: String
+    abstract var name: String
+    abstract var email: String
+    abstract var roles: Int
+    abstract var timezone: String
+}
+
+data class MemberDtoSecured (
+        @Id
+        override var memberId: Long,
+        override var username: String,
+        override var name: String,
+        override var email: String,
+        override var roles: Int,
+        override var timezone: String,
+        var password: String
+) : Member()
+fun MemberDtoSecured.toJson() = Gson().toJson(this)
+fun toMemberSecuredDto(it: ResultRow) = MemberDtoSecured(
         memberId = it[Members.memberId].toLong(),
         username = it[Members.username],
         name = it[Members.name],
@@ -87,19 +136,21 @@ fun toMemberDto(it: ResultRow) = MemberDto(
         timezone = it[Members.timezone].toString()
 )
 
+data class MemberDto (
+        @Id
+        override var memberId: Long,
+        override var username: String,
+        override var name: String,
+        override var email: String,
+        override var roles: Int,
+        override var timezone: String
+) : Member()
 
-//data class AuditDto(
-//        val id: Long,
-//        val ip: Long,
-//        val category: Int,
-//        val message: String?,
-//        val created: String
-//)
-//
-//fun mapToAuditDto(it: ResultRow) = AuditDto(
-//        id = it[Audits.id].value,
-//        ip = it[Audits.ip],
-//        category = it[Audits.category],
-//        message = it[Audits.message],
-//        created = it[Audits.created].toString()
-//)
+fun toMemberDto(it: ResultRow) = MemberDto(
+        memberId = it[Members.memberId].toLong(),
+        username = it[Members.username],
+        name = it[Members.name],
+        email = it[Members.email],
+        roles = it[Members.roles],
+        timezone = it[Members.timezone].toString()
+)
