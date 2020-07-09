@@ -2,7 +2,7 @@ package com.devplayg.hippo.config
 
 import com.devplayg.hippo.define.AuditCategory
 import com.devplayg.hippo.entity.Members
-import com.devplayg.hippo.entity.toMemberSecuredDto
+import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.util.auditLog
 import com.zaxxer.hikari.HikariConfig
@@ -40,9 +40,13 @@ class HippoConfig(
         auditLog(0, AuditCategory.APPLICATION_STARTED.value)
 
         transaction {
+            var count: Int = 0
             Members.selectAll().map {
-                memberCacheRepo.save(toMemberSecuredDto(it))
+                memberCacheRepo.save(toMemberDto(it))
+                logger.debug("{}", toMemberDto(it))
+                count++
             }
+            logger.debug("Loaded {} member(s)", count)
         }
     }
 

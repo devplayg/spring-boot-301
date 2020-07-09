@@ -20,7 +20,8 @@ class RequestInterceptor : HandlerInterceptor {
     companion object : KLogging()
 
     override fun preHandle(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any): Boolean {
-        logger.debug("# ================= PreHandle: [{} - {}] {}{}", req.method, req.remoteAddr, req.requestURI, req.queryString?:"")
+        val auth: Authentication = SecurityContextHolder.getContext().authentication
+        logger.debug("# ================= PreHandle: [sign-in:{}][{}-{}] {}{}",(auth is AnonymousAuthenticationToken), req.method, req.remoteAddr, req.requestURI, req.queryString?:"")
 //        if (logger.isDebugEnabled) {
 //        logger.debug("#     - [{} - {}] {}{}==========================", req.method, req.remoteAddr, req.requestURI, req.queryString)
         req.parameterMap.forEach { (key, v) ->
@@ -28,13 +29,13 @@ class RequestInterceptor : HandlerInterceptor {
         }
 //        }
 
-        val auth: Authentication = SecurityContextHolder.getContext().authentication
-        if (auth is AnonymousAuthenticationToken) {
-            logger.debug("# signin: false [{} / {}]", req.method, req.requestURI)
-            return true
-        } else {
-            logger.debug("# signin: true [{} / {}]", req.method, req.requestURI)
-        }
+//        logger.debug("# sign-in: {}", auth is AnonymousAuthenticationToken)
+//        if (auth is AnonymousAuthenticationToken) {
+//            logger.debug("# signin: false [{} / {}]", req.method, req.requestURI)
+//            return true
+//        } else {
+//            logger.debug("# signin: true [{} / {}]", req.method, req.requestURI)
+//        }
         return true
     }
 

@@ -47,7 +47,7 @@ class SecurityConfig(
                     .usernameParameter("app_username")
                     .passwordParameter("app_password")
                     .successHandler(CustomAuthenticationSuccessHandler(appConfig.homeUri)) // failure
-                    .failureHandler(CustomAuthenticationFailureHandler()) // success
+                    .failureHandler(CustomAuthenticationFailureHandler(memberService)) // success
                     .permitAll()
                     .and()
                 .logout()

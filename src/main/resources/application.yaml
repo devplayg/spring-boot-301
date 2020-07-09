@@ -11,10 +11,6 @@ spring:
     redis:
         host: 127.0.0.1
         port: 6379
-#    mvc:
-#        static-path-pattern: classpath:/static/
-    #    resources:
-#        static-locations: classpath:/static/
     datasource: # DB 설정
         tomcat:
             max-active: 50
