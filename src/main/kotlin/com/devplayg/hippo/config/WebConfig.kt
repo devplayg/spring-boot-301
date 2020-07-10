@@ -1,6 +1,7 @@
 package com.devplayg.hippo.config
 
 import com.devplayg.hippo.interceptor.RequestInterceptor
+import mu.KLogging
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -8,6 +9,11 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor
+import vo.TimezoneView
+import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.zone.ZoneRulesException
+import java.util.*
 
 
 @Configuration
@@ -16,6 +22,8 @@ class WebConfig(
         val requestInterceptor: RequestInterceptor,
         val appConfig: AppConfig
 ) : WebMvcConfigurer {
+
+    companion object : KLogging()
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         // Normal interceptor
@@ -55,33 +63,21 @@ class WebConfig(
     /**
      * Timezone
      */
-//    @Bean
-//    fun timezoneList(): List<TimeZone>? {
-//        val now: LocalDateTime = LocalDateTime.now()
-//        return ZoneId.getAvailableZoneIds().stream()
-//                .map { zoneId: String? -> ZoneId.of(zoneId) }
-//                .sorted(ZoneComparator())
-//                .map { id: ZoneId -> TimeZone(id.id, getOffset(now, id)) }
-//                .collect(Collectors.toList())
-//    }
-//
-//    private class ZoneComparator : Comparator<ZoneId?> {
-//        fun compare(zoneId1: ZoneId, zoneId2: ZoneId): Int {
-//            return zoneId1.toString().compareTo(zoneId2.toString(), ignoreCase = true)
-//        }
-//    }
-//
-//    private fun getOffset(dateTime: LocalDateTime, id: ZoneId): String? {
-//        return dateTime
-//                .atZone(id)
-//                .getOffset()
-//                .getId()
-//                .replace("Z", "+00:00")
-//    }
+    /**
+     * Timezone
+     */
 
 
-//    @Bean
-//    fun inMemoryMemberManager(): InMemoryMemberManager {
-//        return InMemoryMemberManager()
-//    }
+    @Bean
+    fun timezoneList() = TimeZone.getAvailableIDs().mapNotNull { id ->
+        val timeZone = TimeZone.getTimeZone(id) ?: return@mapNotNull null
+        val zone: ZoneId
+        try {
+            zone = ZoneId.of(id)
+        } catch (e: ZoneRulesException) {
+            return@mapNotNull null
+        }
+
+        TimezoneView(id, name = timeZone.displayName, offsetName = OffsetDateTime.now(zone).offset.id.replace("Z", "+00:00"), offset = timeZone.rawOffset)
+    }.sortedBy { it.id }
 }

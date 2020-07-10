@@ -17,6 +17,13 @@
                     </ul>
                 </div>
 
+                <div th:id="|toolbar-${ctrl}|">
+                    <button class="btn btn-primary" data-toggle="modal" th:data-target="|#modal-${ctrl}-create|">
+                        <i class="fal fa-plus"></i>
+                        <span th:text="#{cmd.registration}"></span>
+                    </button>
+                </div>
+                <!--/*
                 <table th:id="|table-${ctrl}|"
                        data-toggle="table"
                        th:data-url="|/${ctrl}s|"
@@ -27,7 +34,7 @@
                     <thead>
                     <tr>
                         <th data-field="memberId" data-sortable="true" data-width="225" th:text="ID"></th>
-                        <th data-field="cmd" data-formatter="memberActionFormatter" data-sortable="true" data-visible="true">Username</th>
+                        <th data-field="cmd" data-formatter="memberCmdFormatter" data-sortable="true" data-visible="true">Username</th>
                         <th data-field="username" data-sortable="true" data-visible="true">Username</th>
                         <th data-field="name" data-formatter="" data-sortable="true" th:text="name"></th>
                         <th data-field="email" data-sortable="true" th:text="email"></th>
@@ -35,12 +42,252 @@
                     </tr>
                     </thead>
                 </table>
+                */-->
+
+                <table  th:id="|table-${ctrl}|"
+                        data-toggle="table"
+                        th:data-url="|/${ctrl}s|"
+                        th:data-toolbar="|#toolbar-${ctrl}|"
+                        th:data-sort-name="position"
+                        th:data-sort-order="desc"
+                        th:data-cookie-id-table="${ctrl}">
+                    <thead>
+                    <tr>
+                        <th data-field="cmd" data-formatter="memberCmdFormatter" data-events="memberCmdEvents" data-width="100" th:text="#{table.action}"></th>
+                        <!--/*
+                        */-->
+                        <th data-field="id" data-sortable="true" data-visible="false">ID</th>
+                        <th data-field="username" data-sortable="true" data-formatter="memberUsernameFormatter" th:text="#{member.username}"></th>
+                        <th data-field="name" data-sortable="true" th:text="#{name}" class="hidden-sm hidden-xs"></th>
+                        <th data-field="email" data-sortable="true" data-visible="false" data-formatter="emailFormatter" th:text="#{email}" class="hidden-sm hidden-xs"></th>
+                        <th data-field="enabled" data-sortable="true" data-formatter="memberEnabledFormatter" th:text="#{enable}" class="hidden-sm hidden-xs"></th>
+                        <th data-field="timezone" data-sortable="true" th:text="#{timezone}" class="hidden-sm hidden-xs"></th>
+                        <th data-field="created" data-sortable="true" data-visible="false" data-formatter="rfc3999PrettyFormatter" th:text="#{created}"></th>
+                    </tr>
+                    </thead>
+                </table>
+
             </div>
         </div>
     </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div th:id="|toolbar-${ctrl}|">
+
+            </div>
+
+        </div>
+    </div>
+
+    <form th:id="|form-${ctrl}-create|">
+        <div class="modal fade modal-form" th:id="|modal-${ctrl}-create|" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{member.registration}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label th:text="#{member.username}"></label>
+                                    <input type="text" class="form-control mask-username" th:name="username" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{password}"></label>
+                                    <input type="password" class="form-control" th:name="inputPassword" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{email}"></label>
+                                    <input type="text" class="form-control" th:name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{name}"></label>
+                                    <input type="text" class="form-control" th:name="name">
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{timezone}"></label>
+                                    <select name="timezone" class="form-control selectpicker">
+                                        <option th:each="zone : ${@timezoneList}"
+                                                th:value="${zone.id}"
+                                                th:text="${'(' + zone.offsetName+') ' + zone.id}"
+                                                th:selected="${zone.id == 'Asia/Seoul'}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group hide">
+                                    <label th:text="#{ip-allowed-to-access}"></label>
+                                    <textarea name="accessibleIpListText" class="form-control" rows="5">0.0.0.0/0</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" th:text="#{role}"></label>
+                                    <div class="checkbox" th:each="role, stat : ${T(com.devplayg.hippo.define.MemberRole).values()}">
+                                        <label>
+                                            <input type="checkbox" class="checkbox style-0"
+                                                   th:id="${'grant_' + role}"
+                                                   th:name="roleList"
+                                                   th:value="${role}"
+                                                   th:checked="true" />
+                                            <span th:for="${'grant_' + role}" th:text="#{${role.description}}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group hide">
+                                    <label th:text="#{enable}"></label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="checkbox style-0" th:name="enabled" checked="checked">
+                                            <span ></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-warning fade hide">
+                            <i class="fa-fw fa fa-warning"></i>
+                            <strong>Warning</strong> <span class="msg"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" th:text="#{registration}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form th:id="|form-${ctrl}-update|">
+        <div class="modal fade modal-form" th:id="|modal-${ctrl}-update|" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{member.profile}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label th:text="#{member.username}"></label>
+                                    <input type="text" class="form-control" th:name="username" autocomplete="off" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{email}"></label>
+                                    <input type="text" class="form-control" th:name="email">
+                                </div>
+                                <div class="form-group">
+                                    <label th:text="#{name}"></label>
+                                    <input type="text" class="form-control" th:name="name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group hide">
+                                    <label th:text="#{ip-allowed-to-access}"></label>
+                                    <textarea name="accessibleIpListText" class="form-control" rows="5"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label" th:text="#{role}"></label>
+                                    <div class="checkbox" th:each="role, stat : ${T(com.devplayg.hippo.define.MemberRole).values()}">
+                                        <label>
+                                            <input type="checkbox" class="checkbox style-0"
+                                                   th:id="${'revoke_' + role}"
+                                                   th:name="roleList"
+                                                   th:value="${role}" />
+                                            <span th:for="${'revoke_' + role}" th:text="#{${role.description}}"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group hide">
+                                    <label th:text="#{enable}"></label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="checkbox style-0" th:name="enabled">
+                                            <span ></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning fade hide">
+                            <i class="fa-fw fa fa-warning"></i>
+                            <strong>Warning</strong> <span class="msg"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" th:text="#{cmd.update}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form th:id="|form-${ctrl}-password|">
+        <div class="modal fade modal-form" th:id="|modal-${ctrl}-password|" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" th:text="#{change-password}"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label th:text="#{password}"></label>
+                            <input type="password" class="form-control" th:name="password">
+                        </div>
+                        <div class="form-group">
+                            <label th:text="#{password-confirm}"></label>
+                            <input type="password" class="form-control" th:name="passwordConfirm">
+                        </div>
+
+                        <div class="alert alert-warning fade hide">
+                            <i class="fa-fw fa fa-warning"></i>
+                            <strong>Warning</strong> <span class="msg"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" th:text="#{cmd.change}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 </div>
 
 <th:block layout:fragment="script">
     <script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
     <script th:src="@{|/modules/${ctrl}/${ctrl}.js|}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.memberCmdEvents = {
+            // "click .update": function (e, val, row, idx) {
+            //     member.show(row);
+            // },
+            // "click .delete": function (e, val, row, idx) {
+            //     member.delete(row);
+            // },
+            // "click .password": function (e, val, row, idx) {
+            //     member.showPasswordChangeForm(row);
+            // }
+        };
+
+        /*]]>*/
+    </script>
+
 </th:block>

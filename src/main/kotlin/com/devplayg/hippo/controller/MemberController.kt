@@ -17,6 +17,9 @@ class MemberController(
 ) {
     @GetMapping("/")
     fun display(model: Model): String {
+
+
+
         return "member/member"
     }
 
