@@ -21,7 +21,7 @@ class RequestInterceptor : HandlerInterceptor {
 
     override fun preHandle(req: HttpServletRequest, res: HttpServletResponse, dataObject: Any): Boolean {
         val auth: Authentication = SecurityContextHolder.getContext().authentication
-        logger.debug("# ================= PreHandle: [sign-in:{}][{}-{}] {}{}",(auth is AnonymousAuthenticationToken), req.method, req.remoteAddr, req.requestURI, req.queryString?:"")
+        logger.debug("# ================= PreHandle: [sign-in:{}][{}-{}] {}{}",!(auth is AnonymousAuthenticationToken), req.method, req.remoteAddr, req.requestURI, req.queryString?:"")
 //        if (logger.isDebugEnabled) {
 //        logger.debug("#     - [{} - {}] {}{}==========================", req.method, req.remoteAddr, req.requestURI, req.queryString)
         req.parameterMap.forEach { (key, v) ->

@@ -94,13 +94,22 @@ let defaultDatetimeOption = {
 
 jQuery.validator.setDefaults({
     // debug: true,
-    errorClass: "help-block",
-    highlight: function (element) {
-        $(element).closest(".form-group").addClass("has-error");
+    ignore: null,
+    ignore: 'input[type="hidden"]',
+    errorClass: "text-danger",
+    // errorClass: 'help-block',
+    // highlight: function (e) {
+    //     $(e).closest(".form-group").addClass("has-error");
+    // },
+    // unhighlight: function (element) {
+    //     $(e).closest(".form-group").removeClass("has-error");
+    // },
+    highlight: function(element) {
+        $(element).closest('.form-group').addClass('has-error');
     },
-    unhighlight: function (element) {
-        $(element).closest(".form-group").removeClass("has-error");
-    },
+    unhighlight: function(element) {
+        $(element).closest('.form-group').removeClass('has-error');
+    }
 });
 
 
@@ -268,13 +277,13 @@ function convertToUserTime(dt) {
 //     }
 // }, "invalid time format");
 //
-// $.validator.addMethod('username', function (value) {
-//     let pattern = /^[a-zA-Z]{1}[a-zA-Z0-9_]{3,16}$/;
-//     if (value.match(pattern)) {
-//         return true;
-//     }
-// }, 'invalid username');
-//
+$.validator.addMethod('username', function (value) {
+    let pattern = /^[a-zA-Z]{1}[a-zA-Z0-9_]{3,16}$/;
+    if (value.match(pattern)) {
+        return true;
+    }
+}, 'invalid username');
+
 $.validator.addMethod('ipv4_cidr', function (value, element) {
     if (this.optional(element)) {
         return true;

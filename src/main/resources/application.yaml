@@ -1,6 +1,6 @@
 spring:
     profiles:
-        active: prod
+        active: dev
     jackson:
         serialization:
             indent_output: true
@@ -46,6 +46,9 @@ spring:
             enabled: true
     thymeleaf:
         cache: false
+    resources:
+      cache:
+          period: 0
 
 server:
     port: 80

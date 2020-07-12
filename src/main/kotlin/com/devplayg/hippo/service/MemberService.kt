@@ -1,10 +1,12 @@
 package com.devplayg.hippo.service
 
+import com.devplayg.hippo.entity.Member
 import com.devplayg.hippo.entity.Members
 import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.framework.CustomUserDetails
 import com.devplayg.hippo.repository.MemberRepo
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -28,6 +30,18 @@ class MemberService(
             toMemberDto(it)
         }
     }
+
+    fun create(member: Member) = transaction {
+        Members.insert {
+            it[username] = member.username
+            it[name] = member.name
+            it[email] = member.email
+            it[password] = member.password
+            it[roles] = member.roles
+            it[timezone] = member.timezone
+        }
+    }
+
 
     fun increaseFailedLoginCount(username: String) = transaction {
         Members.update({ Members.username eq username }) {

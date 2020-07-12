@@ -6,7 +6,7 @@ $(function () {
      */
 
     // Mask
-    $('.mask-username').mask('Z',{translation:  {'Z': {pattern: /[a-zA-Z0-9 ]/, recursive: true}}});
+    $(".mask-username").mask('Z',{translation:  {'Z': {pattern: /[a-zA-Z0-9]/, recursive: true}}});
 
     // Selected object
     let selected = null;
@@ -127,7 +127,7 @@ $(function () {
                 username: {
                     required: true,
                     minlength: 3,
-                    maxlength: 16,
+                    maxlength: 12,
                     username: true
                 },
                 name: {

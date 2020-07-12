@@ -70,9 +70,6 @@ fun toMemberDto(it: ResultRow) = MemberDto(
         password = it[Members.password]
 )
 
-
-
-
 // DTO
 //data class MemberDto(
 //        @Id

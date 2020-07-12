@@ -1,6 +1,7 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
+
     <div class="panel">
         <div class="panel-hdr">
             <h2>
@@ -100,23 +101,22 @@
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{password}"></label>
-                                    <input type="password" class="form-control" th:name="inputPassword" autocomplete="off">
+                                    <input type="password" class="form-control" th:name="password" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{email}"></label>
-                                    <input type="text" class="form-control" th:name="email">
+                                    <input type="text" class="form-control" th:name="email" value="devplayg@devplayg.com">
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{name}"></label>
-                                    <input type="text" class="form-control" th:name="name">
+                                    <input type="text" class="form-control" th:name="name" value="devplayg">
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{timezone}"></label>
-                                    <select name="timezone" class="form-control selectpicker">
+                                    <select name="timezone" class="form-control" data-style="btn-default">
                                         <option th:each="zone : ${@timezoneList}"
                                                 th:value="${zone.id}"
-                                                th:text="${'(' + zone.offsetName+') ' + zone.id}"
-                                                th:selected="${zone.id == 'Asia/Seoul'}"></option>
+                                                th:text="${'(' + zone.offsetName+') ' + zone.id}">                                                "></option>
                                     </select>
                                 </div>
                             </div>
@@ -271,6 +271,7 @@
 </div>
 
 <th:block layout:fragment="script">
+    <script src="/assets/js/formplugins/select2/select2.bundle.js"></script>
     <script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
     <script th:src="@{|/modules/${ctrl}/${ctrl}.js|}"></script>
     <script th:inline="javascript">
