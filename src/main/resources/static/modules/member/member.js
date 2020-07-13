@@ -119,8 +119,10 @@ $(function () {
                 }).done(function () {
                     $(form).find(".modal").modal("hide");
                 }).fail(function (jqXHR) {
-                    $(form).find(".msg").text(jqXHR.responseText);
-                    $(form).find(".alert").removeClass("hide").addClass("in");
+                    console.log(jqXHR);
+
+                    $(form).find(".alert .msg").text(jqXHR.responseJSON.message);
+                    $(form).find(".alert").removeClass("d-none");
                 });
             },
             rules: {
