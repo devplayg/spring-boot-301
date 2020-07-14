@@ -11,7 +11,7 @@ import org.joda.time.DateTime
 // Table
 object Audits : LongIdTable("adt_audit", "audit_id") {
     val category = integer("category").index()
-    val memberId = integer("member_id")
+    val memberId = long("member_id")
     val ip = long("ip")
     val message = varchar("message", 256).nullable()
     val created = datetime("created").default(DateTime.now())

@@ -7,7 +7,7 @@ import javax.lang.model.type.NullType
 
 data class AuditMessage(val message: String)
 
-fun auditLog(memberId: Int, category: Int, message: Any? = null) {
+fun auditLog(memberId: Long, category: Int, message: Any? = null) {
     val msg:String? = when (message) {
         is NullType -> {
             null
@@ -22,7 +22,7 @@ fun auditLog(memberId: Int, category: Int, message: Any? = null) {
     _auditLog(memberId, category, msg, ipToLong(remoteAddr()))
 }
 
-private fun _auditLog(memberId: Int, category: Int, message: String?, ip: Long) = transaction {
+private fun _auditLog(memberId: Long, category: Int, message: String?, ip: Long) = transaction {
     Audit.new {
         this.memberId = memberId
         this.category = category

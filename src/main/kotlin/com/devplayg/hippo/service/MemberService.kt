@@ -32,13 +32,23 @@ class MemberService(
     }
 
     fun create(member: Member) = transaction {
-        Members.insert {
-            it[username] = member.username
-            it[name] = member.name
-            it[email] = member.email
-            it[password] = member.password
-            it[roles] = member.roles
-            it[timezone] = member.timezone
+//        Members.insert {
+//            it[id] = member.id.table
+//            it[username] = member.username
+//            it[name] = member.name
+//            it[email] = member.email
+//            it[password] = member.password
+//            it[roles] = member.roles
+//            it[timezone] = member.timezone
+//        }
+        Member.new {
+            username = member.username
+            name = member.name
+            email = member.email
+            password = member.password
+            roles = member.roles
+            timezone = member.timezone
+            failedLoginCount = member.failedLoginCount
         }
     }
 

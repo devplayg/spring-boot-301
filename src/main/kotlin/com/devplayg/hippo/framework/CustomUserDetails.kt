@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import java.util.stream.Collectors
 
 class CustomUserDetails(
-        val id: Int,
+        val id: Long,
         private val userName: String,
         val name: String,
         val email: String,
