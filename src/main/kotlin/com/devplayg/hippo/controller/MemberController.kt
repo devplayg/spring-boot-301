@@ -1,6 +1,7 @@
 package com.devplayg.hippo.controller
 
 import com.devplayg.hippo.entity.Member
+import com.devplayg.hippo.entity.MemberDto
 import com.devplayg.hippo.service.MemberService
 import mu.KLogging
 import org.springframework.dao.DataIntegrityViolationException

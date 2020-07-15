@@ -33,8 +33,8 @@ class Member(id: EntityID<Long>) : LongEntity(id) {
     var password by Members.password
     var email by Members.email
     var roles by Members.roles
-    var timezone = Members.timezone
-    var failedLoginCount = Members.failedLoginCount
+    var timezone by Members.timezone
+    var failedLoginCount by Members.failedLoginCount
 
 //    fun toDto() = MemberDto(
 //            memberId = this.id.value.toLong(),
@@ -58,7 +58,7 @@ data class MemberDto(
         var roles: Int,
         var timezone: String,
         var password: String,
-        val failedLoginCount: Int
+        var failedLoginCount: Int
 )
 
 fun MemberDto.toJson() = Gson().toJson(this)

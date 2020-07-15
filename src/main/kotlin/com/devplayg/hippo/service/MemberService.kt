@@ -1,6 +1,7 @@
 package com.devplayg.hippo.service
 
 import com.devplayg.hippo.entity.Member
+import com.devplayg.hippo.entity.MemberDto
 import com.devplayg.hippo.entity.Members
 import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.framework.CustomUserDetails
