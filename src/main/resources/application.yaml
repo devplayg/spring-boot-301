@@ -22,7 +22,7 @@ server:
 app:
     name: DevKotlin
     version: 0.1
-    homeUri: /audits/
+    homeUri: /members/
     pathPatternsNotToBeIntercepted:
         - /favicon.ico
         - /assets/**

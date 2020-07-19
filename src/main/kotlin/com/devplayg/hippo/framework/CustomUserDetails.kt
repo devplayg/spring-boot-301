@@ -20,13 +20,13 @@ class CustomUserDetails(
         fun from(member: MemberDto): CustomUserDetails {
             return with(member) {
                 CustomUserDetails(
-                        id = id,
+                        id = id!!,
                         userName = username,
                         name = name,
                         email = email,
                         roles = mutableSetOf(MemberRole.Admin),
                         timezone = timezone,
-                        password = "{bcrypt}$password"
+                        password = password
                 )
             }
         }

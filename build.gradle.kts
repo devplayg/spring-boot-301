@@ -28,6 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+
     // Thymeleaf layout
     implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
 
@@ -35,10 +36,10 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
 
     // exposed ORM
-    implementation("org.jetbrains.exposed", "exposed-core", "0.24.1")
-    implementation("org.jetbrains.exposed", "exposed-dao", "0.24.1")
-    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.24.1")
-    implementation("org.jetbrains.exposed", "exposed-jodatime", "0.24.1")
+    implementation("org.jetbrains.exposed", "exposed-core", "0.25.1")
+    implementation("org.jetbrains.exposed", "exposed-dao", "0.25.1")
+    implementation("org.jetbrains.exposed", "exposed-jdbc", "0.25.1")
+    implementation("org.jetbrains.exposed", "exposed-jodatime", "0.25.1")
 
     // Hikari
     implementation("com.zaxxer", "HikariCP", "3.4.5")

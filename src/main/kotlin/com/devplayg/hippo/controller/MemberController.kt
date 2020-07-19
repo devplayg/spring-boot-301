@@ -1,6 +1,5 @@
 package com.devplayg.hippo.controller
 
-import com.devplayg.hippo.entity.Member
 import com.devplayg.hippo.entity.MemberDto
 import com.devplayg.hippo.service.MemberService
 import mu.KLogging
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
-
+/**
+ * Member controller
+ */
 @Controller
 @RequestMapping("/members")
 class MemberController(
@@ -23,43 +24,33 @@ class MemberController(
 ) {
     companion object : KLogging()
 
+    /**
+     * displays members page
+     */
     @GetMapping("/")
     fun display(model: Model): String {
         return "member/member"
     }
 
-    @GetMapping()
-    fun find(): ResponseEntity<*> {
+    /**
+     * gets all [members]
+     */
+    @GetMapping
+    fun findAll(): ResponseEntity<*> {
         return ResponseEntity(memberService.findAll(), HttpStatus.OK)
     }
 
     /**
-     * Create member
+     * creates a member
      */
     @PostMapping
-    fun create(@ModelAttribute member: Member, bindingResult: BindingResult): ResponseEntity<*>? {
+    fun create(@ModelAttribute member: MemberDto, bindingResult: BindingResult): ResponseEntity<*>? {
         return if (bindingResult.hasErrors()) {
             ResponseEntity(bindingResult, HttpStatus.BAD_REQUEST)
         } else try {
-//            val memberCreated: Member = memberService.create(member)
             ResponseEntity<Any>(memberService.create(member), HttpStatus.OK)
         } catch (e: DataIntegrityViolationException) {
             ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
         }
     }
 }
-
-//    @GetMapping
-//    fun list() = memberService.findAll()
-
-//    @GetMapping("/mem")
-//    fun memList() = transaction {
-//        Members.selectAll().forEach {
-//            inMemoryMemberRepo.save(mapToMemberDto(it))
-//        }
-//        inMemoryMemberRepo.findAll()
-//    }
-//}
-
-//    @GetMapping("some")
-//    fun listSomething() = memberService.findSomething()

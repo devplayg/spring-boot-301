@@ -1,18 +1,18 @@
 package com.devplayg.hippo.entity
 
 import com.google.gson.Gson
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.ResultRow
-import org.springframework.data.annotation.Id
+import org.jetbrains.exposed.sql.jodatime.datetime
+import org.joda.time.DateTime
 
 
-// Table
+/*
+ * Table: mbr_member
+ */
 object Members : LongIdTable("mbr_member", "member_id") {
-    //    val memberId = integer("member_Id")
-    val username = varchar("username", 32)
+    val username = varchar("username", 32).uniqueIndex()
     val name = varchar("name", 64)
     val email = varchar("email", 128)
     val password = varchar("password", 72)
@@ -23,19 +23,61 @@ object Members : LongIdTable("mbr_member", "member_id") {
     override val primaryKey = PrimaryKey(id)
 }
 
+data class MemberDto(
+        var id: Long?,
+        var username: String,
+        var name: String,
+        var email: String,
+        var roles: Int,
+        var timezone: String,
+        var password: String,
+        var failedLoginCount: Int?,
+        var accessibleIpListText: String,
+        var accessibleIpList: MutableList<String>?
+)
+
+fun MemberDto.toJson() = Gson().toJson(this)
+
+fun toMemberDto(it: ResultRow, pwVisible: Boolean = false) : MemberDto {
+    return MemberDto(
+            id = it[Members.id].value,
+            username = it[Members.username],
+            name = it[Members.name],
+            email = it[Members.email],
+            roles = it[Members.roles],
+            timezone = it[Members.timezone].toString(),
+            password = if (pwVisible) it[Members.password] else "",
+            failedLoginCount = it[Members.failedLoginCount],
+            accessibleIpListText = "",
+            accessibleIpList = mutableListOf()
+    )
+}
+
+/*
+ * Table: mbr_member
+ */
+object MemberAllowedIpList : IntIdTable("mbr_allowed_ip", "network_id") {
+    val memberId = long("member_id")
+    val ipCidr = varchar("ip_cidr", 19)
+    val created = datetime("created").default(DateTime.now())
+
+    override val primaryKey = PrimaryKey(id)
+}
+
+
 // Entity
-class Member(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<Member>(Members)
-
-    //    var memberId by Members.memberId
-    var username by Members.username
-    var name by Members.name
-    var password by Members.password
-    var email by Members.email
-    var roles by Members.roles
-    var timezone by Members.timezone
-    var failedLoginCount by Members.failedLoginCount
-
+//class Member(id: EntityID<Long>) : LongEntity(id) {
+//    companion object : LongEntityClass<Member>(Members)
+//
+//    //    var memberId by Members.memberId
+//    var username by Members.username
+//    var name by Members.name
+//    var password by Members.password
+//    var email by Members.email
+//    var roles by Members.roles
+//    var timezone by Members.timezone
+//    var failedLoginCount by Members.failedLoginCount
+//
 //    fun toDto() = MemberDto(
 //            memberId = this.id.value.toLong(),
 ////            username = this.username,
@@ -47,32 +89,7 @@ class Member(id: EntityID<Long>) : LongEntity(id) {
 //    )
 //
 //    fun toJson() = this.toDto().toJson()
-}
-
-data class MemberDto(
-        @Id
-        var id: Long,
-        var username: String,
-        var name: String,
-        var email: String,
-        var roles: Int,
-        var timezone: String,
-        var password: String,
-        var failedLoginCount: Int
-)
-
-fun MemberDto.toJson() = Gson().toJson(this)
-
-fun toMemberDto(it: ResultRow) = MemberDto(
-        id = it[Members.id].value,
-        username = it[Members.username],
-        name = it[Members.name],
-        email = it[Members.email],
-        roles = it[Members.roles],
-        timezone = it[Members.timezone].toString(),
-        password = it[Members.password],
-        failedLoginCount = it[Members.failedLoginCount]
-)
+//}
 
 // DTO
 //data class MemberDto(

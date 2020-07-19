@@ -99,11 +99,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label th:text="#{member.username}"></label>
-                                    <input type="text" class="form-control mask-username" th:name="username" autocomplete="off">
+                                    <input type="text" class="form-control mask-username" th:name="username" autocomplete="off" value="wondory">
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{password}"></label>
-                                    <input type="password" class="form-control" th:name="password" autocomplete="off">
+                                    <input type="password" class="form-control" th:name="password" autocomplete="off" value="wondory12!@">
                                 </div>
                                 <div class="form-group">
                                     <label th:text="#{email}"></label>
@@ -126,7 +126,8 @@
                             <div class="col-md-6">
                                 <div class="form-group hide">
                                     <label th:text="#{ip-allowed-to-access}"></label>
-                                    <textarea name="accessibleIpListText" class="form-control" rows="5">0.0.0.0/0</textarea>
+                                    <textarea name="accessibleIpListText" class="form-control" rows="5">   10.10.10.10, 192.168.0.0/24
+                                        12.12.12.12   </textarea>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" th:text="#{role}"></label>
