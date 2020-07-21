@@ -8,9 +8,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.redis.core.RedisTemplate
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
-import org.springframework.web.server.ResponseStatusException
 
 
 @Repository
@@ -79,7 +77,7 @@ class MemberCacheRepo(
         val redisTemplate: RedisTemplate<String, String>
 ) {
     fun save(memberDto: MemberDto) {
-        val m: String = memberDto.toJson()
+        val m: String = memberDto.json()
         redisTemplate.opsForValue().set(CacheMemberPrefix + memberDto.username, m)
     }
 

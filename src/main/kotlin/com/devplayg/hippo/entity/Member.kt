@@ -36,7 +36,7 @@ data class MemberDto(
         var accessibleIpList: MutableList<String>?
 )
 
-fun MemberDto.toJson() = Gson().toJson(this)
+fun MemberDto.json() = Gson().toJson(this)
 
 fun toMemberDto(it: ResultRow, pwVisible: Boolean = false) : MemberDto {
     return MemberDto(

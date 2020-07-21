@@ -15,9 +15,29 @@ import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
+//
+//object DatabaseFactory {
+//
+//    fun init() {
+//        Database.connect(hikari())
+//    }
+//
+//    private fun hikari(): HikariDataSource {
+//        val config = HikariConfig()
+//        config.driverClassName = "com.mysql.cj.jdbc.Driver"
+//        config.jdbcUrl = "jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC"
+//        config.maximumPoolSize = 5
+//        config.isAutoCommit = false
+//        config.username = "root"
+//        config.password = "devplayg12!@"
+////        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+//        config.validate()
+//        return HikariDataSource(config)
+//    }
+//}
+
 
 @Configuration
-//@EnableConfigurationProperties
 class HippoConfig(
         private val appConfig: AppConfig
 ) {
@@ -49,6 +69,9 @@ class HippoConfig(
             logger.debug("Loaded {} member(s)", count)
         }
     }
+}
+
+
 
 //    @Bean
 //    @ConfigurationProperties("spring.datasource")
@@ -76,7 +99,6 @@ class HippoConfig(
 //                ip = 132331
 //            }
 //        }
-}
 //}
 //    @Bean
 //    @Throws(SQLException::class)

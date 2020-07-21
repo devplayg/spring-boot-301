@@ -24,7 +24,9 @@ class CustomUserDetails(
                         userName = username,
                         name = name,
                         email = email,
-                        roles = mutableSetOf(MemberRole.Admin),
+                        roles = MemberRole.values().filter {
+                            (it.value and roles) > 0
+                        }.toMutableSet(),
                         timezone = timezone,
                         password = password
                 )

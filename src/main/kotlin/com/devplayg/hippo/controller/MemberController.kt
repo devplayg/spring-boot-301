@@ -12,6 +12,7 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import java.sql.SQLIntegrityConstraintViolationException
 
 /**
  * Member controller
@@ -57,8 +58,12 @@ class MemberController(
     fun create(@ModelAttribute member: MemberDto, bindingResult: BindingResult) = if (bindingResult.hasErrors()) {
             ResponseEntity(bindingResult, HttpStatus.BAD_REQUEST)
         } else try {
-            ResponseEntity<Any>(memberService.create(member), HttpStatus.OK)
+            ResponseEntity(memberService.create(member), HttpStatus.OK)
+        } catch (e: SQLIntegrityConstraintViolationException) {
+            ResponseEntity(e.message, HttpStatus.OK)
         } catch (e: DataIntegrityViolationException) {
             ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
+//        } catch (e: Exception) {
+//            ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
         }
     }

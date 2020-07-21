@@ -52,12 +52,13 @@ class RequestInterceptor : HandlerInterceptor {
             mv.addObject("ctrl", controllerName)
             mv.addObject("remoteAddr", req.remoteAddr)
 
-            // Get member'ㄴ timezone and set it to view object
+            // Get member's timezone and set it to view object
             val auth = SecurityContextHolder.getContext().authentication
             if (auth is AnonymousAuthenticationToken) {
                 return
             }
             val member: CustomUserDetails = SecurityContextHolder.getContext().authentication.principal as CustomUserDetails
+            val auth2 = member.authorities
             mv.addObject("memberName", member.name)
             mv.addObject("memberUsername", member.username)
             mv.addObject("memberTimezone", member.timezone)
