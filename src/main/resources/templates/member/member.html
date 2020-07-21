@@ -107,7 +107,7 @@
                                         12.12.12.12   </textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" th:text="#{role}"></label>
+                                    <label class="control-label" th:text="#{roles}"></label>
                                     <div class="checkbox" th:each="role, stat : ${T(com.devplayg.hippo.define.MemberRole).values()}">
                                         <label>
                                             <input type="checkbox" class="checkbox style-0"
@@ -120,7 +120,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group hide">
-                                    <label th:text="#{enable}"></label>
+                                    <label th:text="#{enabled}"></label>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" class="checkbox style-0" th:name="enabled" checked="checked">
@@ -137,8 +137,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" th:text="#{registration}"></button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                        <button type="submit" class="btn btn-primary" th:text="#{cmd.add}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{cmd.close}"></button>
                     </div>
                 </div>
             </div>
@@ -178,7 +178,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="control-label" th:text="#{role}"></label>
+                                    <label class="control-label" th:text="#{roles}"></label>
                                     <div class="checkbox" th:each="role, stat : ${T(com.devplayg.hippo.define.MemberRole).values()}">
                                         <label>
                                             <input type="checkbox" class="checkbox style-0"
@@ -190,7 +190,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group hide">
-                                    <label th:text="#{enable}"></label>
+                                    <label th:text="#{enabled}"></label>
                                     <div class="checkbox">
                                         <label>
                                             <input type="checkbox" class="checkbox style-0" th:name="enabled">
@@ -208,7 +208,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" th:text="#{cmd.update}"></button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{cmd.close}"></button>
                     </div>
                 </div>
             </div>
@@ -242,7 +242,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary" th:text="#{cmd.change}"></button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{close}"></button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{cmd.close}"></button>
                     </div>
                 </div>
             </div>
