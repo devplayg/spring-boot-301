@@ -4,7 +4,7 @@
 	(global = global || self, factory(global.jQuery));
 }(this, (function ($) { 'use strict';
 
-	$ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
+	$ = $ && $.hasOwnProperty('default') ? $['default'] : $;
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -532,12 +532,6 @@
 	  return classofRaw(arg) == 'Array';
 	};
 
-	// `ToObject` abstract operation
-	// https://tc39.github.io/ecma262/#sec-toobject
-	var toObject = function (argument) {
-	  return Object(requireObjectCoercible(argument));
-	};
-
 	var createProperty = function (object, key, value) {
 	  var propertyKey = toPrimitive(key);
 	  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
@@ -567,23 +561,6 @@
 	  } return WellKnownSymbolsStore[name];
 	};
 
-	var SPECIES = wellKnownSymbol('species');
-
-	// `ArraySpeciesCreate` abstract operation
-	// https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-	var arraySpeciesCreate = function (originalArray, length) {
-	  var C;
-	  if (isArray(originalArray)) {
-	    C = originalArray.constructor;
-	    // cross-realm fallback
-	    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-	    else if (isObject(C)) {
-	      C = C[SPECIES];
-	      if (C === null) C = undefined;
-	    }
-	  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-	};
-
 	var userAgent = getBuiltIn('navigator', 'userAgent') || '';
 
 	var process = global_1.process;
@@ -604,7 +581,7 @@
 
 	var v8Version = version && +version;
 
-	var SPECIES$1 = wellKnownSymbol('species');
+	var SPECIES = wellKnownSymbol('species');
 
 	var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
 	  // We can't use this feature detection in V8 since it causes
@@ -613,159 +590,127 @@
 	  return v8Version >= 51 || !fails(function () {
 	    var array = [];
 	    var constructor = array.constructor = {};
-	    constructor[SPECIES$1] = function () {
+	    constructor[SPECIES] = function () {
 	      return { foo: 1 };
 	    };
 	    return array[METHOD_NAME](Boolean).foo !== 1;
 	  });
 	};
 
-	var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
-	var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
-	var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
+	var SPECIES$1 = wellKnownSymbol('species');
+	var nativeSlice = [].slice;
+	var max$1 = Math.max;
 
-	// We can't use this feature detection in V8 since it causes
-	// deoptimization and serious performance degradation
-	// https://github.com/zloirock/core-js/issues/679
-	var IS_CONCAT_SPREADABLE_SUPPORT = v8Version >= 51 || !fails(function () {
-	  var array = [];
-	  array[IS_CONCAT_SPREADABLE] = false;
-	  return array.concat()[0] !== array;
-	});
-
-	var SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('concat');
-
-	var isConcatSpreadable = function (O) {
-	  if (!isObject(O)) return false;
-	  var spreadable = O[IS_CONCAT_SPREADABLE];
-	  return spreadable !== undefined ? !!spreadable : isArray(O);
-	};
-
-	var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
-
-	// `Array.prototype.concat` method
-	// https://tc39.github.io/ecma262/#sec-array.prototype.concat
-	// with adding support of @@isConcatSpreadable and @@species
-	_export({ target: 'Array', proto: true, forced: FORCED }, {
-	  concat: function concat(arg) { // eslint-disable-line no-unused-vars
-	    var O = toObject(this);
-	    var A = arraySpeciesCreate(O, 0);
-	    var n = 0;
-	    var i, k, length, len, E;
-	    for (i = -1, length = arguments.length; i < length; i++) {
-	      E = i === -1 ? O : arguments[i];
-	      if (isConcatSpreadable(E)) {
-	        len = toLength(E.length);
-	        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
-	        for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
-	      } else {
-	        if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
-	        createProperty(A, n++, E);
+	// `Array.prototype.slice` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.slice
+	// fallback for not array-like ES3 strings and DOM objects
+	_export({ target: 'Array', proto: true, forced: !arrayMethodHasSpeciesSupport('slice') }, {
+	  slice: function slice(start, end) {
+	    var O = toIndexedObject(this);
+	    var length = toLength(O.length);
+	    var k = toAbsoluteIndex(start, length);
+	    var fin = toAbsoluteIndex(end === undefined ? length : end, length);
+	    // inline `ArraySpeciesCreate` for usage native `Array#slice` where it's possible
+	    var Constructor, result, n;
+	    if (isArray(O)) {
+	      Constructor = O.constructor;
+	      // cross-realm fallback
+	      if (typeof Constructor == 'function' && (Constructor === Array || isArray(Constructor.prototype))) {
+	        Constructor = undefined;
+	      } else if (isObject(Constructor)) {
+	        Constructor = Constructor[SPECIES$1];
+	        if (Constructor === null) Constructor = undefined;
+	      }
+	      if (Constructor === Array || Constructor === undefined) {
+	        return nativeSlice.call(O, k, fin);
 	      }
 	    }
-	    A.length = n;
-	    return A;
+	    result = new (Constructor === undefined ? Array : Constructor)(max$1(fin - k, 0));
+	    for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
+	    result.length = n;
+	    return result;
 	  }
 	});
 
 	/**
-	 * Bootstrap Table Chinese translation
-	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
+	 * @author: Dennis Hernández
+	 * @webSite: http://djhvscf.github.io/Blog
+	 * @version: v2.0.0
 	 */
 
-	$.fn.bootstrapTable.locales['zh-CN'] = {
-	  formatLoadingMessage: function formatLoadingMessage() {
-	    return '正在努力地加载数据中，请稍候';
-	  },
-	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "\u6BCF\u9875\u663E\u793A ".concat(pageNumber, " \u6761\u8BB0\u5F55");
-	  },
-	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
-	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "\u663E\u793A\u7B2C ".concat(pageFrom, " \u5230\u7B2C ").concat(pageTo, " \u6761\u8BB0\u5F55\uFF0C\u603B\u5171 ").concat(totalRows, " \u6761\u8BB0\u5F55\uFF08\u4ECE ").concat(totalNotFiltered, " \u603B\u8BB0\u5F55\u4E2D\u8FC7\u6EE4\uFF09");
-	    }
+	var isInit = function isInit(that) {
+	  return that.$el.data('resizableColumns') !== undefined;
+	};
 
-	    return "\u663E\u793A\u7B2C ".concat(pageFrom, " \u5230\u7B2C ").concat(pageTo, " \u6761\u8BB0\u5F55\uFF0C\u603B\u5171 ").concat(totalRows, " \u6761\u8BB0\u5F55");
-	  },
-	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return '上一页';
-	  },
-	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "\u7B2C".concat(page, "\u9875");
-	  },
-	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return '下一页';
-	  },
-	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "\u603B\u5171 ".concat(totalRows, " \u6761\u8BB0\u5F55");
-	  },
-	  formatClearSearch: function formatClearSearch() {
-	    return '清空过滤';
-	  },
-	  formatSearch: function formatSearch() {
-	    return '搜索';
-	  },
-	  formatNoMatches: function formatNoMatches() {
-	    return '没有找到匹配的记录';
-	  },
-	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return '隐藏/显示分页';
-	  },
-	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return '显示分页';
-	  },
-	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return '隐藏分页';
-	  },
-	  formatRefresh: function formatRefresh() {
-	    return '刷新';
-	  },
-	  formatToggle: function formatToggle() {
-	    return '切换';
-	  },
-	  formatToggleOn: function formatToggleOn() {
-	    return '显示卡片视图';
-	  },
-	  formatToggleOff: function formatToggleOff() {
-	    return '隐藏卡片视图';
-	  },
-	  formatColumns: function formatColumns() {
-	    return '列';
-	  },
-	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return '切换所有';
-	  },
-	  formatFullscreen: function formatFullscreen() {
-	    return '全屏';
-	  },
-	  formatAllRows: function formatAllRows() {
-	    return '所有';
-	  },
-	  formatAutoRefresh: function formatAutoRefresh() {
-	    return '自动刷新';
-	  },
-	  formatExport: function formatExport() {
-	    return '导出数据';
-	  },
-	  formatJumpTo: function formatJumpTo() {
-	    return '跳转';
-	  },
-	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return '高级搜索';
-	  },
-	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return '关闭';
-	  },
-	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return '隐藏/显示过滤控制';
-	  },
-	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return '隐藏过滤控制';
-	  },
-	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return '显示过滤控制';
+	var initResizable = function initResizable(that) {
+	  if (that.options.resizable && !that.options.cardView && !isInit(that)) {
+	    that.$el.resizableColumns({
+	      store: window.store
+	    });
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+
+	var destroy = function destroy(that) {
+	  if (isInit(that)) {
+	    that.$el.data('resizableColumns').destroy();
+	  }
+	};
+
+	var reInitResizable = function reInitResizable(that) {
+	  destroy(that);
+	  initResizable(that);
+	};
+
+	$.extend($.fn.bootstrapTable.defaults, {
+	  resizable: false
+	});
+	var BootstrapTable = $.fn.bootstrapTable.Constructor;
+	var _initBody = BootstrapTable.prototype.initBody;
+	var _toggleView = BootstrapTable.prototype.toggleView;
+	var _resetView = BootstrapTable.prototype.resetView;
+
+	BootstrapTable.prototype.initBody = function () {
+	  var that = this;
+
+	  for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+	    args[_key] = arguments[_key];
+	  }
+
+	  _initBody.apply(this, Array.prototype.slice.apply(args));
+
+	  that.$el.off('column-switch.bs.table page-change.bs.table').on('column-switch.bs.table page-change.bs.table', function () {
+	    reInitResizable(that);
+	  });
+	};
+
+	BootstrapTable.prototype.toggleView = function () {
+	  for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+	    args[_key2] = arguments[_key2];
+	  }
+
+	  _toggleView.apply(this, Array.prototype.slice.apply(args));
+
+	  if (this.options.resizable && this.options.cardView) {
+	    // Destroy the plugin
+	    destroy(this);
+	  }
+	};
+
+	BootstrapTable.prototype.resetView = function () {
+	  var that = this;
+
+	  for (var _len3 = arguments.length, args = new Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+	    args[_key3] = arguments[_key3];
+	  }
+
+	  _resetView.apply(this, Array.prototype.slice.apply(args));
+
+	  if (this.options.resizable) {
+	    // because in fitHeader function, we use setTimeout(func, 100);
+	    setTimeout(function () {
+	      initResizable(that);
+	    }, 100);
+	  }
+	};
 
 })));

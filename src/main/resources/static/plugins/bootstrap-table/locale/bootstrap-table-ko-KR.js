@@ -669,103 +669,103 @@
 	});
 
 	/**
-	 * Bootstrap Table Chinese translation
-	 * Author: Zhixin Wen<wenzhixin2010@gmail.com>
+	 * Bootstrap Table Korean translation
+	 * Author: Yi Tae-Hyeong (jsonobject@gmail.com)
 	 */
 
-	$.fn.bootstrapTable.locales['zh-CN'] = {
+	$.fn.bootstrapTable.locales['ko-KR'] = {
 	  formatLoadingMessage: function formatLoadingMessage() {
-	    return '正在努力地加载数据中，请稍候';
+	    return '데이터를 불러오는 중입니다';
 	  },
 	  formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
-	    return "\u6BCF\u9875\u663E\u793A ".concat(pageNumber, " \u6761\u8BB0\u5F55");
+	    return "\uD398\uC774\uC9C0 \uB2F9 ".concat(pageNumber, "\uAC1C \uB370\uC774\uD130 \uCD9C\uB825");
 	  },
 	  formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
 	    if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
-	      return "\u663E\u793A\u7B2C ".concat(pageFrom, " \u5230\u7B2C ").concat(pageTo, " \u6761\u8BB0\u5F55\uFF0C\u603B\u5171 ").concat(totalRows, " \u6761\u8BB0\u5F55\uFF08\u4ECE ").concat(totalNotFiltered, " \u603B\u8BB0\u5F55\u4E2D\u8FC7\u6EE4\uFF09");
+	      return "\uC804\uCCB4 ".concat(totalRows, "\uAC1C \uC911 ").concat(pageFrom, "~").concat(pageTo, "\uBC88\uC9F8 \uB370\uC774\uD130 \uCD9C\uB825, (filtered from ").concat(totalNotFiltered, " total rows)");
 	    }
 
-	    return "\u663E\u793A\u7B2C ".concat(pageFrom, " \u5230\u7B2C ").concat(pageTo, " \u6761\u8BB0\u5F55\uFF0C\u603B\u5171 ").concat(totalRows, " \u6761\u8BB0\u5F55");
+	    return "\uC804\uCCB4 ".concat(totalRows, "\uAC1C \uC911 ").concat(pageFrom, "~").concat(pageTo, "\uBC88\uC9F8 \uB370\uC774\uD130 \uCD9C\uB825,");
 	  },
 	  formatSRPaginationPreText: function formatSRPaginationPreText() {
-	    return '上一页';
+	    return 'previous page';
 	  },
 	  formatSRPaginationPageText: function formatSRPaginationPageText(page) {
-	    return "\u7B2C".concat(page, "\u9875");
+	    return "to page ".concat(page);
 	  },
 	  formatSRPaginationNextText: function formatSRPaginationNextText() {
-	    return '下一页';
+	    return 'next page';
 	  },
 	  formatDetailPagination: function formatDetailPagination(totalRows) {
-	    return "\u603B\u5171 ".concat(totalRows, " \u6761\u8BB0\u5F55");
+	    return "Showing ".concat(totalRows, " rows");
 	  },
 	  formatClearSearch: function formatClearSearch() {
-	    return '清空过滤';
+	    return 'Clear Search';
 	  },
 	  formatSearch: function formatSearch() {
-	    return '搜索';
+	    return '검색';
 	  },
 	  formatNoMatches: function formatNoMatches() {
-	    return '没有找到匹配的记录';
+	    return '조회된 데이터가 없습니다.';
 	  },
 	  formatPaginationSwitch: function formatPaginationSwitch() {
-	    return '隐藏/显示分页';
+	    return 'Hide/Show pagination';
 	  },
 	  formatPaginationSwitchDown: function formatPaginationSwitchDown() {
-	    return '显示分页';
+	    return 'Show pagination';
 	  },
 	  formatPaginationSwitchUp: function formatPaginationSwitchUp() {
-	    return '隐藏分页';
+	    return 'Hide pagination';
 	  },
 	  formatRefresh: function formatRefresh() {
-	    return '刷新';
+	    return '새로 고침';
 	  },
 	  formatToggle: function formatToggle() {
-	    return '切换';
+	    return '전환';
 	  },
 	  formatToggleOn: function formatToggleOn() {
-	    return '显示卡片视图';
+	    return 'Show card view';
 	  },
 	  formatToggleOff: function formatToggleOff() {
-	    return '隐藏卡片视图';
+	    return 'Hide card view';
 	  },
 	  formatColumns: function formatColumns() {
-	    return '列';
+	    return '컬럼 필터링';
 	  },
 	  formatColumnsToggleAll: function formatColumnsToggleAll() {
-	    return '切换所有';
+	    return 'Toggle all';
 	  },
 	  formatFullscreen: function formatFullscreen() {
-	    return '全屏';
+	    return 'Fullscreen';
 	  },
 	  formatAllRows: function formatAllRows() {
-	    return '所有';
+	    return 'All';
 	  },
 	  formatAutoRefresh: function formatAutoRefresh() {
-	    return '自动刷新';
+	    return 'Auto Refresh';
 	  },
 	  formatExport: function formatExport() {
-	    return '导出数据';
+	    return 'Export data';
 	  },
 	  formatJumpTo: function formatJumpTo() {
-	    return '跳转';
+	    return 'GO';
 	  },
 	  formatAdvancedSearch: function formatAdvancedSearch() {
-	    return '高级搜索';
+	    return 'Advanced search';
 	  },
 	  formatAdvancedCloseButton: function formatAdvancedCloseButton() {
-	    return '关闭';
+	    return 'Close';
 	  },
 	  formatFilterControlSwitch: function formatFilterControlSwitch() {
-	    return '隐藏/显示过滤控制';
+	    return 'Hide/Show controls';
 	  },
 	  formatFilterControlSwitchHide: function formatFilterControlSwitchHide() {
-	    return '隐藏过滤控制';
+	    return 'Hide controls';
 	  },
 	  formatFilterControlSwitchShow: function formatFilterControlSwitchShow() {
-	    return '显示过滤控制';
+	    return 'Show controls';
 	  }
 	};
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['zh-CN']);
+	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ko-KR']);
 
 })));

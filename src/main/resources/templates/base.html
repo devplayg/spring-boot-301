@@ -529,9 +529,7 @@
 <script th:src="@{/plugins/moment/moment.min.js}"></script>
 <script th:src="@{/plugins/moment/moment-timezone-with-data.min.js}"></script>
 <script th:src="@{/assets/js/formplugins/bootstrap-daterangepicker/bootstrap-daterangepicker.js}"></script>
-
-<script th:src="@{/js/custom.js}"></script>
-<script th:src="@{/js/formatter.js}"></script>
+<script th:src="@{/assets/js/notifications/sweetalert2/sweetalert2.bundle.js}"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
     $('a[href="' + this.location.pathname + '"]').parents('li,ul').addClass('active');
@@ -549,6 +547,8 @@
         PagingMode = Object.freeze({/*[# th:each="n : ${T(com.devplayg.hippo.define.PagingMode).values()}"]*/"[(${n})]": [(${n.value})],/*[/]*/});
     /*]]>*/
 </script>
+<script th:src="@{/js/custom.js}"></script>
+<script th:src="@{/js/formatter.js}"></script>
 <script layout:fragment="script"></script>
 <!--This page contains the basic JS and CSS files to get started on your project. If you need aditional addon's or plugins please see scripts located at the bottom of each page in order to find out which JS/CSS files to add.-->
 </body>

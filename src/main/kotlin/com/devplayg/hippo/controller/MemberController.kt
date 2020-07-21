@@ -1,6 +1,7 @@
 package com.devplayg.hippo.controller
 
 import com.devplayg.hippo.entity.MemberDto
+import com.devplayg.hippo.entity.toMemberDto
 import com.devplayg.hippo.service.MemberService
 import mu.KLogging
 import org.springframework.dao.DataIntegrityViolationException
@@ -9,10 +10,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 /**
  * Member controller
@@ -40,12 +39,22 @@ class MemberController(
         return ResponseEntity(memberService.findAll(), HttpStatus.OK)
     }
 
+
+    /**
+     * gets a member
+     */
+    @GetMapping("{id}")
+    fun findById(@PathVariable id: Long) = try {
+            ResponseEntity(memberService.findById(id), HttpStatus.OK)
+        } catch(e: ResponseStatusException) {
+            ResponseEntity("", e.status)
+        }
+
     /**
      * creates a member
      */
     @PostMapping
-    fun create(@ModelAttribute member: MemberDto, bindingResult: BindingResult): ResponseEntity<*>? {
-        return if (bindingResult.hasErrors()) {
+    fun create(@ModelAttribute member: MemberDto, bindingResult: BindingResult) = if (bindingResult.hasErrors()) {
             ResponseEntity(bindingResult, HttpStatus.BAD_REQUEST)
         } else try {
             ResponseEntity<Any>(memberService.create(member), HttpStatus.OK)
@@ -53,4 +62,3 @@ class MemberController(
             ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
         }
     }
-}

@@ -8,7 +8,9 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Repository
+import org.springframework.web.server.ResponseStatusException
 
 
 @Repository
@@ -19,6 +21,12 @@ class MemberRepo {
         } catch (e: NoSuchElementException) {
             null
         }
+    }
+
+    fun findById(id: Long) = transaction {
+        Members.select { Members.id.eq(id) } .map {
+            toMemberDto(it)
+        }.firstOrNull()
     }
 
     fun findAll(): List<MemberDto> {

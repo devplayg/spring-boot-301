@@ -4,7 +4,7 @@
 	(global = global || self, factory(global.jQuery));
 }(this, (function ($) { 'use strict';
 
-	$ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
+	$ = $ && $.hasOwnProperty('default') ? $['default'] : $;
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1316,9 +1316,7 @@
 	          });
 	          _this.columnsSortOrder = sortOrder;
 
-	          if (_this.options.cookie) {
-	            _this.persistReorderColumnsState(_this);
-	          }
+	          _this.persistReorderColumnsState(_this);
 
 	          var ths = [];
 	          var formatters = [];

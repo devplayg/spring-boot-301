@@ -1,7 +1,6 @@
 <html lang="en-us" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base}">
 
 <div layout:fragment="content">
-
     <div class="panel">
         <div class="panel-hdr">
             <h2>
@@ -24,37 +23,15 @@
                         <span th:text="#{cmd.registration}"></span>
                     </button>
                 </div>
-                <!--/*
-                <table th:id="|table-${ctrl}|"
-                       data-toggle="table"
-                       th:data-url="|/${ctrl}s|"
-                       th:data-toolbar="|#toolbar-${ctrl}|"
-                       th:data-sort-name="position"
-                       th:data-sort-order="desc"
-                       th:data-cookie-id-table="${ctrl}">
-                    <thead>
-                    <tr>
-                        <th data-field="memberId" data-sortable="true" data-width="225" th:text="ID"></th>
-                        <th data-field="cmd" data-formatter="memberCmdFormatter" data-sortable="true" data-visible="true">Username</th>
-                        <th data-field="username" data-sortable="true" data-visible="true">Username</th>
-                        <th data-field="name" data-formatter="" data-sortable="true" th:text="name"></th>
-                        <th data-field="email" data-sortable="true" th:text="email"></th>
-                        <th data-field="timezone" data-sortable="true" th:text="Timezone"></th>
-                    </tr>
-                    </thead>
-                </table>
-                */-->
-
                 <table  th:id="|table-${ctrl}|"
-                        data-toggle="table"
-                        th:data-url="|/${ctrl}s|"
                         th:data-toolbar="|#toolbar-${ctrl}|"
+                        th:data-url="|/${ctrl}s|"
                         th:data-sort-name="position"
                         th:data-sort-order="desc"
                         th:data-cookie-id-table="${ctrl}">
                     <thead>
                     <tr>
-                        <th data-field="cmd" data-formatter="memberCmdFormatter" data-events="memberCmdEvents" data-width="100" th:text="#{table.action}"></th>
+                        <th data-field="cmd" data-formatter="memberActionFormatter" data-events="memberActionEvents" data-width="100" th:text="#{table.action}"></th>
                         <!--/*
                         */-->
                         <th data-field="id" data-sortable="true" data-visible="false">ID</th>
@@ -275,23 +252,11 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script src="/assets/js/formplugins/select2/select2.bundle.js"></script>
-    <script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
+    <script th:src="@{/assets/js/formplugins/select2/select2.bundle.js}"></script>
     <script th:src="@{|/modules/${ctrl}/${ctrl}.js|}"></script>
+    <script th:src="@{|/modules/${ctrl}/formatter.js|}"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
-        window.memberCmdEvents = {
-            // "click .update": function (e, val, row, idx) {
-            //     member.show(row);
-            // },
-            // "click .delete": function (e, val, row, idx) {
-            //     member.delete(row);
-            // },
-            // "click .password": function (e, val, row, idx) {
-            //     member.showPasswordChangeForm(row);
-            // }
-        };
-
         /*]]>*/
     </script>
 

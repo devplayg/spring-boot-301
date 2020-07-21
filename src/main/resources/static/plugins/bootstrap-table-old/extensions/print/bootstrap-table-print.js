@@ -4,7 +4,7 @@
 	(global = global || self, factory(global.jQuery));
 }(this, (function ($) { 'use strict';
 
-	$ = $ && Object.prototype.hasOwnProperty.call($, 'default') ? $['default'] : $;
+	$ = $ && $.hasOwnProperty('default') ? $['default'] : $;
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1222,6 +1222,25 @@
 	  }
 	});
 
+	var $filter = arrayIteration.filter;
+
+
+
+	var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('filter');
+	// Edge 14- issue
+	var USES_TO_LENGTH = HAS_SPECIES_SUPPORT && !fails(function () {
+	  [].filter.call({ length: -1, 0: 1 }, function (it) { throw it; });
+	});
+
+	// `Array.prototype.filter` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.filter
+	// with adding support of @@species
+	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+	  filter: function filter(callbackfn /* , thisArg */) {
+	    return $filter(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+	  }
+	});
+
 	var UNSCOPABLES = wellKnownSymbol('unscopables');
 	var ArrayPrototype = Array.prototype;
 
@@ -1489,16 +1508,16 @@
 
 
 
-	var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
+	var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('map');
 	// FF49- issue
-	var USES_TO_LENGTH = HAS_SPECIES_SUPPORT && !fails(function () {
+	var USES_TO_LENGTH$1 = HAS_SPECIES_SUPPORT$1 && !fails(function () {
 	  [].map.call({ length: -1, 0: 1 }, function (it) { throw it; });
 	});
 
 	// `Array.prototype.map` method
 	// https://tc39.github.io/ecma262/#sec-array.prototype.map
 	// with adding support of @@species
-	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+	_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$1 }, {
 	  map: function map(callbackfn /* , thisArg */) {
 	    return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
 	  }
@@ -1539,12 +1558,38 @@
 	  }
 	});
 
+	var test = [];
+	var nativeSort = test.sort;
+
+	// IE8-
+	var FAILS_ON_UNDEFINED = fails(function () {
+	  test.sort(undefined);
+	});
+	// V8 bug
+	var FAILS_ON_NULL = fails(function () {
+	  test.sort(null);
+	});
+	// Old WebKit
+	var SLOPPY_METHOD$1 = sloppyArrayMethod('sort');
+
+	var FORCED$1 = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || SLOPPY_METHOD$1;
+
+	// `Array.prototype.sort` method
+	// https://tc39.github.io/ecma262/#sec-array.prototype.sort
+	_export({ target: 'Array', proto: true, forced: FORCED$1 }, {
+	  sort: function sort(comparefn) {
+	    return comparefn === undefined
+	      ? nativeSort.call(toObject(this))
+	      : nativeSort.call(toObject(this), aFunction$1(comparefn));
+	  }
+	});
+
 	var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
-	var test = {};
+	var test$1 = {};
 
-	test[TO_STRING_TAG$1] = 'z';
+	test$1[TO_STRING_TAG$1] = 'z';
 
-	var toStringTagSupport = String(test) === '[object z]';
+	var toStringTagSupport = String(test$1) === '[object z]';
 
 	var TO_STRING_TAG$2 = wellKnownSymbol('toStringTag');
 	// ES3 wrong here
@@ -1580,133 +1625,6 @@
 	if (!toStringTagSupport) {
 	  redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
 	}
-
-	// `RegExp.prototype.flags` getter implementation
-	// https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
-	var regexpFlags = function () {
-	  var that = anObject(this);
-	  var result = '';
-	  if (that.global) result += 'g';
-	  if (that.ignoreCase) result += 'i';
-	  if (that.multiline) result += 'm';
-	  if (that.dotAll) result += 's';
-	  if (that.unicode) result += 'u';
-	  if (that.sticky) result += 'y';
-	  return result;
-	};
-
-	// babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError,
-	// so we use an intermediate function.
-	function RE(s, f) {
-	  return RegExp(s, f);
-	}
-
-	var UNSUPPORTED_Y = fails(function () {
-	  // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
-	  var re = RE('a', 'y');
-	  re.lastIndex = 2;
-	  return re.exec('abcd') != null;
-	});
-
-	var BROKEN_CARET = fails(function () {
-	  // https://bugzilla.mozilla.org/show_bug.cgi?id=773687
-	  var re = RE('^r', 'gy');
-	  re.lastIndex = 2;
-	  return re.exec('str') != null;
-	});
-
-	var regexpStickyHelpers = {
-		UNSUPPORTED_Y: UNSUPPORTED_Y,
-		BROKEN_CARET: BROKEN_CARET
-	};
-
-	var nativeExec = RegExp.prototype.exec;
-	// This always refers to the native implementation, because the
-	// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-	// which loads this file before patching the method.
-	var nativeReplace = String.prototype.replace;
-
-	var patchedExec = nativeExec;
-
-	var UPDATES_LAST_INDEX_WRONG = (function () {
-	  var re1 = /a/;
-	  var re2 = /b*/g;
-	  nativeExec.call(re1, 'a');
-	  nativeExec.call(re2, 'a');
-	  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
-	})();
-
-	var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
-
-	// nonparticipating capturing group, copied from es5-shim's String#split patch.
-	var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
-
-	var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
-
-	if (PATCH) {
-	  patchedExec = function exec(str) {
-	    var re = this;
-	    var lastIndex, reCopy, match, i;
-	    var sticky = UNSUPPORTED_Y$1 && re.sticky;
-	    var flags = regexpFlags.call(re);
-	    var source = re.source;
-	    var charsAdded = 0;
-	    var strCopy = str;
-
-	    if (sticky) {
-	      flags = flags.replace('y', '');
-	      if (flags.indexOf('g') === -1) {
-	        flags += 'g';
-	      }
-
-	      strCopy = String(str).slice(re.lastIndex);
-	      // Support anchored sticky behavior.
-	      if (re.lastIndex > 0 && (!re.multiline || re.multiline && str[re.lastIndex - 1] !== '\n')) {
-	        source = '(?: ' + source + ')';
-	        strCopy = ' ' + strCopy;
-	        charsAdded++;
-	      }
-	      // ^(? + rx + ) is needed, in combination with some str slicing, to
-	      // simulate the 'y' flag.
-	      reCopy = new RegExp('^(?:' + source + ')', flags);
-	    }
-
-	    if (NPCG_INCLUDED) {
-	      reCopy = new RegExp('^' + source + '$(?!\\s)', flags);
-	    }
-	    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
-
-	    match = nativeExec.call(sticky ? reCopy : re, strCopy);
-
-	    if (sticky) {
-	      if (match) {
-	        match.input = match.input.slice(charsAdded);
-	        match[0] = match[0].slice(charsAdded);
-	        match.index = re.lastIndex;
-	        re.lastIndex += match[0].length;
-	      } else re.lastIndex = 0;
-	    } else if (UPDATES_LAST_INDEX_WRONG && match) {
-	      re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
-	    }
-	    if (NPCG_INCLUDED && match && match.length > 1) {
-	      // Fix browsers whose `exec` methods don't consistently return `undefined`
-	      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
-	      nativeReplace.call(match[0], reCopy, function () {
-	        for (i = 1; i < arguments.length - 2; i++) {
-	          if (arguments[i] === undefined) match[i] = undefined;
-	        }
-	      });
-	    }
-
-	    return match;
-	  };
-	}
-
-	var regexpExec = patchedExec;
-
-	_export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
-	  exec: regexpExec
-	});
 
 	// `String.prototype.{ codePointAt, at }` methods implementation
 	var createMethod$2 = function (CONVERT_TO_STRING) {
@@ -1762,395 +1680,6 @@
 	  return { value: point, done: false };
 	});
 
-	var SPECIES$3 = wellKnownSymbol('species');
-
-	var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
-	  // #replace needs built-in support for named groups.
-	  // #match works fine because it just return the exec results, even if it has
-	  // a "grops" property.
-	  var re = /./;
-	  re.exec = function () {
-	    var result = [];
-	    result.groups = { a: '7' };
-	    return result;
-	  };
-	  return ''.replace(re, '$<a>') !== '7';
-	});
-
-	// IE <= 11 replaces $0 with the whole match, as if it was $&
-	// https://stackoverflow.com/questions/6024666/getting-ie-to-replace-a-regex-with-the-literal-string-0
-	var REPLACE_KEEPS_$0 = (function () {
-	  return 'a'.replace(/./, '$0') === '$0';
-	})();
-
-	// Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
-	// Weex JS has frozen built-in prototypes, so use try / catch wrapper
-	var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
-	  var re = /(?:)/;
-	  var originalExec = re.exec;
-	  re.exec = function () { return originalExec.apply(this, arguments); };
-	  var result = 'ab'.split(re);
-	  return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
-	});
-
-	var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
-	  var SYMBOL = wellKnownSymbol(KEY);
-
-	  var DELEGATES_TO_SYMBOL = !fails(function () {
-	    // String methods call symbol-named RegEp methods
-	    var O = {};
-	    O[SYMBOL] = function () { return 7; };
-	    return ''[KEY](O) != 7;
-	  });
-
-	  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
-	    // Symbol-named RegExp methods call .exec
-	    var execCalled = false;
-	    var re = /a/;
-
-	    if (KEY === 'split') {
-	      // We can't use real regex here since it causes deoptimization
-	      // and serious performance degradation in V8
-	      // https://github.com/zloirock/core-js/issues/306
-	      re = {};
-	      // RegExp[@@split] doesn't call the regex's exec method, but first creates
-	      // a new one. We need to return the patched regex when creating the new one.
-	      re.constructor = {};
-	      re.constructor[SPECIES$3] = function () { return re; };
-	      re.flags = '';
-	      re[SYMBOL] = /./[SYMBOL];
-	    }
-
-	    re.exec = function () { execCalled = true; return null; };
-
-	    re[SYMBOL]('');
-	    return !execCalled;
-	  });
-
-	  if (
-	    !DELEGATES_TO_SYMBOL ||
-	    !DELEGATES_TO_EXEC ||
-	    (KEY === 'replace' && !(REPLACE_SUPPORTS_NAMED_GROUPS && REPLACE_KEEPS_$0)) ||
-	    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
-	  ) {
-	    var nativeRegExpMethod = /./[SYMBOL];
-	    var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-	      if (regexp.exec === regexpExec) {
-	        if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
-	          // The native String method already delegates to @@method (this
-	          // polyfilled function), leasing to infinite recursion.
-	          // We avoid it by directly calling the native @@method method.
-	          return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
-	        }
-	        return { done: true, value: nativeMethod.call(str, regexp, arg2) };
-	      }
-	      return { done: false };
-	    }, { REPLACE_KEEPS_$0: REPLACE_KEEPS_$0 });
-	    var stringMethod = methods[0];
-	    var regexMethod = methods[1];
-
-	    redefine(String.prototype, KEY, stringMethod);
-	    redefine(RegExp.prototype, SYMBOL, length == 2
-	      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
-	      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
-	      ? function (string, arg) { return regexMethod.call(string, this, arg); }
-	      // 21.2.5.6 RegExp.prototype[@@match](string)
-	      // 21.2.5.9 RegExp.prototype[@@search](string)
-	      : function (string) { return regexMethod.call(string, this); }
-	    );
-	  }
-
-	  if (sham) createNonEnumerableProperty(RegExp.prototype[SYMBOL], 'sham', true);
-	};
-
-	var charAt$1 = stringMultibyte.charAt;
-
-	// `AdvanceStringIndex` abstract operation
-	// https://tc39.github.io/ecma262/#sec-advancestringindex
-	var advanceStringIndex = function (S, index, unicode) {
-	  return index + (unicode ? charAt$1(S, index).length : 1);
-	};
-
-	// `RegExpExec` abstract operation
-	// https://tc39.github.io/ecma262/#sec-regexpexec
-	var regexpExecAbstract = function (R, S) {
-	  var exec = R.exec;
-	  if (typeof exec === 'function') {
-	    var result = exec.call(R, S);
-	    if (typeof result !== 'object') {
-	      throw TypeError('RegExp exec method returned something other than an Object or null');
-	    }
-	    return result;
-	  }
-
-	  if (classofRaw(R) !== 'RegExp') {
-	    throw TypeError('RegExp#exec called on incompatible receiver');
-	  }
-
-	  return regexpExec.call(R, S);
-	};
-
-	var max$2 = Math.max;
-	var min$2 = Math.min;
-	var floor$1 = Math.floor;
-	var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
-	var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
-
-	var maybeToString = function (it) {
-	  return it === undefined ? it : String(it);
-	};
-
-	// @@replace logic
-	fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, maybeCallNative, reason) {
-	  return [
-	    // `String.prototype.replace` method
-	    // https://tc39.github.io/ecma262/#sec-string.prototype.replace
-	    function replace(searchValue, replaceValue) {
-	      var O = requireObjectCoercible(this);
-	      var replacer = searchValue == undefined ? undefined : searchValue[REPLACE];
-	      return replacer !== undefined
-	        ? replacer.call(searchValue, O, replaceValue)
-	        : nativeReplace.call(String(O), searchValue, replaceValue);
-	    },
-	    // `RegExp.prototype[@@replace]` method
-	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@replace
-	    function (regexp, replaceValue) {
-	      if (reason.REPLACE_KEEPS_$0 || (typeof replaceValue === 'string' && replaceValue.indexOf('$0') === -1)) {
-	        var res = maybeCallNative(nativeReplace, regexp, this, replaceValue);
-	        if (res.done) return res.value;
-	      }
-
-	      var rx = anObject(regexp);
-	      var S = String(this);
-
-	      var functionalReplace = typeof replaceValue === 'function';
-	      if (!functionalReplace) replaceValue = String(replaceValue);
-
-	      var global = rx.global;
-	      if (global) {
-	        var fullUnicode = rx.unicode;
-	        rx.lastIndex = 0;
-	      }
-	      var results = [];
-	      while (true) {
-	        var result = regexpExecAbstract(rx, S);
-	        if (result === null) break;
-
-	        results.push(result);
-	        if (!global) break;
-
-	        var matchStr = String(result[0]);
-	        if (matchStr === '') rx.lastIndex = advanceStringIndex(S, toLength(rx.lastIndex), fullUnicode);
-	      }
-
-	      var accumulatedResult = '';
-	      var nextSourcePosition = 0;
-	      for (var i = 0; i < results.length; i++) {
-	        result = results[i];
-
-	        var matched = String(result[0]);
-	        var position = max$2(min$2(toInteger(result.index), S.length), 0);
-	        var captures = [];
-	        // NOTE: This is equivalent to
-	        //   captures = result.slice(1).map(maybeToString)
-	        // but for some reason `nativeSlice.call(result, 1, result.length)` (called in
-	        // the slice polyfill when slicing native arrays) "doesn't work" in safari 9 and
-	        // causes a crash (https://pastebin.com/N21QzeQA) when trying to debug it.
-	        for (var j = 1; j < result.length; j++) captures.push(maybeToString(result[j]));
-	        var namedCaptures = result.groups;
-	        if (functionalReplace) {
-	          var replacerArgs = [matched].concat(captures, position, S);
-	          if (namedCaptures !== undefined) replacerArgs.push(namedCaptures);
-	          var replacement = String(replaceValue.apply(undefined, replacerArgs));
-	        } else {
-	          replacement = getSubstitution(matched, S, position, captures, namedCaptures, replaceValue);
-	        }
-	        if (position >= nextSourcePosition) {
-	          accumulatedResult += S.slice(nextSourcePosition, position) + replacement;
-	          nextSourcePosition = position + matched.length;
-	        }
-	      }
-	      return accumulatedResult + S.slice(nextSourcePosition);
-	    }
-	  ];
-
-	  // https://tc39.github.io/ecma262/#sec-getsubstitution
-	  function getSubstitution(matched, str, position, captures, namedCaptures, replacement) {
-	    var tailPos = position + matched.length;
-	    var m = captures.length;
-	    var symbols = SUBSTITUTION_SYMBOLS_NO_NAMED;
-	    if (namedCaptures !== undefined) {
-	      namedCaptures = toObject(namedCaptures);
-	      symbols = SUBSTITUTION_SYMBOLS;
-	    }
-	    return nativeReplace.call(replacement, symbols, function (match, ch) {
-	      var capture;
-	      switch (ch.charAt(0)) {
-	        case '$': return '$';
-	        case '&': return matched;
-	        case '`': return str.slice(0, position);
-	        case "'": return str.slice(tailPos);
-	        case '<':
-	          capture = namedCaptures[ch.slice(1, -1)];
-	          break;
-	        default: // \d\d?
-	          var n = +ch;
-	          if (n === 0) return match;
-	          if (n > m) {
-	            var f = floor$1(n / 10);
-	            if (f === 0) return match;
-	            if (f <= m) return captures[f - 1] === undefined ? ch.charAt(1) : captures[f - 1] + ch.charAt(1);
-	            return match;
-	          }
-	          capture = captures[n - 1];
-	      }
-	      return capture === undefined ? '' : capture;
-	    });
-	  }
-	});
-
-	var MATCH = wellKnownSymbol('match');
-
-	// `IsRegExp` abstract operation
-	// https://tc39.github.io/ecma262/#sec-isregexp
-	var isRegexp = function (it) {
-	  var isRegExp;
-	  return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
-	};
-
-	var SPECIES$4 = wellKnownSymbol('species');
-
-	// `SpeciesConstructor` abstract operation
-	// https://tc39.github.io/ecma262/#sec-speciesconstructor
-	var speciesConstructor = function (O, defaultConstructor) {
-	  var C = anObject(O).constructor;
-	  var S;
-	  return C === undefined || (S = anObject(C)[SPECIES$4]) == undefined ? defaultConstructor : aFunction$1(S);
-	};
-
-	var arrayPush = [].push;
-	var min$3 = Math.min;
-	var MAX_UINT32 = 0xFFFFFFFF;
-
-	// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
-	var SUPPORTS_Y = !fails(function () { return !RegExp(MAX_UINT32, 'y'); });
-
-	// @@split logic
-	fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCallNative) {
-	  var internalSplit;
-	  if (
-	    'abbc'.split(/(b)*/)[1] == 'c' ||
-	    'test'.split(/(?:)/, -1).length != 4 ||
-	    'ab'.split(/(?:ab)*/).length != 2 ||
-	    '.'.split(/(.?)(.?)/).length != 4 ||
-	    '.'.split(/()()/).length > 1 ||
-	    ''.split(/.?/).length
-	  ) {
-	    // based on es5-shim implementation, need to rework it
-	    internalSplit = function (separator, limit) {
-	      var string = String(requireObjectCoercible(this));
-	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-	      if (lim === 0) return [];
-	      if (separator === undefined) return [string];
-	      // If `separator` is not a regex, use native split
-	      if (!isRegexp(separator)) {
-	        return nativeSplit.call(string, separator, lim);
-	      }
-	      var output = [];
-	      var flags = (separator.ignoreCase ? 'i' : '') +
-	                  (separator.multiline ? 'm' : '') +
-	                  (separator.unicode ? 'u' : '') +
-	                  (separator.sticky ? 'y' : '');
-	      var lastLastIndex = 0;
-	      // Make `global` and avoid `lastIndex` issues by working with a copy
-	      var separatorCopy = new RegExp(separator.source, flags + 'g');
-	      var match, lastIndex, lastLength;
-	      while (match = regexpExec.call(separatorCopy, string)) {
-	        lastIndex = separatorCopy.lastIndex;
-	        if (lastIndex > lastLastIndex) {
-	          output.push(string.slice(lastLastIndex, match.index));
-	          if (match.length > 1 && match.index < string.length) arrayPush.apply(output, match.slice(1));
-	          lastLength = match[0].length;
-	          lastLastIndex = lastIndex;
-	          if (output.length >= lim) break;
-	        }
-	        if (separatorCopy.lastIndex === match.index) separatorCopy.lastIndex++; // Avoid an infinite loop
-	      }
-	      if (lastLastIndex === string.length) {
-	        if (lastLength || !separatorCopy.test('')) output.push('');
-	      } else output.push(string.slice(lastLastIndex));
-	      return output.length > lim ? output.slice(0, lim) : output;
-	    };
-	  // Chakra, V8
-	  } else if ('0'.split(undefined, 0).length) {
-	    internalSplit = function (separator, limit) {
-	      return separator === undefined && limit === 0 ? [] : nativeSplit.call(this, separator, limit);
-	    };
-	  } else internalSplit = nativeSplit;
-
-	  return [
-	    // `String.prototype.split` method
-	    // https://tc39.github.io/ecma262/#sec-string.prototype.split
-	    function split(separator, limit) {
-	      var O = requireObjectCoercible(this);
-	      var splitter = separator == undefined ? undefined : separator[SPLIT];
-	      return splitter !== undefined
-	        ? splitter.call(separator, O, limit)
-	        : internalSplit.call(String(O), separator, limit);
-	    },
-	    // `RegExp.prototype[@@split]` method
-	    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
-	    //
-	    // NOTE: This cannot be properly polyfilled in engines that don't support
-	    // the 'y' flag.
-	    function (regexp, limit) {
-	      var res = maybeCallNative(internalSplit, regexp, this, limit, internalSplit !== nativeSplit);
-	      if (res.done) return res.value;
-
-	      var rx = anObject(regexp);
-	      var S = String(this);
-	      var C = speciesConstructor(rx, RegExp);
-
-	      var unicodeMatching = rx.unicode;
-	      var flags = (rx.ignoreCase ? 'i' : '') +
-	                  (rx.multiline ? 'm' : '') +
-	                  (rx.unicode ? 'u' : '') +
-	                  (SUPPORTS_Y ? 'y' : 'g');
-
-	      // ^(? + rx + ) is needed, in combination with some S slicing, to
-	      // simulate the 'y' flag.
-	      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
-	      var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
-	      if (lim === 0) return [];
-	      if (S.length === 0) return regexpExecAbstract(splitter, S) === null ? [S] : [];
-	      var p = 0;
-	      var q = 0;
-	      var A = [];
-	      while (q < S.length) {
-	        splitter.lastIndex = SUPPORTS_Y ? q : 0;
-	        var z = regexpExecAbstract(splitter, SUPPORTS_Y ? S : S.slice(q));
-	        var e;
-	        if (
-	          z === null ||
-	          (e = min$3(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
-	        ) {
-	          q = advanceStringIndex(S, q, unicodeMatching);
-	        } else {
-	          A.push(S.slice(p, q));
-	          if (A.length === lim) return A;
-	          for (var i = 1; i <= z.length - 1; i++) {
-	            A.push(z[i]);
-	            if (A.length === lim) return A;
-	          }
-	          q = p = e;
-	        }
-	      }
-	      A.push(S.slice(p));
-	      return A;
-	    }
-	  ];
-	}, !SUPPORTS_Y);
-
 	// iterable DOM collections
 	// flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
 	var domIterables = {
@@ -2187,49 +1716,29 @@
 	  TouchList: 0
 	};
 
-	var $forEach$1 = arrayIteration.forEach;
-
-
-	// `Array.prototype.forEach` method implementation
-	// https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-	var arrayForEach = sloppyArrayMethod('forEach') ? function forEach(callbackfn /* , thisArg */) {
-	  return $forEach$1(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-	} : [].forEach;
-
-	for (var COLLECTION_NAME in domIterables) {
-	  var Collection = global_1[COLLECTION_NAME];
-	  var CollectionPrototype = Collection && Collection.prototype;
-	  // some Chrome versions have non-configurable methods on DOMTokenList
-	  if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
-	    createNonEnumerableProperty(CollectionPrototype, 'forEach', arrayForEach);
-	  } catch (error) {
-	    CollectionPrototype.forEach = arrayForEach;
-	  }
-	}
-
 	var ITERATOR$2 = wellKnownSymbol('iterator');
 	var TO_STRING_TAG$3 = wellKnownSymbol('toStringTag');
 	var ArrayValues = es_array_iterator.values;
 
-	for (var COLLECTION_NAME$1 in domIterables) {
-	  var Collection$1 = global_1[COLLECTION_NAME$1];
-	  var CollectionPrototype$1 = Collection$1 && Collection$1.prototype;
-	  if (CollectionPrototype$1) {
+	for (var COLLECTION_NAME in domIterables) {
+	  var Collection = global_1[COLLECTION_NAME];
+	  var CollectionPrototype = Collection && Collection.prototype;
+	  if (CollectionPrototype) {
 	    // some Chrome versions have non-configurable methods on DOMTokenList
-	    if (CollectionPrototype$1[ITERATOR$2] !== ArrayValues) try {
-	      createNonEnumerableProperty(CollectionPrototype$1, ITERATOR$2, ArrayValues);
+	    if (CollectionPrototype[ITERATOR$2] !== ArrayValues) try {
+	      createNonEnumerableProperty(CollectionPrototype, ITERATOR$2, ArrayValues);
 	    } catch (error) {
-	      CollectionPrototype$1[ITERATOR$2] = ArrayValues;
+	      CollectionPrototype[ITERATOR$2] = ArrayValues;
 	    }
-	    if (!CollectionPrototype$1[TO_STRING_TAG$3]) {
-	      createNonEnumerableProperty(CollectionPrototype$1, TO_STRING_TAG$3, COLLECTION_NAME$1);
+	    if (!CollectionPrototype[TO_STRING_TAG$3]) {
+	      createNonEnumerableProperty(CollectionPrototype, TO_STRING_TAG$3, COLLECTION_NAME);
 	    }
-	    if (domIterables[COLLECTION_NAME$1]) for (var METHOD_NAME in es_array_iterator) {
+	    if (domIterables[COLLECTION_NAME]) for (var METHOD_NAME in es_array_iterator) {
 	      // some Chrome versions have non-configurable methods on DOMTokenList
-	      if (CollectionPrototype$1[METHOD_NAME] !== es_array_iterator[METHOD_NAME]) try {
-	        createNonEnumerableProperty(CollectionPrototype$1, METHOD_NAME, es_array_iterator[METHOD_NAME]);
+	      if (CollectionPrototype[METHOD_NAME] !== es_array_iterator[METHOD_NAME]) try {
+	        createNonEnumerableProperty(CollectionPrototype, METHOD_NAME, es_array_iterator[METHOD_NAME]);
 	      } catch (error) {
-	        CollectionPrototype$1[METHOD_NAME] = es_array_iterator[METHOD_NAME];
+	        CollectionPrototype[METHOD_NAME] = es_array_iterator[METHOD_NAME];
 	      }
 	    }
 	  }
@@ -2255,21 +1764,6 @@
 	  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
 	  if (staticProps) _defineProperties(Constructor, staticProps);
 	  return Constructor;
-	}
-
-	function _defineProperty(obj, key, value) {
-	  if (key in obj) {
-	    Object.defineProperty(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
 	}
 
 	function _inherits(subClass, superClass) {
@@ -2350,65 +1844,33 @@
 	}
 
 	/**
-	 * @author zhixin wen <wenzhixin2010@gmail.com>
-	 * extensions: https://github.com/hhurz/tableExport.jquery.plugin
+	 * @update zhixin wen <wenzhixin2010@gmail.com>
 	 */
 
 	var Utils = $.fn.bootstrapTable.utils;
-	var TYPE_NAME = {
-	  json: 'JSON',
-	  xml: 'XML',
-	  png: 'PNG',
-	  csv: 'CSV',
-	  txt: 'TXT',
-	  sql: 'SQL',
-	  doc: 'MS-Word',
-	  excel: 'MS-Excel',
-	  xlsx: 'MS-Excel (OpenXML)',
-	  powerpoint: 'MS-Powerpoint',
-	  pdf: 'PDF'
-	};
-	$.extend($.fn.bootstrapTable.defaults, {
-	  showExport: false,
-	  exportDataType: 'basic',
-	  // basic, all, selected
-	  exportTypes: ['json', 'xml', 'csv', 'txt', 'sql', 'excel'],
-	  exportOptions: {
-	    onCellHtmlData: function onCellHtmlData(cell, rowIndex, colIndex, htmlData) {
-	      if (cell.is('th')) {
-	        return cell.find('.th-inner').text();
-	      }
 
-	      return htmlData;
-	    }
-	  },
-	  exportFooter: false
+	function printPageBuilderDefault(table) {
+	  return "\n  <html>\n  <head>\n  <style type=\"text/css\" media=\"print\">\n  @page {\n    size: auto;\n    margin: 25px 0 25px 0;\n  }\n  </style>\n  <style type=\"text/css\" media=\"all\">\n  table {\n    border-collapse: collapse;\n    font-size: 12px;\n  }\n  table, th, td {\n    border: 1px solid grey;\n  }\n  th, td {\n    text-align: center;\n    vertical-align: middle;\n  }\n  p {\n    font-weight: bold;\n    margin-left:20px;\n  }\n  table {\n    width:94%;\n    margin-left:3%;\n    margin-right:3%;\n  }\n  div.bs-table-print {\n    text-align:center;\n  }\n  </style>\n  </head>\n  <title>Print Table</title>\n  <body>\n  <p>Printed on: ".concat(new Date(), " </p>\n  <div class=\"bs-table-print\">").concat(table, "</div>\n  </body>\n  </html>");
+	}
+
+	$.extend($.fn.bootstrapTable.defaults, {
+	  showPrint: false,
+	  printAsFilteredAndSortedOnUI: true,
+	  printSortColumn: undefined,
+	  printSortOrder: 'asc',
+	  printPageBuilder: function printPageBuilder(table) {
+	    return printPageBuilderDefault(table);
+	  }
 	});
-	$.extend($.fn.bootstrapTable.columnDefaults, {
-	  forceExport: false,
-	  forceHide: false
+	$.extend($.fn.bootstrapTable.COLUMN_DEFAULTS, {
+	  printFilter: undefined,
+	  printIgnore: false,
+	  printFormatter: undefined
 	});
 	$.extend($.fn.bootstrapTable.defaults.icons, {
-	  export: {
-	    bootstrap3: 'glyphicon-export icon-share',
-	    materialize: 'file_download',
-	    'bootstrap-table': 'icon-download'
-	  }[$.fn.bootstrapTable.theme] || 'fa-download'
-	});
-	$.extend($.fn.bootstrapTable.locales, {
-	  formatExport: function formatExport() {
-	    return 'Export data';
-	  }
-	});
-	$.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales);
-	$.fn.bootstrapTable.methods.push('exportTable');
-	$.extend($.fn.bootstrapTable.defaults, {
-	  onExportSaved: function onExportSaved(exportedRows) {
-	    return false;
-	  }
-	});
-	$.extend($.fn.bootstrapTable.Constructor.EVENTS, {
-	  'export-saved.bs.table': 'onExportSaved'
+	  print: {
+	    bootstrap3: 'glyphicon-print icon-share'
+	  }[$.fn.bootstrapTable.theme] || 'fa-print'
 	});
 
 	$.BootstrapTable =
@@ -2428,8 +1890,7 @@
 	      var _get2,
 	          _this = this;
 
-	      var o = this.options;
-	      this.showToolbar = this.showToolbar || o.showExport;
+	      this.showToolbar = this.showToolbar || this.options.showPrint;
 
 	      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
 	        args[_key] = arguments[_key];
@@ -2437,51 +1898,50 @@
 
 	      (_get2 = _get(_getPrototypeOf(_class.prototype), "initToolbar", this)).call.apply(_get2, [this].concat(args));
 
-	      if (!this.options.showExport) {
+	      if (!this.options.showPrint) {
 	        return;
 	      }
 
 	      var $btnGroup = this.$toolbar.find('>.columns');
-	      this.$export = $btnGroup.find('div.export');
+	      var $print = $btnGroup.find('button.bs-print');
 
-	      if (this.$export.length) {
-	        this.updateExportButton();
-	        return;
+	      if (!$print.length) {
+	        $print = $("\n        <button class=\"".concat(this.constants.buttonsClass, " bs-print\" type=\"button\">\n        <i class=\"").concat(this.options.iconsPrefix, " ").concat(this.options.icons.print, "\"></i>\n        </button>")).appendTo($btnGroup);
 	      }
 
-	      var $menu = $(this.constants.html.toolbarDropdown.join(''));
-	      var exportTypes = o.exportTypes;
+	      $print.off('click').on('click', function () {
+	        _this.doPrint(_this.options.printAsFilteredAndSortedOnUI ? _this.getData() : _this.options.data.slice(0));
+	      });
+	    }
+	  }, {
+	    key: "doPrint",
+	    value: function doPrint(data) {
+	      var _this2 = this;
 
-	      if (typeof exportTypes === 'string') {
-	        var types = exportTypes.slice(1, -1).replace(/ /g, '').split(',');
-	        exportTypes = types.map(function (t) {
-	          return t.slice(1, -1);
-	        });
-	      }
+	      var formatValue = function formatValue(row, i, column) {
+	        var value = Utils.calculateObjectValue(column, column.printFormatter, [row[column.field], row, i], row[column.field]);
+	        return typeof value === 'undefined' || value === null ? _this2.options.undefinedText : value;
+	      };
 
-	      this.$export = $(exportTypes.length === 1 ? "\n      <div class=\"export ".concat(this.constants.classes.buttonsDropdown, "\"\n      data-type=\"").concat(exportTypes[0], "\">\n      <button class=\"").concat(this.constants.buttonsClass, "\"\n      aria-label=\"Export\"\n      type=\"button\"\n      title=\"").concat(o.formatExport(), "\">\n      ").concat(o.showButtonIcons ? Utils.sprintf(this.constants.html.icon, o.iconsPrefix, o.icons.export) : '', "\n      ").concat(o.showButtonText ? o.formatExport() : '', "\n      </button>\n      </div>\n    ") : "\n      <div class=\"export ".concat(this.constants.classes.buttonsDropdown, "\">\n      <button class=\"").concat(this.constants.buttonsClass, " dropdown-toggle\"\n      aria-label=\"Export\"\n      data-toggle=\"dropdown\"\n      type=\"button\"\n      title=\"").concat(o.formatExport(), "\">\n      ").concat(o.showButtonIcons ? Utils.sprintf(this.constants.html.icon, o.iconsPrefix, o.icons.export) : '', "\n      ").concat(o.showButtonText ? o.formatExport() : '', "\n      ").concat(this.constants.html.dropdownCaret, "\n      </button>\n      </div>\n    ")).appendTo($btnGroup);
-	      var $items = this.$export;
-
-	      if (exportTypes.length > 1) {
-	        this.$export.append($menu); // themes support
-
-	        if ($menu.children().length) {
-	          $menu = $menu.children().eq(0);
-	        }
-
+	      var buildTable = function buildTable(data, columnsArray) {
+	        var dir = _this2.$el.attr('dir') || 'ltr';
+	        var html = ["<table dir=\"".concat(dir, "\"><thead>")];
 	        var _iteratorNormalCompletion = true;
 	        var _didIteratorError = false;
 	        var _iteratorError = undefined;
 
 	        try {
-	          for (var _iterator = exportTypes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var type = _step.value;
+	          for (var _iterator = columnsArray[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var _columns = _step.value;
+	            html.push('<tr>');
 
-	            if (TYPE_NAME.hasOwnProperty(type)) {
-	              var $item = $(Utils.sprintf(this.constants.html.pageDropdownItem, '', TYPE_NAME[type]));
-	              $item.attr('data-type', type);
-	              $menu.append($item);
+	            for (var h = 0; h < _columns.length; h++) {
+	              if (!_columns[h].printIgnore) {
+	                html.push("<th\n              ".concat(Utils.sprintf(' rowspan="%s"', _columns[h].rowspan), "\n              ").concat(Utils.sprintf(' colspan="%s"', _columns[h].colspan), "\n              >").concat(_columns[h].title, "</th>"));
+	              }
 	            }
+
+	            html.push('</tr>');
 	          }
 	        } catch (err) {
 	          _didIteratorError = true;
@@ -2498,192 +1958,94 @@
 	          }
 	        }
 
-	        $items = $menu.children();
-	      }
+	        html.push('</thead><tbody>');
 
-	      this.updateExportButton();
-	      $items.click(function (e) {
-	        e.preventDefault();
-	        var type = $(e.currentTarget).data('type');
-	        var exportOptions = {
-	          type: type,
-	          escape: false
-	        };
+	        for (var i = 0; i < data.length; i++) {
+	          html.push('<tr>');
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
 
-	        _this.exportTable(exportOptions);
-	      });
-	      this.handleToolbar();
-	    }
-	  }, {
-	    key: "handleToolbar",
-	    value: function handleToolbar() {
-	      if (!this.$export) {
-	        return;
-	      }
+	          try {
+	            for (var _iterator2 = columnsArray[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var columns = _step2.value;
 
-	      if ($.fn.bootstrapTable.theme === 'foundation') {
-	        this.$export.find('.dropdown-pane').attr('id', 'toolbar-export-id');
-	      } else if ($.fn.bootstrapTable.theme === 'materialize') {
-	        this.$export.find('.dropdown-content').attr('id', 'toolbar-export-id');
-	      }
-
-	      if (_get(_getPrototypeOf(_class.prototype), "handleToolbar", this)) {
-	        _get(_getPrototypeOf(_class.prototype), "handleToolbar", this).call(this);
-	      }
-	    }
-	  }, {
-	    key: "exportTable",
-	    value: function exportTable(options) {
-	      var _this2 = this;
-
-	      var o = this.options;
-	      var stateField = this.header.stateField;
-	      var isCardView = o.cardView;
-
-	      var doExport = function doExport(callback) {
-	        if (stateField) {
-	          _this2.hideColumn(stateField);
-	        }
-
-	        if (isCardView) {
-	          _this2.toggleView();
-	        }
-
-	        _this2.columns.forEach(function (row) {
-	          if (row.forceHide) {
-	            _this2.hideColumn(row.field);
-	          }
-	        });
-
-	        var data = _this2.getData();
-
-	        if (o.exportFooter) {
-	          var $footerRow = _this2.$tableFooter.find('tr').first();
-
-	          var footerData = {};
-	          var footerHtml = [];
-	          $.each($footerRow.children(), function (index, footerCell) {
-	            var footerCellHtml = $(footerCell).children('.th-inner').first().html();
-	            footerData[_this2.columns[index].field] = footerCellHtml === '&nbsp;' ? null : footerCellHtml; // grab footer cell text into cell index-based array
-
-	            footerHtml.push(footerCellHtml);
-	          });
-
-	          _this2.$body.append(_this2.$body.children().last()[0].outerHTML);
-
-	          var $lastTableRow = _this2.$body.children().last();
-
-	          $.each($lastTableRow.children(), function (index, lastTableRowCell) {
-	            $(lastTableRowCell).html(footerHtml[index]);
-	          });
-	        }
-
-	        var hiddenColumns = _this2.getHiddenColumns();
-
-	        hiddenColumns.forEach(function (row) {
-	          if (row.forceExport) {
-	            _this2.showColumn(row.field);
-	          }
-	        });
-
-	        if (typeof o.exportOptions.fileName === 'function') {
-	          options.fileName = o.exportOptions.fileName();
-	        }
-
-	        _this2.$el.tableExport($.extend({
-	          onAfterSaveToFile: function onAfterSaveToFile() {
-	            if (o.exportFooter) {
-	              _this2.load(data);
-	            }
-
-	            if (stateField) {
-	              _this2.showColumn(stateField);
-	            }
-
-	            if (isCardView) {
-	              _this2.toggleView();
-	            }
-
-	            hiddenColumns.forEach(function (row) {
-	              if (row.forceExport) {
-	                _this2.hideColumn(row.field);
+	              for (var j = 0; j < columns.length; j++) {
+	                if (!columns[j].printIgnore && columns[j].field) {
+	                  html.push('<td>', formatValue(data[i], i, columns[j]), '</td>');
+	                }
 	              }
-	            });
-
-	            _this2.columns.forEach(function (row) {
-	              if (row.forceHide) {
-	                _this2.showColumn(row.field);
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+	                _iterator2.return();
 	              }
-	            });
-
-	            if (callback) callback();
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
 	          }
-	        }, o.exportOptions, options));
+
+	          html.push('</tr>');
+	        }
+
+	        html.push('</tbody></table>');
+	        return html.join('');
 	      };
 
-	      if (o.exportDataType === 'all' && o.pagination) {
-	        var eventName = o.sidePagination === 'server' ? 'post-body.bs.table' : 'page-change.bs.table';
-	        var virtualScroll = this.options.virtualScroll;
-	        this.$el.one(eventName, function () {
-	          doExport(function () {
-	            _this2.options.virtualScroll = virtualScroll;
+	      var sortRows = function sortRows(data, colName, sortOrder) {
+	        if (!colName) {
+	          return data;
+	        }
 
-	            _this2.togglePagination();
-	          });
+	        var reverse = sortOrder !== 'asc';
+	        reverse = -(+reverse || -1);
+	        return data.sort(function (a, b) {
+	          return reverse * a[colName].localeCompare(b[colName]);
 	        });
-	        this.options.virtualScroll = false;
-	        this.togglePagination();
-	        this.trigger('export-saved', this.getData());
-	      } else if (o.exportDataType === 'selected') {
-	        var data = this.getData();
-	        var selectedData = this.getSelections();
-	        var pagination = o.pagination;
+	      };
 
-	        if (!selectedData.length) {
-	          return;
-	        }
-
-	        if (o.sidePagination === 'server') {
-	          data = _defineProperty({
-	            total: o.totalRows
-	          }, this.options.dataField, data);
-	          selectedData = _defineProperty({
-	            total: selectedData.length
-	          }, this.options.dataField, selectedData);
-	        }
-
-	        this.load(selectedData);
-
-	        if (pagination) {
-	          this.togglePagination();
-	        }
-
-	        doExport(function () {
-	          if (pagination) {
-	            _this2.togglePagination();
+	      var filterRow = function filterRow(row, filters) {
+	        for (var index = 0; index < filters.length; ++index) {
+	          if (row[filters[index].colName] !== filters[index].value) {
+	            return false;
 	          }
+	        }
 
-	          _this2.load(data);
+	        return true;
+	      };
+
+	      var filterRows = function filterRows(data, filters) {
+	        return data.filter(function (row) {
+	          return filterRow(row, filters);
 	        });
-	        this.trigger('export-saved', selectedData);
-	      } else {
-	        doExport();
-	        this.trigger('export-saved', this.getData(true));
-	      }
-	    }
-	  }, {
-	    key: "updateSelected",
-	    value: function updateSelected() {
-	      _get(_getPrototypeOf(_class.prototype), "updateSelected", this).call(this);
+	      };
 
-	      this.updateExportButton();
-	    }
-	  }, {
-	    key: "updateExportButton",
-	    value: function updateExportButton() {
-	      if (this.options.exportDataType === 'selected') {
-	        this.$export.find('> button').prop('disabled', !this.getSelections().length);
-	      }
+	      var getColumnFilters = function getColumnFilters(columns) {
+	        return !columns || !columns[0] ? [] : columns[0].filter(function (col) {
+	          return col.printFilter;
+	        }).map(function (col) {
+	          return {
+	            colName: col.field,
+	            value: col.printFilter
+	          };
+	        });
+	      };
+
+	      data = filterRows(data, getColumnFilters(this.options.columns));
+	      data = sortRows(data, this.options.printSortColumn, this.options.printSortOrder);
+	      var table = buildTable(data, this.options.columns);
+	      var newWin = window.open('');
+	      newWin.document.write(this.options.printPageBuilder.call(this, table));
+	      newWin.document.close();
+	      newWin.focus();
+	      newWin.print();
+	      newWin.close();
 	    }
 	  }]);
 

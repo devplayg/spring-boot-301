@@ -1,6 +1,4 @@
 $(function () {
-
-
     /**
      * 1. Define and initialize
      */
@@ -208,7 +206,6 @@ $(function () {
      * 2. Events
      */
 
-
     $(".modal-form")
         .on("hidden.bs.modal", function () {
             let $form = $(this).closest("form");
@@ -231,7 +228,20 @@ $(function () {
      * 4. Main
      */
 
+    window.memberActionEvents = {
+        "click .edit": function (e, val, row, idx) {
+            member.show(row);
+        },
+        "click .delete": function (e, val, row, idx) {
+            member.delete(row);
+        },
+        "click .password": function (e, val, row, idx) {
+            member.showPasswordChangeForm(row);
+        }
+    };
+
     let member = new Member();
+
 
     // remove sheriff
     $("#revoke_SHERIFF").closest("div.checkbox").addClass("hide");
