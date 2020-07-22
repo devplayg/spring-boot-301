@@ -543,8 +543,11 @@
           },
           ctrl = [[ ${ctrl} ]];
     moment.tz.setDefault(member.tz);
-    let userRoles = {/*[# th:each="n : ${T(com.devplayg.hippo.define.MemberRole).values()}"]*/"[(${n})]": "[(${n.description})]",/*[/]*/},
+    let MemberRole = {/*[# th:each="n : ${T(com.devplayg.hippo.define.MemberRole).values()}"]*/"[(${n})]": [(${n.value})],/*[/]*/},
         PagingMode = Object.freeze({/*[# th:each="n : ${T(com.devplayg.hippo.define.PagingMode).values()}"]*/"[(${n})]": [(${n.value})],/*[/]*/});
+
+    console.log(PagingMode);
+    console.log(MemberRole);
     /*]]>*/
 </script>
 <script th:src="@{/js/custom.js}"></script>
