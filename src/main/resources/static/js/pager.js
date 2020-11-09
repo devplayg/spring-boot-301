@@ -49,6 +49,8 @@ let Pager = function (pager) {
 
     this.paginationVAlign = null;
 
+    this.toolbar = null;
+
     // Check filtering in modal
     this.isFilteredInModal = function() {
         let filtered = false;
@@ -98,14 +100,14 @@ let Pager = function (pager) {
     };
 
     // Fetch page (fast-paging-only)
-    this.fetchPage = function (direction, refresh) {
+    this.fetchPage = function (direction, refresh = false) {
         if (direction === undefined) {
             direction = 0;
         }
 
-        if (refresh === undefined) {
-            refresh = false;
-        }
+        // if (refresh === undefined) {
+        //     refresh = false;
+        // }
         console.debug("move page: direction=" + direction + ", refresh=" + refresh);
 
         // Calculate page
@@ -170,6 +172,17 @@ let Pager = function (pager) {
         this.paging.blockIndex_before = this.paging.blockIndex;
     };
 
+    // Refresh table (General paging only)
+    this.refresh = function() {
+        this.updateFilter();
+        $('.has-popover').popover("hide");
+        if (this.filter.pagingMode === PagingModes.FastPaging) {
+            this.fetchPage(0, true);
+            return;
+        }
+        this.table.bootstrapTable("refresh");
+    };
+
 
     // Render data to table (fast-paging-only)
     this.renderDataToTable = function(logs) {
@@ -178,9 +191,9 @@ let Pager = function (pager) {
         let begin = ((this.paging.no - 1) % this.paging.blockSize) * this.paging.size,
             end = begin + this.paging.size;
         this.table.bootstrapTable("load", logs.slice(begin, end));
-
         // console.debug("render data to table: queueSize="+logs.length + ", begin="+begin+", end="+end);
-        $("[rel=tooltip]").tooltip();
+        $('.has-tooltip').tooltip();
+        $('.has-popover').popover();
     };
 
 
@@ -188,6 +201,7 @@ let Pager = function (pager) {
 
         // Set form
         this.form = $("#form-" + this.id);
+        this.toolbar = $("#toolbar-" + this.id);
 
         // Set modal of filter
         this.isInModal = false;
@@ -202,13 +216,9 @@ let Pager = function (pager) {
         }
 
         // Set datetime input
-        $(".datetime-range").daterangepicker({
-            timePicker: true,
-            timePicker24Hour: true,
-            locale: {
-                format: DateRangeFormat
-            }
-        });
+        $(".datetime-startDate").daterangepicker(dateStartOption);
+        $(".datetime-endDate").daterangepicker(dateEndOption);
+        $(".datetime-range").daterangepicker(dateRangeOption);
 
         // Set URL to request
         this.api = this.id;
@@ -243,6 +253,12 @@ let Pager = function (pager) {
                 required: true,
                 min: 2,
                 max: 200,
+            },
+            sTime: {
+                startTime: true
+            },
+            eTime: {
+                endTime: true
             }
         };
         if (pager.rules !== undefined) {
@@ -257,11 +273,11 @@ let Pager = function (pager) {
                 // Update filter
                 c.updateFilter();
                 if (c.pagingMode !== c.filter.pagingMode) {
-                    console.log($(form).serializeArray());
+                    // console.log($(form).serializeArray());
                     form.submit();
                     return true;
                 }
-                console.debug("old paging mode: " + c.pagingMode);
+                console.debug("previous paging mode: " + c.pagingMode);
                 console.debug("--------submitted--------");
 
                 // if modal is opened, close it
@@ -269,7 +285,7 @@ let Pager = function (pager) {
                     c.modal.modal("toggle");
                 }
                 // console.log(c.filter);
-                if (c.filter.pagingMode === PagingMode.FastPaging) {
+                if (c.filter.pagingMode === PagingModes.FastPaging) {
                     c.table.bootstrapTable("refreshOptions", {
                         pageSize: c.filter.pageSize,
                     });
@@ -277,7 +293,7 @@ let Pager = function (pager) {
                     c.fetchPage(0, true);
                     return true;
                 }
-
+                c.table.bootstrapTable("refresh");
                 c.table.bootstrapTable("selectPage", 1);
             },
             rules: rules
@@ -288,19 +304,18 @@ let Pager = function (pager) {
     // Update filter
     this.updateFilter = function() {
         this.filter = objectifyForm(this.form);
-        // console.log(PagingMode );
-        this.filter.pagingMode = this.filter.pagingMode || PagingMode.FastPaging;
-        if (this.filter.startDate !== undefined) {
-            this.filter.startDate += ":00" + member.tzOffset;
-        }
-        if (this.filter.endDate !== undefined) {
-            this.filter.endDate += ":00" + member.tzOffset;
-        }
+        this.filter.pagingMode = this.filter.pagingMode || PagingModes.FastPaging;
+        // if (this.filter.startDate !== undefined) {
+        //     this.filter.startDate += ":00" + Member.tz;
+        // }
+        // if (this.filter.endDate !== undefined) {
+        //     this.filter.endDate += ":00" + Member.tz;
+        // }
         // this.filter.startDate += ":00" + member.tzOffset;
         // this.filter.endDate += ":59" + member.tzOffset;
         // console.debug("filter is updated: pagingMode="+ this.filter.pagingMode);
         if (this.isFilteredInModal()) {
-            $(".filter", this.form).html('<i class="fal fa-filter text-danger"></i>');
+            $(".filter", this.form).html('<i class="fas fa-filter text-danger"></i>');
         }
         // console.log(this.filter);
     };
@@ -312,7 +327,7 @@ let Pager = function (pager) {
             no: 1, // Page number
             blockIndex: 0, // Block index
             blockIndex_before: -1, // Previous block index
-            blockSize: pager.blockSize || 20, // fetch N pages of data at a time
+            blockSize: pager.blockSize || 5, // fetch N pages of data at a time
             dataLength: 0,
             size: parseInt(this.table.bootstrapTable("getOptions").pageSize, 10), // Page size
             sort: this.table.bootstrapTable("getOptions").sortName,
@@ -324,12 +339,12 @@ let Pager = function (pager) {
 
     // Initialize navigation button group (fast-paging-only)
     this.initNavigationButtonGroup = function () {
-        this.navigationButtonGroup.page = $(".btn-page-text", this.form);
-        this.navigationButtonGroup.prev = $(".btn-page-prev", this.form);
-        this.navigationButtonGroup.next = $(".btn-page-next", this.form);
+        this.navigationButtonGroup.page = $(".btn-page-text", this.toolbar);
+        this.navigationButtonGroup.prev = $(".btn-page-prev", this.toolbar);
+        this.navigationButtonGroup.next = $(".btn-page-next", this.toolbar);
 
         let c = this;
-        $(".btn-move-page", this.form).click(function () {
+        $(".btn-move-page", this.toolbar).click(function () {
             c.fetchPage($(this).data("direction"), false);
         });
     };
@@ -387,7 +402,8 @@ let Pager = function (pager) {
         //     captureTableColumnsState($(this));
 
         }).on("load-success.bs.table", function () {
-            $("[rel=tooltip]").tooltip();
+            $('.has-tooltip').tooltip();
+            $('.has-popover').popover();
 
         }).on("sort.bs.table", function (e, name, order) { // Refresh
             // for Post request
@@ -409,24 +425,20 @@ let Pager = function (pager) {
         this.initFormValidation();
 
         // Fast paging mode
-        if (this.filter.pagingMode === PagingMode.FastPaging) {
+        if (this.filter.pagingMode === PagingModes.FastPaging) {
             this.initTableForFastPaging();
             this.initNavigationButtonGroup();
-            restoreTableColumnsState(this.table);
             return true;
         }
 
         // General paging mode
         this.initTableForGeneralPaging();
-
-        // Initialize table columns
-        restoreTableColumnsState(this.table);
     };
 
     this.run = function() {
         this.updateFilter();
 
-        if (this.filter.pagingMode === PagingMode.FastPaging) {
+        if (this.filter.pagingMode === PagingModes.FastPaging) {
             this.fetchPage();
         }
     };
