@@ -17,9 +17,13 @@ class RedisConfig {
     fun redisConnectionFactory() = LettuceConnectionFactory()
 
     @Bean
-    fun redisTemplate(): RedisTemplate<String, String> {
-        val redisTemplate = RedisTemplate<String, String>()
+    fun redisTemplate(): RedisTemplate<String, Any> {
+        val redisTemplate = RedisTemplate<String, Any>()
         redisTemplate.setConnectionFactory(redisConnectionFactory())
+        redisTemplate.keySerializer = StringRedisSerializer()
+        redisTemplate.valueSerializer = StringRedisSerializer()
+        redisTemplate.hashKeySerializer = StringRedisSerializer()
+        redisTemplate.hashValueSerializer = StringRedisSerializer()
         return redisTemplate
     }
 }
