@@ -5,9 +5,16 @@ import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.SortOrder
 
 open class Filter(
+        // Paging mode
         var pagingMode: Int = PagingMode.FastPaging.value,
+
+        // Default start page
         var page: Int = 1,
+
+        // Default page size
         var pageSize: Int = 20,
+
+        // Default sort and order
         var sortOrder: Pair<Expression<*>, SortOrder>
 ) {
     var sort: String = ""
@@ -15,6 +22,7 @@ open class Filter(
     var order: String = ""
 
     init {
+        this.sort = (sortOrder.first as Column).name
         this.order = sortOrder.second.name
     }
 
