@@ -64,9 +64,19 @@ class SecurityConfig(
 
 //                .antMatchers(HttpMethod.POST, "/periodreport")
 //                .hasAnyRole(MemberRole.Admin.name) // White APIs
-
+ var maxSessionCount = appConfig.maxUserSessions
+        if (maxSessionCount < 1) {
+            maxSessionCount = 1
+        }
+        http.sessionManagement().maximumSessions(maxSessionCount).sessionRegistry(sessionRegistry())
     }
 
+    fun allowUrlEncodedSlashHttpFirewall(): HttpFirewall {
+        val firewall = DefaultHttpFirewall()
+        firewall.setAllowUrlEncodedSlash(true)
+        return firewall
+    }
+ /*       
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
@@ -76,4 +86,27 @@ class SecurityConfig(
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService(memberService).passwordEncoder(passwordEncoder())
     }
+   */
+ override fun configure(auth: AuthenticationManagerBuilder) {
+        
+        if (appConfig.ldap != null) {
+            auth
+                    .ldapAuthentication()
+                    .groupSearchBase(appConfig.ldap.groupSearchBase)
+                    .userSearchFilter(appConfig.ldap.userSearchFilter)
+                    .contextSource()
+                    .url("ldap://" + appConfig.ldap.url + ":" + appConfig.ldap.port + "/" + appConfig.ldap.userDn)
+                    .managerDn(appConfig.ldap.managerDn)
+                    .managerPassword(appConfig.ldap.managerPassword)
+            return
+        }
+
+       
+        auth.userDetailsService(memberService).passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder())
+    }
+        @Bean
+    fun sessionRegistry() = SessionRegistryImpl()
+
+    @Bean
+    fun httpSessionEventPublisher() = ServletListenerRegistrationBean(HttpSessionEventPublisher())
 }
