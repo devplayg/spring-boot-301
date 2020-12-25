@@ -1,5 +1,6 @@
 package com.devplayg.hippo.entity
 
+import com.devplayg.hippo.define.MapperTable
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -9,7 +10,7 @@ import org.jetbrains.exposed.sql.jodatime.datetime
 import org.joda.time.DateTime
 
 // Table
-object Audits : LongIdTable("adt_audit", "audit_id") {
+object Audits : LongIdTable("adt_audit", "audit_id"), MapperTable {
     val category = integer("category").index()
     val memberId = long("member_id")
     val ip = long("ip")
@@ -17,6 +18,11 @@ object Audits : LongIdTable("adt_audit", "audit_id") {
     val created = datetime("created").default(DateTime.now())
 
     override val primaryKey = PrimaryKey(id, name = "PK_adt_audit_auditId")
+
+    override fun mapper() = hashMapOf(
+        "" to ""
+    )
+
 }
 
 // Entity

@@ -1,3 +1,27 @@
+package com.devplayg.hippo.component
+
+import com.devplayg.hippo.config.AppConfig
+import com.devplayg.hippo.define.AuditCategory
+import com.devplayg.hippo.define.DBTZ
+import com.devplayg.hippo.define.SystemMemberId
+import com.devplayg.hippo.entity.Members
+import com.devplayg.hippo.repository.MemberCacheRepo
+import com.devplayg.hippo.util.auditLog
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import mu.KLogging
+import org.apache.http.client.utils.URLEncodedUtils
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTimeZone
+import org.springframework.boot.context.event.ApplicationStartedEvent
+import org.springframework.context.ApplicationListener
+import org.springframework.stereotype.Component
+import java.nio.charset.Charset
+import java.util.*
+import javax.annotation.PostConstruct
+import javax.annotation.PreDestroy
 
 /**
  * Application listener
@@ -5,8 +29,7 @@
 @Component
 class AppStartedListener(
         private val appConfig: AppConfig,
-        private val memberCacheRepo: MemberCacheRepo,
-        private val assetCacheRepo: AssetCacheRepo
+        private val memberCacheRepo: MemberCacheRepo
 ) : ApplicationListener<ApplicationStartedEvent> {
 
     companion object : KLogging()
@@ -27,7 +50,7 @@ class AppStartedListener(
      */
     @Override
     override fun onApplicationEvent(event: ApplicationStartedEvent) {
-        auditLog(SystemMemberId, AuditCategory.ApplicationStarted.value)
+        auditLog(SystemMemberId, AuditCategory.APPLICATION_STARTED.value)
         this.loadMembers()
         this.loadAssets()
     }
@@ -38,7 +61,7 @@ class AppStartedListener(
      */
     @PreDestroy
     fun destroy() {
-        auditLog(SystemMemberId, AuditCategory.ApplicationStopped.value)
+        auditLog(SystemMemberId, AuditCategory.APPLICATION_STOPPED.value)
     }
 
 

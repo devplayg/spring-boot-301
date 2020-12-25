@@ -1,3 +1,12 @@
+package com.devplayg.hippo.util
+
+import com.devplayg.hippo.define.MapperTable
+import com.devplayg.hippo.filter.Filter
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.Expression
+import org.jetbrains.exposed.sql.SortOrder
+
 /**
  * 데이터 조회결과가 저장될 데이터 클래스
  */

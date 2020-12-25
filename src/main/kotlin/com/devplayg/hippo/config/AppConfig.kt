@@ -11,5 +11,15 @@ data class AppConfig(
         val pathPatternsNotToBeIntercepted: ArrayList<String> = ArrayList(),
         val dataSource: DataSource
 ) {
-    data class DataSource(val url: String = "", val username: String = "", val password: String = "")
+    data class DataSource(
+        val driverClassName: String = "",
+        val jdbcUrl: String = "",
+        val user: String = "",
+        val password: String = "",
+        val portNumber: String = "",
+        val serverName: String = "",
+        val minimumIdle: Int,
+        val maximumPoolSize: Int
+
+    )
 }

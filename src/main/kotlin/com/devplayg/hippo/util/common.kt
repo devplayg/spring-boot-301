@@ -1,6 +1,7 @@
 package com.devplayg.hippo.util
 
 import com.devplayg.hippo.framework.CustomUserDetails
+import org.jetbrains.exposed.sql.SortOrder
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
