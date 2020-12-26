@@ -19,14 +19,27 @@ class CustomAuthenticationFailureHandler(
         val memberService: MemberService
 ) : AuthenticationFailureHandler {
     @Throws(IOException::class, ServletException::class)
-    override fun onAuthenticationFailure(w: HttpServletRequest, r: HttpServletResponse, exception: AuthenticationException) {
-        val username: String = w.getParameter("app_username")
+    override fun onAuthenticationFailure(w: HttpServletRequest, r: HttpServletResponse, e: AuthenticationException) {
+        val username: String = w.getParameter("tkdydwkdkdlel")
+        val password: String = w.getParameter("tkdydwkqlalfqjsgh")
+
+        // 로그인 실패 기록
+        /*
+         * wondory: customUserDetail로 로그인 실패 시, "java.lang.IllegalArgumentException: There is no PasswordEncoder mapped for the id "null"" 에러 핸들링 필요
+         * wondory: 유효하지 않은 ID 로그인 예외처리
+         */
+        logger.error("login failure; username={}, input={}, inputLen={}, ip={}, message={}", username, password, password.length, w.remoteAddr?:"", e.message?:"")
 
         // Audit
-        auditLog(0, AuditCategory.SignInFailure.value, hashMapOf(Pair("username", username), Pair("exception", exception)))
+        val msg = hashMapOf(
+                Pair("username", username),
+                Pair("message", e.message?:"")
+        )
+        auditLog(SystemMemberId, AuditCategory.SignInFailure.value, msg)
 
         // Increase failed login count
-        memberService.increaseFailedLoginCount(username)
+        // wondory: last_failed_login 필드 업데이트
+        memberService.denyLogin(username)
 
         // Redirect
         r.sendRedirect("/login?error")
