@@ -5,9 +5,25 @@ import org.springframework.stereotype.Service
 
 @Service
 class MemberCacheService(
-    private val memberCacheRepo: MemberCacheRepo
+        private val memberCacheRepo: MemberCacheRepo
 ) {
-    fun aa() = memberCacheRepo.markAsOnline()
-    fun aa() = memberCacheRepo.markAsOffline()
-    fun aa() = memberCacheRepo.delete2Fa()
+    companion object : KLogging()
+
+    fun findOnlineUsernames() = memberCacheRepo.findOnlineUsernames()
+
+    fun findOnlineMembers() = memberCacheRepo.findOnlineUsernames().mapNotNull {
+        this.findByUsername(it)
+    }
+
+    fun findByUsername(username: String) = memberCacheRepo.findByUsername(username)
+
+    fun markAsOnline(username: String) = memberCacheRepo.markAsOnline(username)
+
+    fun markAsOffline(username: String) = memberCacheRepo.markAsOffline(username)
+
+    fun delete2FA(sessionId: String) = memberCacheRepo.delete2FA(sessionId)
+
+    fun mark2FA(sessionId: String) = memberCacheRepo.mark2FA(sessionId)
+
+    fun check2FA(sessionId: String) = memberCacheRepo.check2FA(sessionId)
 }
