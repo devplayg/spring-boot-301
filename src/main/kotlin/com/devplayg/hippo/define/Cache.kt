@@ -1,5 +1,7 @@
 package com.devplayg.hippo.define
 
+import java.time.Duration
+
 val DefaultRedisTimeout: Duration = Duration.ofDays(30)
 
 

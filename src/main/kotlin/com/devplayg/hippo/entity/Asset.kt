@@ -1,4 +1,9 @@
+package com.devplayg.hippo.entity
 
+import com.devplayg.hippo.define.MapperTable
+import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.kotlin.com.google.gson.Gson
 
 
 object Assets : LongIdTable("ast_asset", "asset_id"), MapperTable {

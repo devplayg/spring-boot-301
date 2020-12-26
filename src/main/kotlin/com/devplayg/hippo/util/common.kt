@@ -1,10 +1,14 @@
 package com.devplayg.hippo.util
 
+import com.devplayg.hippo.define.authoritiesToValue
 import com.devplayg.hippo.framework.CustomUserDetails
 import org.jetbrains.exposed.sql.SortOrder
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import java.net.URLEncoder
+import java.text.NumberFormat
+import java.util.*
 
 
 /**
@@ -56,7 +60,7 @@ fun base64UrlDecode(str: String) = String(Base64.getUrlDecoder().decode(str))
  */
 fun paramsToParamStr(params: List<Pair<String, String>>): String {
     return params.map { (k, v) -> "${k}=${URLEncoder.encode(v, "utf-8")}" }
-            .joinToString("&")
+        .joinToString("&")
 }
 
 fun thousandComma(n: Any): String {

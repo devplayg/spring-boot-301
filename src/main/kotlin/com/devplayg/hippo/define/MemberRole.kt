@@ -1,5 +1,11 @@
 package com.devplayg.hippo.define
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.AuthorityUtils
+
+const val SystemMemberId = 0L
 const val MemberRolePrefix = "ROLE_"
 enum class MemberRole(var description: String, var value: Int) : GrantedAuthority {
     Admin("member.level.administrator", 1 shl (10)), // 1024

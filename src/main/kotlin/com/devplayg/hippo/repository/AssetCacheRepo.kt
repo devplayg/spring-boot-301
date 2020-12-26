@@ -1,3 +1,8 @@
+package com.devplayg.hippo.repository
+
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.stereotype.Repository
+
 /**
  * 논리자산 Cache 관리
  */

@@ -4,7 +4,9 @@ import com.devplayg.hippo.config.AppConfig
 import com.devplayg.hippo.define.AuditCategory
 import com.devplayg.hippo.define.DBTZ
 import com.devplayg.hippo.define.SystemMemberId
+import com.devplayg.hippo.entity.Assets
 import com.devplayg.hippo.entity.Members
+import com.devplayg.hippo.repository.AssetCacheRepo
 import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.util.auditLog
 import com.zaxxer.hikari.HikariConfig
@@ -29,7 +31,9 @@ import javax.annotation.PreDestroy
 @Component
 class AppStartedListener(
         private val appConfig: AppConfig,
-        private val memberCacheRepo: MemberCacheRepo
+        private val memberCacheRepo: MemberCacheRepo,
+        private val assetCacheRepo:AssetCacheRepo
+
 ) : ApplicationListener<ApplicationStartedEvent> {
 
     companion object : KLogging()

@@ -1,3 +1,14 @@
+package com.devplayg.hippo.repository
+
+import com.devplayg.hippo.define.CacheMemberIdPrefix
+import com.devplayg.hippo.define.CacheMemberOnline
+import com.devplayg.hippo.define.CacheMemberPrefix
+import com.devplayg.hippo.define.DefaultRedisTimeout
+import com.devplayg.hippo.util.currentUsername
+import mu.KLogging
+import org.jetbrains.kotlin.com.google.gson.Gson
+import org.springframework.data.redis.core.RedisTemplate
+
 class MemberCacheRepo(
         private val redisTemplate: RedisTemplate<String, Any>
 ) {
