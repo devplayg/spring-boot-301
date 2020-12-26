@@ -14,31 +14,93 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class CustomAuthenticationSuccessHandler(
-        private val homeUri: String
-) : AuthenticationSuccessHandler {
-    protected var redirectStrategy: RedirectStrategy = DefaultRedirectStrategy()
-        set
+        private val memberService: MemberService,
+        private val homeUri: String,
+        private val tokenRsaEnabled: Boolean
+) : SavedRequestAwareAuthenticationSuccessHandler() {
+    companion object : KLogging()
 
     @Throws(IOException::class)
-    override fun onAuthenticationSuccess(request: HttpServletRequest,
-                                         response: HttpServletResponse, auth: Authentication) {
-        auditLog(currentMember()?.id ?: 0, AuditCategory.SignIn.value, hashMapOf(Pair("username", currentMember()?.username ?: "")))
-        handle(request, response, auth)
-        clearAuthenticationAttributes(request)
+    override fun onAuthenticationSuccess(req: HttpServletRequest, res: HttpServletResponse, auth: Authentication) {
+
+        memberService.allowLogin(auth.name, req.session.id)
+
+        when (auth.principal) {
+            /**
+             * LDAP인증 로그인인 경우
+             */
+            is LdapUserDetailsImpl -> {
+                this.onLdapAuthenticationSuccess(req, res, auth)
+            }
+
+
+            /**
+             * Local DB인증 로그인인 경우
+             */
+            is CustomUserDetails -> {
+                this.onCustomUserAuthenticationSuccess(req, res, auth)
+            }
+            
+            /**
+             * 그외
+             */
+            else -> {
+                return
+            }
+        }
     }
 
-    @Throws(IOException::class)
-    fun handle(request: HttpServletRequest?,
-               response: HttpServletResponse, authentication: Authentication?) {
-        if (response.isCommitted) {
-//            log.warn("Response has already been committed. Unable to redirect to " + appConfig.homeUri)
+
+    /**
+     * LDAP 사용자 인증 성공 시
+     */
+    fun onLdapAuthenticationSuccess(req: HttpServletRequest, res: HttpServletResponse, auth: Authentication) {
+
+        /**
+         * 2FA 인증을 사용하면
+         */
+        if (tokenRsaEnabled) {
+            redirectStrategy.sendRedirect(req, res, "/tokenrsa/")// RSA-Token인증 페이지로 리다이렉트
             return
         }
-        redirectStrategy.sendRedirect(request, response, homeUri)
+
+
+        /**
+         * 2FA 인증을 사용하지 않으면
+         */
+        memberService.syncMember(req.session.id) // DB에 기록된 사용자 권한을 Cache로 Overwrite
+        val redirectUrl = req.session.getAttribute("prevPage") // 이전 페이지 정보 조회
+        if (redirectUrl != null) { // 세션에 Redirection URL 값이 있으면
+            req.session.removeAttribute("prevPage");
+            redirectStrategy.sendRedirect(req, res, homeUri);
+            return
+        }
+
+
+        /**
+         * 세션에 Redirection URL 값이 없으면
+         */
+        super.onAuthenticationSuccess(req, res, auth); // Cache에 저장되 URL로 redirect
     }
 
-    fun clearAuthenticationAttributes(request: HttpServletRequest) {
-        val session = request.getSession(false) ?: return
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION)
+
+    /**
+     * DB 사용자 인증 성공 시
+     */
+    fun onCustomUserAuthenticationSuccess(req: HttpServletRequest, res: HttpServletResponse, auth: Authentication) {
+        memberService.handleLocalLogin(auth) // 로그인 처리
+
+        val session: HttpSession = req.session
+        val redirectUrl = session.getAttribute("prevPage") // 이전 페이지 정보 조회
+        if (redirectUrl != null) { // 세션에 Redirection URL 값이 있으면
+            session.removeAttribute("prevPage");
+            redirectStrategy.sendRedirect(req, res, homeUri);
+            return
+        }
+
+        /**
+         * 세션에 Redirection URL 값이 없으면
+         */
+        super.onAuthenticationSuccess(req, res, auth); // Cache에 저장되 URL로 redirect
     }
 }
