@@ -1,3 +1,9 @@
 package com.devplayg.hippo.define
 
-const val CacheMemberPrefix = "member:"
+val DefaultRedisTimeout: Duration = Duration.ofDays(30)
+
+
+const val CacheMemberPrefix = "mbr-uname:"
+const val CacheMemberIdPrefix = "mbr-id:"
+const val CacheMemberOnline = "mbr-online:"
+const val CacheMember2FA = "mbr-2fa:"
