@@ -28,7 +28,7 @@ class CustomUserDetails(
                             (it.value and roles) > 0
                         }.toMutableSet(),
                         timezone = timezone,
-                        password = password
+                        password = password!!
                 )
             }
         }
