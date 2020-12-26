@@ -1,0 +1,19 @@
+@Controller
+@RequestMapping("/")
+class RootController(
+        private val appConfig: AppConfig,
+        private val memberCacheRepo: MemberCacheRepo
+) {
+    @GetMapping
+    fun redirectToLogin(): ModelAndView {
+        val auth = SecurityContextHolder.getContext().authentication
+        return if (auth is AnonymousAuthenticationToken) {
+            ModelAndView("login")
+        } else {
+            val memberDto = memberCacheRepo.findByUsername(currentUsername())
+                    ?: return ModelAndView("redirect:" + appConfig.homeUri)
+            
+            return ModelAndView("redirect:" + appConfig.homeUri)
+        }
+    }
+}
