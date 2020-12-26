@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
 class CustomAuthenticationSuccessHandler(
         private val memberService: MemberService,
         private val homeUri: String,
-        private val tokenRsaEnabled: Boolean
+        private val 2faEnabled: Boolean
 ) : SavedRequestAwareAuthenticationSuccessHandler() {
     companion object : KLogging()
 
@@ -59,8 +59,8 @@ class CustomAuthenticationSuccessHandler(
         /**
          * 2FA 인증을 사용하면
          */
-        if (tokenRsaEnabled) {
-            redirectStrategy.sendRedirect(req, res, "/tokenrsa/")// RSA-Token인증 페이지로 리다이렉트
+        if (2faEnabled) {
+            redirectStrategy.sendRedirect(req, res, "/2fa/")// 2fa 페이지로 리다이렉트
             return
         }
 
