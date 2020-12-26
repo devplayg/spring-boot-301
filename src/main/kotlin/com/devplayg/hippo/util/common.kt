@@ -43,3 +43,22 @@ fun toSortOrder(order: String): SortOrder {
         SortOrder.DESC
     }
 }
+
+/**
+ * Base64 URL Encoding/Decoding
+ */
+fun base64UrlEncode(str: String) = Base64.getEncoder().encodeToString(str.toByteArray(Charsets.UTF_8))!!
+fun base64UrlDecode(str: String) = String(Base64.getUrlDecoder().decode(str))
+
+
+/**
+ * Params to Param string
+ */
+fun paramsToParamStr(params: List<Pair<String, String>>): String {
+    return params.map { (k, v) -> "${k}=${URLEncoder.encode(v, "utf-8")}" }
+            .joinToString("&")
+}
+
+fun thousandComma(n: Any): String {
+    return NumberFormat.getNumberInstance(Locale.US).format(n)
+}
