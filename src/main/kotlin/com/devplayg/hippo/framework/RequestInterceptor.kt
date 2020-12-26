@@ -1,3 +1,25 @@
+package com.devplayg.hippo.framework
+
+import com.devplayg.hippo.config.AppConfig
+import com.devplayg.hippo.define.NewUsernamePasswordAuthenticationToken
+import com.devplayg.hippo.define.authoritiesToValue
+import com.devplayg.hippo.entity.toMemberDto
+import com.devplayg.hippo.entity.toMemberMinDto
+import com.devplayg.hippo.repository.AssetCacheRepo
+import com.devplayg.hippo.repository.MemberCacheRepo
+import com.devplayg.hippo.repository.MemberRepo
+import mu.KLogging
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import org.springframework.web.method.HandlerMethod
+import org.springframework.web.servlet.HandlerInterceptor
+import org.springframework.web.servlet.ModelAndView
+import java.util.*
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 /**
  * HandlerInterceptor
  */

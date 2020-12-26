@@ -2,27 +2,30 @@ package com.devplayg.hippo.framework
 
 import com.devplayg.hippo.config.AppConfig
 import com.devplayg.hippo.define.AuditCategory
+import com.devplayg.hippo.service.MemberService
 import com.devplayg.hippo.util.auditLog
 import com.devplayg.hippo.util.currentMember
+import mu.KLogging
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.DefaultRedirectStrategy
 import org.springframework.security.web.RedirectStrategy
 import org.springframework.security.web.WebAttributes
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
 import java.io.IOException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpSession
 
 class CustomAuthenticationSuccessHandler(
-        private val memberService: MemberService,
-        private val homeUri: String,
-        private val 2faEnabled: Boolean
+    private val memberService: MemberService,
+    private val homeUri: String
+    private val twoFaEnabled: Boolean
 ) : SavedRequestAwareAuthenticationSuccessHandler() {
     companion object : KLogging()
 
     @Throws(IOException::class)
     override fun onAuthenticationSuccess(req: HttpServletRequest, res: HttpServletResponse, auth: Authentication) {
-
         memberService.allowLogin(auth.name, req.session.id)
 
         when (auth.principal) {
@@ -40,7 +43,7 @@ class CustomAuthenticationSuccessHandler(
             is CustomUserDetails -> {
                 this.onCustomUserAuthenticationSuccess(req, res, auth)
             }
-            
+
             /**
              * 그외
              */
@@ -59,7 +62,7 @@ class CustomAuthenticationSuccessHandler(
         /**
          * 2FA 인증을 사용하면
          */
-        if (2faEnabled) {
+        if (twoFaEnabled) {
             redirectStrategy.sendRedirect(req, res, "/2fa/")// 2fa 페이지로 리다이렉트
             return
         }

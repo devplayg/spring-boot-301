@@ -51,7 +51,7 @@ class SecurityConfig(
             .loginProcessingUrl("/app-login")
             .usernameParameter("app_username")
             .passwordParameter("app_password")
-            .successHandler(CustomAuthenticationSuccessHandler(appConfig.homeUri)) // failure
+            .successHandler(CustomAuthenticationSuccessHandler(memberService, appConfig.homeUri, false)) // failure
             .failureHandler(CustomAuthenticationFailureHandler(memberService)) // success
             .permitAll()
             .and()

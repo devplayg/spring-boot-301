@@ -3,6 +3,7 @@ package com.devplayg.hippo.controller
 import com.devplayg.hippo.define.MemberRole
 import com.devplayg.hippo.define.PagingMode
 import com.devplayg.hippo.filter.AuditFilter
+import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.service.AuditService
 import mu.KLogging
 import org.springframework.http.HttpStatus
@@ -17,13 +18,14 @@ import org.springframework.web.bind.annotation.RequestMethod
 @Controller
 @RequestMapping("/audits")
 class AuditController(
-        private val auditService: AuditService
+        private val auditService: AuditService,
+        private val memberCacheRepo: MemberCacheRepo
 ) {
     companion object : KLogging()
 
     @RequestMapping(value = ["/"], method = [RequestMethod.GET, RequestMethod.POST])
     fun display(@ModelAttribute filter: AuditFilter, model: Model): String {
-        filter.tune()
+        filter.tune(memberCacheRepo)
         model.addAttribute("filter", filter)
         filter.debug(this.javaClass.name + "::displayAudit()")
 
@@ -37,7 +39,7 @@ class AuditController(
     */
     @GetMapping
     fun find(@ModelAttribute filter: AuditFilter): ResponseEntity<*> {
-        filter.tune()
+        filter.tune(memberCacheRepo)
         filter.debug(this.javaClass.name + "::find()")
         if (filter.pagingMode == PagingMode.FastPaging.value) {
             return ResponseEntity(auditService.getAudits(filter), HttpStatus.OK)

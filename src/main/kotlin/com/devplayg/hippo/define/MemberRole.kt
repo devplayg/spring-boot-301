@@ -10,7 +10,7 @@ const val MemberRolePrefix = "ROLE_"
 enum class MemberRole(var description: String, var value: Int) : GrantedAuthority {
     Admin("member.level.administrator", 1 shl (10)), // 1024
     Sheriff("member.level.sheriff", 1 shl (8)), // 256
-    User("member.level.ads-monitor", 1 shl (0)); // 1
+    User("member.level.user", 1 shl (0)); // 1
 
     override fun getAuthority(): String {
         return name

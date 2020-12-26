@@ -52,7 +52,7 @@ class MemberRepo {
             it[username] = member.username
             it[name] = member.name
             it[email] = member.email
-            it[password] = member.password
+            it[password] = member.password!!
             it[roles] = member.roles
             it[timezone] = member.timezone
             it[failedLoginCount] = failedLoginCount
@@ -70,31 +70,3 @@ class MemberRepo {
     }
 }
 
-
-// Memory-cache(Redis)
-@Repository
-class MemberCacheRepo(
-        val redisTemplate: RedisTemplate<String, String>
-) {
-    fun save(memberDto: MemberDto) {
-        val m: String = memberDto.json()
-        redisTemplate.opsForValue().set(CacheMemberPrefix + memberDto.username, m)
-    }
-
-    fun findByUsername(username: String): MemberDto? {
-        val member = transaction {
-            val m = Members.select { Members.username eq username }
-            m.single() ?: return@transaction null
-
-        } ?: return null
-
-        val memberDto = toMemberDto(member)
-        return memberDto
-    }
-
-//    fun findByUsername(username: String): MemberDto? {
-//        val json: String = redisTemplate.opsForValue().get(CacheMemberPrefix + username) ?: return null
-//        val memberDto: MemberDto = Gson().fromJson(json, MemberDto::class.java)
-//        return memberDto
-//    }
-}

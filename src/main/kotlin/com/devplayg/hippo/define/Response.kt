@@ -1,3 +1,5 @@
+import org.springframework.http.HttpStatus
+
 /**
  * HTTP Response 객체 설계
  * Hints from : https://elizarov.medium.com/kotlin-and-exceptions-8062f589d07

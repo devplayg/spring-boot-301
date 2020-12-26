@@ -20,26 +20,27 @@ data class AppConfig(
 ) {
 
 
-    data class Ldap(
-            val userSearchFilter: String = "",
-            val url: String = "",
-            val port: String = "",
-            val userDn: String = "",
-            val managerDn: String = "",
-            val managerPassword: String = "",
-            val groupSearchBase: String = ""
-    )
+        data class Ldap(
+                val userSearchFilter: String = "",
+                val url: String = "",
+                val port: String = "",
+                val userDn: String = "",
+                val managerDn: String = "",
+                val managerPassword: String = "",
+                val groupSearchBase: String = ""
+        )
 
-    /**
-     * DataSource
-     */
-    data class DataSource(
-            val driverClassName: String = "",
-            val jdbcUrl: String = "",
-            val user: String = "",
-            val password: String = "",
-            val portNumber: String = "",
-            val serverName: String = "",
-            val minimumIdle: Int,
-            val maximumPoolSize: Int
-    )
+        /**
+         * DataSource
+         */
+        data class DataSource(
+                val driverClassName: String = "",
+                val jdbcUrl: String = "",
+                val user: String = "",
+                val password: String = "",
+                val portNumber: String = "",
+                val serverName: String = "",
+                val minimumIdle: Int,
+                val maximumPoolSize: Int
+        )
+}

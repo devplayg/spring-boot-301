@@ -1,3 +1,8 @@
+package com.devplayg.hippo.repository
+
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.stereotype.Repository
+
 @Repository
 class ConfigRepo {
 

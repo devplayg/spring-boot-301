@@ -1,10 +1,12 @@
 package com.devplayg.hippo.framework;
 
 import com.devplayg.hippo.define.AuditCategory
+import com.devplayg.hippo.define.SystemMemberId
 import com.devplayg.hippo.entity.Members
 import com.devplayg.hippo.repository.MemberRepo
 import com.devplayg.hippo.service.MemberService
 import com.devplayg.hippo.util.auditLog
+import mu.KLogging
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -18,6 +20,8 @@ import javax.servlet.http.HttpServletResponse
 class CustomAuthenticationFailureHandler(
         val memberService: MemberService
 ) : AuthenticationFailureHandler {
+    companion object : KLogging()
+
     @Throws(IOException::class, ServletException::class)
     override fun onAuthenticationFailure(w: HttpServletRequest, r: HttpServletResponse, e: AuthenticationException) {
         val username: String = w.getParameter("tkdydwkdkdlel")

@@ -1,5 +1,6 @@
 package com.devplayg.hippo.entity
 
+import com.devplayg.hippo.define.MapperTable
 import com.google.gson.Gson
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
