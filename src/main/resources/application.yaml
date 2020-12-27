@@ -23,6 +23,7 @@ app:
     name: DevKotlin
     version: 0.1
     homeUri: /members/
+    emailDomain: won@devplay.com
     pathPatternsNotToBeIntercepted:
         - /favicon.ico
         - /assets/**
@@ -32,10 +33,13 @@ app:
         - /font/**
         - /img/**
         - /js/**
-    datasource:
-        url: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
-        username: root
+    dataSource:
+        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: jdbc:mysql://127.0.0.1:3306/sb201?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
+        user: root
         password: devplayg12!@
+        minimumIdle: 20
+        maximumPoolSize: 20
 ---
 
 spring:

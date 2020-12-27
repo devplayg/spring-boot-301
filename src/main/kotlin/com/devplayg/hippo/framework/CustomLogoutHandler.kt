@@ -1,5 +1,6 @@
 package com.devplayg.hippo.framework
 
+import com.devplayg.hippo.service.MemberCacheService
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.logout.LogoutHandler
 import javax.servlet.http.HttpServletRequest

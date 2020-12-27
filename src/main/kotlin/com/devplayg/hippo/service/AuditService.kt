@@ -1,9 +1,13 @@
 package com.devplayg.hippo.service
 
+import com.devplayg.hippo.define.SystemMemberId
 import com.devplayg.hippo.filter.AuditFilter
 import com.devplayg.hippo.entity.toAuditDto
 import com.devplayg.hippo.repository.AuditRepo
+import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.util.PageData
+import com.devplayg.hippo.util.auditLog
+import com.devplayg.hippo.util.currentUsername
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
@@ -16,7 +20,12 @@ class AuditService(
      * 조회 (Fast paging)
      */
     fun find(filter: AuditFilter) = auditRepo.find(filter).map{
-        it.member = memberCacheRepo.findById(it.memberId)
+        //it.member = memberCacheRepo.findById(it.memberId)
+        return@map it
+    }
+
+    fun findWithTotal(filter: AuditFilter) = auditRepo.find(filter).map{
+        //it.member = memberCacheRepo.findById(it.memberId)
         return@map it
     }
 
@@ -24,7 +33,7 @@ class AuditService(
     /**
      * 조회 (Normal paging)
      */
-    fun findWithTotal(filter: AuditFilter) = auditRepo.findWithTotal(filter)
+//    fun findWithTotal(filter: AuditFilter) = auditRepo.findWithTotal(filter)
 
 
     /**

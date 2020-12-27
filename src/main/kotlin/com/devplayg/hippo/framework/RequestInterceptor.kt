@@ -1,5 +1,6 @@
 package com.devplayg.hippo.framework
 
+import com.devplay.hippo.controller.RootController
 import com.devplayg.hippo.config.AppConfig
 import com.devplayg.hippo.define.NewUsernamePasswordAuthenticationToken
 import com.devplayg.hippo.define.authoritiesToValue

@@ -1,9 +1,6 @@
 package com.devplayg.hippo.repository
 
-import com.devplayg.hippo.define.CacheMemberIdPrefix
-import com.devplayg.hippo.define.CacheMemberOnline
-import com.devplayg.hippo.define.CacheMemberPrefix
-import com.devplayg.hippo.define.DefaultRedisTimeout
+import com.devplayg.hippo.define.*
 import com.devplayg.hippo.entity.MemberMinDto
 import com.devplayg.hippo.entity.json
 import com.devplayg.hippo.util.currentUsername
@@ -102,35 +99,35 @@ class MemberCacheRepo(
     fun markAsOffline(username: String) = redisTemplate.delete(CacheMemberOnline + username)
 
 
-//    /**
-//     * Spring 세션 조회
-//     */
-//    fun findSpringSessionsByUsername(username: String) = redisTemplate.opsForSet().members(CacheSpringBootRedisMemberPrefix + username)
-//
-//
-//    /**
-//     * Spring 세션 삭제
-//     */
-//    fun deleteSpringSessionsByKey(key: String) {
-//        redisTemplate.delete(CacheSpringBootRedisSession + key)
-//        redisTemplate.delete(CacheSpringBootRedisSessionExpire + key)
-//    }
-//
-//
-//    fun mark2FA(sessionId: String) {
-//        redisTemplate.opsForValue().set(CacheMember2FA + sessionId, "1", DefaultRedisTimeout)
-//    }
-//
-//
-//    fun check2FA(sessionId: String) : Boolean {
-//        redisTemplate.opsForValue().get(CacheMember2FA + sessionId) ?: return false
-//        return true
-//    }
-//
-//
-//    fun delete2FA(sessionId: String) {
-//        redisTemplate.delete(CacheMember2FA + sessionId)
-//    }
+    /**
+     * Spring 세션 조회
+     */
+    fun findSpringSessionsByUsername(username: String) = redisTemplate.opsForSet().members(CacheSpringBootRedisMemberPrefix + username)
+
+
+    /**
+     * Spring 세션 삭제
+     */
+    fun deleteSpringSessionsByKey(key: String) {
+        redisTemplate.delete(CacheSpringBootRedisSession + key)
+        redisTemplate.delete(CacheSpringBootRedisSessionExpire + key)
+    }
+
+
+    fun mark2FA(sessionId: String) {
+        redisTemplate.opsForValue().set(CacheMember2FA + sessionId, "1", DefaultRedisTimeout)
+    }
+
+
+    fun check2FA(sessionId: String) : Boolean {
+        redisTemplate.opsForValue().get(CacheMember2FA + sessionId) ?: return false
+        return true
+    }
+
+
+    fun delete2FA(sessionId: String) {
+        redisTemplate.delete(CacheMember2FA + sessionId)
+    }
 }
 
 

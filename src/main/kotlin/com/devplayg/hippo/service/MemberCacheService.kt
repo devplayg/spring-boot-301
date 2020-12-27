@@ -1,6 +1,7 @@
 package com.devplayg.hippo.service
 
 import com.devplayg.hippo.repository.MemberCacheRepo
+import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service

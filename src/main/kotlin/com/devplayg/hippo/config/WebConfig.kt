@@ -1,6 +1,6 @@
 package com.devplayg.hippo.config
 
-import com.devplayg.hippo.interceptor.RequestInterceptor
+import com.devplayg.hippo.framework.RequestInterceptor
 import mu.KLogging
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean

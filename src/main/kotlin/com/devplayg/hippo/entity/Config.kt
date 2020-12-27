@@ -1,5 +1,11 @@
 package com.devplayg.hippo.entity
 
+import com.devplayg.hippo.define.YYYYMMDDHHMMSS
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.jodatime.datetime
+import org.joda.time.DateTime
+
 /**
  * Table name: sys_config
  * Description: 설정 관리

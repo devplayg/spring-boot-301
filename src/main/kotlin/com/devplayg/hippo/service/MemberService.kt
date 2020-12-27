@@ -1,21 +1,28 @@
 package com.devplayg.hippo.service
 
-import com.devplayg.hippo.entity.MemberDto
-import com.devplayg.hippo.entity.Members
-import com.devplayg.hippo.entity.toMemberDto
+import com.devplayg.hippo.config.AppConfig
+import com.devplayg.hippo.define.*
+import com.devplayg.hippo.entity.*
 import com.devplayg.hippo.framework.CustomUserDetails
+import com.devplayg.hippo.repository.MemberCacheRepo
 import com.devplayg.hippo.repository.MemberRepo
 import com.devplayg.hippo.util.SubnetUtils
+import com.devplayg.hippo.util.currentUsername
 import mu.KLogging
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import org.joda.time.DateTime
+import org.joda.time.Days
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.ldap.userdetails.LdapUserDetailsImpl
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
@@ -103,9 +110,7 @@ class MemberService(
     /**
      * 로그인 허용대 대한 처리
      */
-    fun allowLogin(username: String, sessionId: String): UpdateResult  {
-        return memberRepo.allowLogin(username)
-    }
+    fun allowLogin(username: String, sessionId: String) = memberRepo.allowLogin(username)
 
 
     /**
@@ -129,14 +134,14 @@ class MemberService(
 
         // 권한변경 확인 및 감사로깅
         if (memberDtoOld.roles != memberMinDtoNew.roles) {
-            auditService.audit(
-                    AuditCategory.MemberRolesChanged.value,
-                    hashMapOf(
-                            Pair("username", memberMinDtoNew.username),
-                            Pair("oldRoles", memberDtoOld.roles),
-                            Pair("newRoles", memberMinDtoNew.roles)
-                    )
-            )
+//            auditService.audit(
+//                    AuditCategory.MemberRolesChanged.value,
+//                    hashMapOf(
+//                            Pair("username", memberMinDtoNew.username),
+//                            Pair("oldRoles", memberDtoOld.roles),
+//                            Pair("newRoles", memberMinDtoNew.roles)
+//                    )
+//            )
         }
     }
 
@@ -180,26 +185,26 @@ class MemberService(
         // 기본 권한
         val defaultRoles = 0 // MemberRole.Sheriff.value or MemberRole.Admin.value
 
-        // wondory: 사용자 권한을 DB와 연동해야함
-        // DB에 사용자 정보 입력
-        memberDto = MemberDto(
-                0,
-                0,
-                ldapUserDetail.username,
-                memberMeta["cn"] ?: "Unknown",
-                true,
-                ldapUserDetail.username + "@" + appConfig.emailDomain,
-                defaultRoles,
-                "",
-                "Asia/Seoul",
-                "",
-                0,
-                "",
-                mutableListOf("0.0.0.0/0"),
-                false
-        )
-        val result = memberRepo.createIfNotExist(memberDto)
-        return Pair(memberDto, result.affectedRows)
+//        // wondory: 사용자 권한을 DB와 연동해야함
+//        // DB에 사용자 정보 입력
+//        memberDto = MemberDto(
+//                0,
+//                0,
+//                ldapUserDetail.username,
+//                memberMeta["cn"] ?: "Unknown",
+//                true,
+//                ldapUserDetail.username + "@" + appConfig.emailDomain,
+//                defaultRoles,
+//                "",
+//                "Asia/Seoul",
+//                "",
+//                0,
+//                "",
+//                mutableListOf("0.0.0.0/0"),
+//                false
+//        )
+        val result = memberRepo.createIfNotExist(memberDto!!)
+        return memberDto
     }
 
     /**
@@ -252,14 +257,15 @@ class MemberService(
     /**
      * 사용자 삭제 (추후 필요 시 사용)
      */
-    fun deleteById(id: Long): UpdateResult {
-        val memberMinDto = memberRepo.findById(id) ?: throw ResourceNotFoundException("member", "id", id)
+    fun deleteById(id: Long): Response {
+        val memberMinDto = memberRepo.findById(id) ?: return Response.NotFound()
         if (memberMinDto.username == currentUsername()) {
             throw Exception("cannot terminate your own session")
         }
 
         // DB에서 사용자 정보 삭제
-        return memberRepo.deleteById(id)
+        val affectedRows = memberRepo.deleteById(id)
+        return Response.Updated(affectedRows)
     }
 
 
@@ -281,7 +287,7 @@ class MemberService(
 
         // Audit
         if (inserted > 0) { // New member?
-            auditService._audit(member.username, AuditCategory.MemberRegistered.value, this.loginInfo(member.username, memberMinDto.name, memberDto.id!!, "ldap"))
+             auditService._audit(member.username, AuditCategory.MemberRegistered.value, this.loginInfo(member.username, memberMinDto.name, memberDto.id!!, "ldap"))
         }
         auditService._audit(member.username, AuditCategory.SignIn.value, this.loginInfo(memberDto.username, memberMinDto.name, memberDto.id!!, "ldap"))
 
@@ -305,8 +311,8 @@ class MemberService(
                 days = 30
             }
             if (diff > days && it.roles > 0) {
-                val result = memberRepo.revokeRole(it.id!!)
-                if (result.affectedRows > 0) {
+                val affectedRows = memberRepo.revokeRole(it.id!!)
+                if (affectedRows > 0) {
                     logger.info("User roles has been revoked; username={}, lastSuccessLogin={}", it.username, it.lastSuccessLogin)
                     auditService.auditBySystem(AuditCategory.UserRolesRevoked.value, hashMapOf(
                             Pair("username", it.username),

@@ -9,4 +9,6 @@ enum class AuditCategory(val value: Int, val description: String) {
     MemberDeleted(1013, "member.deleted"),
     APPLICATION_STARTED(1031, "application.started"),
     APPLICATION_STOPPED(1032, "application.stopped"),
+    MemberRegistered(9001, "member-registeredj1"),
+    UserRolesRevoked(9002, "member-registeredj2"),
 }

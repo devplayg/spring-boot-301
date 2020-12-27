@@ -1,3 +1,5 @@
+package com.devplayg.hippo.define
+
 import org.springframework.http.HttpStatus
 
 /**

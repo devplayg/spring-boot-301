@@ -42,9 +42,9 @@ class AuditController(
         filter.tune(memberCacheRepo)
         filter.debug(this.javaClass.name + "::find()")
         if (filter.pagingMode == PagingMode.FastPaging.value) {
-            return ResponseEntity(auditService.getAudits(filter), HttpStatus.OK)
+            return ResponseEntity(auditService.find(filter), HttpStatus.OK)
         }
-        return ResponseEntity(auditService.getAuditsWithTotal(filter), HttpStatus.OK)
+        return ResponseEntity(auditService.findWithTotal( filter), HttpStatus.OK)
     }
 }
 

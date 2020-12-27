@@ -3,10 +3,12 @@ package com.devplayg.hippo.repository
 
 import com.devplayg.hippo.define.CacheMemberPrefix
 import com.devplayg.hippo.entity.*
+import com.devplayg.hippo.util.currentUsernameAndRoles
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.plus
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 
@@ -60,14 +62,13 @@ class MemberRepo {
     /**
      * 사용자 생성
      */
-    fun createIfNotExist(memberDto: MemberDto): InsertionResult {
-        var result = InsertionResult(0, 0)
-        transaction {
+    fun createIfNotExist(memberDto: MemberDto) = transaction {
             // 사용자 존재유무 확인
             try {
                 val row = Members.select { Members.username eq memberDto.username }.single()
                 val m = toMemberDto(row)
                 memberDto.id = m.id
+//                return Response.Created(lastInsertId.value.toInt())
             } catch (e: NoSuchElementException) { // 사용자가 없으면
                 val lastInsertId = Members.insert {
                     it[username] = memberDto.username
@@ -86,12 +87,14 @@ class MemberRepo {
                 }
 
                 memberDto.id = lastInsertId.value
-                result.affectedRows = 1
-                result.lastInsertId = lastInsertId.value
+                lastInsertId.value
+//                return Response.Created(lastInsertId.value.toInt())
+//                result.affectedRows = 1
+//                result.lastInsertId = lastInsertId.value
             }
         }
-        return result
-    }
+//        return result
+//    }
 
 
     /**
@@ -118,7 +121,7 @@ class MemberRepo {
         }
 
         member.id = lastInsertId.value
-        return Response.Created(lastInsertId.value)
+        // return Response.Created(lastInsertId.value)
     }
 
 
@@ -150,13 +153,14 @@ class MemberRepo {
      * 로그인 거부
      */
     fun denyLogin(username: String) = transaction {
-        val affectedRows = Members.update({ Members.username eq username }) {
+        Members.update({ Members.username eq username }) {
             it[lastFailedLogin] = DateTime.now()
             with(SqlExpressionBuilder) {
                 it.update(Members.failedLoginCount, Members.failedLoginCount + 1)
             }
         }
-        UpdateResult(affectedRows)
+        // UpdateResult(affectedRows)
+//        Response.Updated(affectedRows)
     }
 
 
@@ -164,14 +168,13 @@ class MemberRepo {
      * 로그인 허용
      */
     fun allowLogin(username: String) = transaction {
-        val affectedRows = Members.update({ Members.username eq username }) {
+        Members.update({ Members.username eq username }) {
             it[lastSuccessLogin] = DateTime.now()
             it[failedLoginCount] = 0 // 로그인 실패 초기화
             with(SqlExpressionBuilder) {
                 it.update(Members.loginCount, Members.loginCount + 1)
             }
         }
-        UpdateResult(affectedRows)
     }
 
     /**
@@ -198,8 +201,8 @@ class MemberRepo {
      * 사용자 삭제
      */
     fun deleteById(id: Long) = transaction {
-        val affectedRows = Members.deleteWhere { Members.id.eq(id) }
-        UpdateResult(affectedRows)
+        Members.deleteWhere { Members.id.eq(id) }
+//        UpdateResult(affectedRows)
     }
 
 
@@ -207,10 +210,10 @@ class MemberRepo {
      * 사용자 권한 회수
      */
     fun revokeRole(id: Long) = transaction {
-        val affectedRows = Members.update({ Members.id.eq(id) }) {
+        Members.update({ Members.id.eq(id) }) {
             it[roles] = 0
         }
-        UpdateResult(affectedRows)
+//        UpdateResult(affectedRows)
     }
 
 }
